@@ -28,7 +28,7 @@ highly WiP - use at own risk!
 In a gnome-terminal(user) enter the following two commands:
 
 ```bash
-git clone git@gitlab.com:asus-linux/asus-nb-gox.git /tmp/asus-nb-gox && cd /tmp/asus-nb-gox
+git clone git@gitlab.com:asus-linux/asus-nb-gex.git /tmp/asus-nb-gex && cd /tmp/asus-nb-gex
 make install && make enable && make restart-shell
 ```
 
