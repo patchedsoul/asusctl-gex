@@ -1,0 +1,6 @@
+*.zip
+*.swp
+_build
+target
+schemas/gschemas.compiled
+.confirm_shortcut_change

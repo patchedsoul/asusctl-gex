@@ -1,0 +1,22 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "es2019",
+        "strict": true,
+        "outDir": "./target",
+        "forceConsistentCasingInFileNames": true,
+        "downlevelIteration": true,
+        "lib": [ "es2019" ],
+        "pretty": true,
+        "sourceMap": true,
+        "declaration": true,
+        "removeComments": true,
+        "incremental": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true
+    },
+    "include": [
+        "src/*.ts",
+        "src/**/.ts"
+    ]
+}

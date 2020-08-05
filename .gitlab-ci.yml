@@ -1,0 +1,35 @@
+image: node:latest
+
+stages:
+  - build
+  - package
+
+build:
+  stage: build
+  artifacts:
+    when: on_failure
+  before_script:
+    # installing typescript
+    - if [[ ! `builtin type -p tsc` ]]; then npm install -g typescript &>/dev/null; fi
+  script:
+    - make compile
+
+package:
+  stage: package
+  before_script:
+    # installing typescript and zip
+    - if [[ ! `builtin type -p tsc` ]]; then npm install -g typescript &>/dev/null; fi
+    - if [[ ! `builtin type -p zip` ]]; then apt update &>/dev/null && apt install zip -yy &>/dev/null; fi
+  script:
+    - make all
+    - make zip-file
+    - rm -rf target
+    - mv _build asus-nb-gex@lab.retarded.farm
+  artifacts:
+    name: "asus-nb-gex-$CI_COMMIT_TAG"
+    untracked: true
+    expire_in: 2 days
+  only:
+    - tags
+  except:
+    - master

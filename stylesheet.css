@@ -1,0 +1,49 @@
+/* panel icons */
+.panel-icon {
+    background-size: contain;
+    height: 24px;
+    width: 24px;
+}
+.panel-icon.red {
+    background-image: url("icons/asus-nb-gex_default_red.png");
+}
+.panel-icon.orange {
+    background-image: url("icons/asus-nb-gex_default_orange.png");
+}
+.panel-icon.yellow {
+    background-image: url("icons/asus-nb-gex_default_yellow.png");
+}
+.panel-icon.green {
+    background-image: url("icons/asus-nb-gex_default_green.png");
+}
+.panel-icon.blue {
+    background-image: url("icons/asus-nb-gex_default_blue.png");
+}
+.panel-icon.white {
+    background-image: url("icons/asus-nb-gex_default_white.png");
+}
+
+/* notification icons */
+.notification-icon {
+    background-size: contain;
+    height: 64px;
+    width: 64px;
+}
+.notification-icon.red {
+    background-image: url("icons/raw/asus-nb-gex_default_red.png");
+}
+.notification-icon.orange {
+    background-image: url("icons/raw/asus-nb-gex_default_orange.png");
+}
+.notification-icon.yellow {
+    background-image: url("icons/raw/asus-nb-gex_default_yellow.png");
+}
+.notification-icon.green {
+    background-image: url("icons/raw/asus-nb-gex_default_green.png");
+}
+.notification-icon.blue {
+    background-image: url("icons/raw/asus-nb-gex_default_blue.png");
+}
+.notification-icon.white {
+    background-image: url("icons/raw/asus-nb-gex_default_white.png");
+}
