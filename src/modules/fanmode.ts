@@ -18,7 +18,7 @@ export class Client implements IStoppableModule {
 
     constructor() {
         try {
-            this.connector = new DBus.FanMode("dbus-0.14.4");
+            this.connector = new DBus.FanMode("dbus-current");
         } catch {
             Log.error(`FanMode client initialization failed!`);
         }

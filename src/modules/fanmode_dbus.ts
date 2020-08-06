@@ -11,7 +11,7 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 const Gio = imports.gi.Gio;
 
 export class FanMode implements IStoppableModule {
-    rogCoreProxy: any = null;
+    asusLinuxProxy: any = null;
     connected: boolean = false;
     lastState: number = -1;
     xml: string;
@@ -25,11 +25,11 @@ export class FanMode implements IStoppableModule {
 
         try {
             // creating the proxy
-            let _rogCoreProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
-            this.rogCoreProxy = new _rogCoreProxy(
+            let _asusLinuxProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
+            this.asusLinuxProxy = new _asusLinuxProxy(
                 Gio.DBus.system,
-                "org.rogcore.Daemon",
-                "/org/rogcore/Daemon"
+                "org.asuslinux.Daemon",
+                "/org/asuslinux/Daemon"
             );
             this.connected = true;
         } catch {
@@ -39,7 +39,7 @@ export class FanMode implements IStoppableModule {
 
         if (this.connected) {
             // getting initial fan-mode
-            this.lastState = this.rogCoreProxy.GetFanModeSync();
+            this.lastState = this.asusLinuxProxy.GetFanModeSync();
             Log.info("Initial FanMode is " + this.lastState);
             try {
                 Panel.Actions.notify(
@@ -53,7 +53,7 @@ export class FanMode implements IStoppableModule {
             }
 
             // connect to fanmode
-            this.rogCoreProxy.connectSignal(
+            this.asusLinuxProxy.connectSignal(
                 "FanModeChanged",
                 (proxy_: any = null, name_: string, value: any) => {
                     if (proxy_) {
@@ -79,7 +79,7 @@ export class FanMode implements IStoppableModule {
 
         if (this.connected) {
             this.connected = false;
-            this.rogCoreProxy = null;
+            this.asusLinuxProxy = null;
         }
     }
 }
