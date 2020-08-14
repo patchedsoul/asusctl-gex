@@ -68,10 +68,10 @@ depcheck:
 	fi
 
 enable:
-	gnome-extensions enable "asus-nb-gex@lab.retarded.farm"
+	gnome-extensions enable "asus-nb-gex@asus-linux.org"
 
 disable:
-	gnome-extensions disable "asus-nb-gex@lab.retarded.farm"
+	gnome-extensions disable "asus-nb-gex@asus-linux.org"
 
 listen:
 	journalctl -o cat -n 0 -f "$$(which gnome-shell)" | grep -v warning

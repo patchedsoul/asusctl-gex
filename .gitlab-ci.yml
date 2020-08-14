@@ -24,7 +24,7 @@ package:
     - make all
     - make zip-file
     - rm -rf target
-    - mv _build asus-nb-gex@lab.retarded.farm
+    - mv _build asus-nb-gex@asus-linux.org
   artifacts:
     name: "asus-nb-gex-$CI_COMMIT_TAG"
     untracked: true

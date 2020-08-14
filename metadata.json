@@ -1,7 +1,7 @@
 {
   "name": "asus-nb-gex",
   "description": "This extension allows you to visualize most of the asusd settings and status",
-  "uuid": "asus-nb-gex@lab.retarded.farm",
+  "uuid": "asus-nb-gex@linux-asus.org",
   "version": 1,
   "shell-version": [
     "3.36"
