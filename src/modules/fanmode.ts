@@ -18,7 +18,7 @@ export class Client implements IStoppableModule {
 
     constructor() {
         try {
-            this.connector = new DBus.FanMode("dbus-current");
+            this.connector = new DBus.FanMode("asus-nb-ctrl-1.0.2");
         } catch {
             Log.error(`FanMode client initialization failed!`);
         }
