@@ -4,13 +4,13 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
 import * as Panel from './panel';
-import * as FanModeBase from './fanmode';
+import * as ProfileBase from './profile';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const ByteArray = imports.byteArray;
 const GLib = imports.gi.GLib;
 
-export class FanMode implements IStoppableModule {
+export class Profile implements IStoppableModule {
     sourceId: any = null;
     enabled: boolean = false;
     lastState = -1;
@@ -23,7 +23,7 @@ export class FanMode implements IStoppableModule {
             )[1]), 10);
 
             if (curState !== undefined && !isNaN(curState)  && this.lastState !== curState) {
-                let message = ((this.lastState === -1)?'initial':'changed') + ' fan-mode: ' + FanModeBase.FanModeDescr[curState];
+                let message = ((this.lastState === -1)?'initial':'changed') + ' fan-mode: ' + ProfileBase.ProfileDescr[curState];
 
                 // update state
                 this.lastState = curState;
@@ -31,8 +31,8 @@ export class FanMode implements IStoppableModule {
                 Panel.Actions.notify(
                     Panel.Title, 
                     message,
-                    FanModeBase.FanModeIcons[curState], 
-                    FanModeBase.FanModeColor[curState]
+                    ProfileBase.ProfileIcons[curState], 
+                    ProfileBase.ProfileColor[curState]
                 );
             }
         } finally {

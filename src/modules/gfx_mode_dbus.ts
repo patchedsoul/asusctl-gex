@@ -3,14 +3,15 @@ declare const global: any, imports: any;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
-import * as Panel from './panel';
-import * as FanModeBase from './fanmode';
+// todo: implement me
+//import * as Panel from './panel';
+//import * as GfxModeBase from './gfx_mode';
 import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
 
-export class FanMode implements IStoppableModule {
+export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null;
     connected: boolean = false;
     lastState: number = -1;
@@ -21,7 +22,7 @@ export class FanMode implements IStoppableModule {
     }
 
     start() {
-        Log.info(`Starting DBus client...`);
+        Log.info(`Starting GfxMode DBus client...`);
 
         try {
             // creating the proxy
@@ -29,53 +30,45 @@ export class FanMode implements IStoppableModule {
             this.asusLinuxProxy = new _asusLinuxProxy(
                 Gio.DBus.system,
                 "org.asuslinux.Daemon",
-                "/org/asuslinux/Daemon"
+                "/org/asuslinux/Gfx"
             );
             this.connected = true;
         } catch {
-            Log.error("DBus initialization failed!");
+            Log.error("GfxMode DBus initialization failed!");
         }
 
 
         if (this.connected) {
             // getting initial fan-mode
-            this.lastState = this.asusLinuxProxy.GetFanModeSync();
-            Log.info("Initial FanMode is " + this.lastState);
+            //this.lastState = this.asusLinuxProxy.PowerSync();
+            Log.info(`Initial GfxMode is ${this.asusLinuxProxy.VendorSync()} ${this.asusLinuxProxy.PowerSync()}`);
             try {
-                Panel.Actions.notify(
-                    Panel.Title,
-                    `initial fan-mode: ${FanModeBase.FanModeDescr[this.lastState]}`,
-                    FanModeBase.FanModeIcons[this.lastState],
-                    FanModeBase.FanModeColor[this.lastState]
-                );
+                // todo: implement me
+                // Panel.Actions.notify();
             } catch (e) {
                 Log.error(e);
             }
 
-            // connect to fanmode
+            // connect to Gfx
             this.asusLinuxProxy.connectSignal(
-                "FanModeChanged",
+                "NotifyAction",
                 (proxy_: any = null, name_: string, value: any) => {
                     if (proxy_) {
-                        Log.info(`[dbus${name_}]: The FanMode changed, new FanMode is ${value}`);
+                        Log.info(`[dbus${name_}]: The GfxMode changed, new GfxMode is ${value}`);
 
                         // update state
-                        this.lastState = value;
+                        //this.lastState = value;
 
                         // notify and change icon
-                        Panel.Actions.notify(
-                            Panel.Title,
-                            `changed fan-mode: ${FanModeBase.FanModeDescr[value]}`,
-                            FanModeBase.FanModeIcons[value],
-                            FanModeBase.FanModeColor[value]
-                        );
+                        // todo: implement me
+                        // Panel.Actions.notify();
                     }
                 });
         }
     }
 
     stop() {
-        Log.info(`Stopping DBus client...`);
+        Log.info(`Stopping GfxMode DBus client...`);
 
         if (this.connected) {
             this.connected = false;
