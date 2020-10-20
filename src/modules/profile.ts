@@ -3,14 +3,14 @@ declare const global: any, imports: any;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
-import * as DBus from './fanmode_dbus';
-import * as Poller from './fanmode_poller';
+import * as DBus from './profile_dbus';
+import * as Poller from './profile_poller';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 
-export const FanModeColor = ['blue', 'red', 'green', 'yellow', 'orange', 'white'];
-export const FanModeDescr = ['normal', 'boost', 'silent', 'undfined-1', 'undefined-2', 'undefined-3'];
-export const FanModeIcons = ['face-smile', 'face-devilish', 'face-tired', 'undfined-1', 'undefined-2', 'undefined-3'];
+export const ProfileColor = ['blue', 'red', 'green', 'yellow', 'orange', 'white'];
+export const ProfileDescr = ['normal', 'boost', 'silent', 'undfined-1', 'undefined-2', 'undefined-3'];
+export const ProfileIcons = ['face-smile', 'face-devilish', 'face-tired', 'undfined-1', 'undefined-2', 'undefined-3'];
 
 export class Client implements IStoppableModule {
     connector: any = null
@@ -18,14 +18,14 @@ export class Client implements IStoppableModule {
 
     constructor() {
         try {
-            this.connector = new DBus.FanMode("asus-nb-ctrl-1.0.2");
+            this.connector = new DBus.Profile("org-asuslinux-profile-2.0.5");
         } catch {
-            Log.error(`FanMode client initialization failed!`);
+            Log.error(`Profile client initialization failed!`);
         }
     }
 
     start() {
-        Log.info(`Starting FanMode client...`);
+        Log.info(`Starting Profile client...`);
 
         try {
             // trying fallback
@@ -33,8 +33,8 @@ export class Client implements IStoppableModule {
                 this.connector.start();
                 this.connected = true;
             } catch {
-                Log.warn(`FanMode client start(DBus) failed!`);
-                this.connector = new Poller.FanMode();
+                Log.warn(`Profile client start(DBus) failed!`);
+                this.connector = new Poller.Profile();
             }
 
             if (!this.connected)
@@ -42,12 +42,12 @@ export class Client implements IStoppableModule {
 
             this.connected = true;
         } catch {
-            Log.error(`FanMode client start failed!`);
+            Log.error(`Profile client start failed!`);
         }
     }
 
     stop() {
-        Log.info(`Stopping FanMode client...`);
+        Log.info(`Stopping Profile client...`);
 
         if (this.connected) {
             this.connected = false;

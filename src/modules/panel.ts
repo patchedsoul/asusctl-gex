@@ -10,16 +10,16 @@ const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 const MessageTray = imports.ui.messageTray;
 
-export const Title = 'ROG-Core';
+export const Title = 'AsusNB Control';
 
 export class Button implements IDestroyableModule {
     public indicator: any;
-    RogCore_Indicator = new Lang.Class({
-        Name: 'rog-core-gex.indicator',
+    AsusNb_Indicator = new Lang.Class({
+        Name: 'asus-nb-gex.indicator',
         Extends: PanelMenu.Button,
 
         _init: function(){
-                this.parent(null, 'RogCorePanel');
+                this.parent(null, 'AsusNbPanel');
                 //this.parent(0.0);
 
                 // setting icon (placeholder - contains nothing then dimensions)
@@ -28,10 +28,10 @@ export class Button implements IDestroyableModule {
     });
 
     public create(): void {
-        this.indicator =  new this.RogCore_Indicator();
+        this.indicator =  new this.AsusNb_Indicator();
 
-        Main.panel.addToStatusArea('rog-core-gex.panel', this.indicator, 1, Main.panel._rightBox);
-        Main.panel.statusArea['rog-core-gex.panel'].style_class = 'panel-icon white';
+        Main.panel.addToStatusArea('asus-nb-gex.panel', this.indicator, 1, Main.panel._rightBox);
+        Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon white';
     }
 
     public destroy(): void {
@@ -51,6 +51,6 @@ export class Actions {
         source.showNotification(notification);
 
         if (panelIcon !== "")
-            Main.panel.statusArea['rog-core-gex.panel'].style_class = 'panel-icon ' + panelIcon;
+            Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon ' + panelIcon;
     }
 }
