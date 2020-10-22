@@ -4,7 +4,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
 // todo: implement me
-//import * as Panel from './panel';
+import * as Panel from './panel';
 //import * as GfxModeBase from './gfx_mode';
 import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
@@ -19,6 +19,11 @@ export class GfxMode implements IStoppableModule {
 
     constructor(xml: string) {
         this.xml = Resources.File.DBus(xml);
+    }
+
+    public getCurrentMode() {
+        if (this.connected)
+            return `${this.asusLinuxProxy.VendorSync()}`;
     }
 
     start() {
@@ -39,12 +44,15 @@ export class GfxMode implements IStoppableModule {
 
 
         if (this.connected) {
+            let vendor = this.asusLinuxProxy.VendorSync().toString().trim();
+            let power = this.asusLinuxProxy.PowerSync().toString().trim();
             // getting initial fan-mode
             //this.lastState = this.asusLinuxProxy.PowerSync();
-            Log.info(`Initial GfxMode is ${this.asusLinuxProxy.VendorSync()} ${this.asusLinuxProxy.PowerSync()}`);
+            Log.info(`Initial GfxMode is ${vendor} ${power}`);
             try {
                 // todo: implement me
                 // Panel.Actions.notify();
+                Panel.Actions.updateGfxMode(vendor, power);
             } catch (e) {
                 Log.error(e);
             }

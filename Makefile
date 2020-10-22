@@ -64,7 +64,7 @@ depcheck:
 	@if ! command -v tsc >/dev/null; then \
 		echo \
 		echo 'You must install TypeScript >= 3.8 to transpile.'; \
-		exit 1; \
+		false; \
 	fi
 
 enable:
@@ -81,8 +81,26 @@ install:
 	mkdir -p $(INSTALLBASE)/$(INSTALLNAME)
 	cp -r _build/* $(INSTALLBASE)/$(INSTALLNAME)/
 
+install_icons:
+	@echo installing icons:
+	@if [ $$(id -u) != 0 ]; then \
+		echo "you need to be root to install the icons"; \
+		false; \
+	fi
+
+	install -D -m 0644 icons/64x64/asus-nb-gex-* "$(DESTDIR)/usr/share/icons/hicolor/64x64/status/"
+	install -D -m 0644 icons/128x128/asus-nb-gex-* "$(DESTDIR)/usr/share/pixmaps/"
+	install -D -m 0644 icons/128x128/asus-nb-gex-* "$(DESTDIR)/usr/share/icons/hicolor/128x128/status/"
+	install -D -m 0644 icons/256x256/asus-nb-gex-* "$(DESTDIR)/usr/share/icons/hicolor/256x256/status/"
+	install -D -m 0644 icons/512x512/asus-nb-gex-* "$(DESTDIR)/usr/share/icons/hicolor/512x512/status/"
+
 uninstall:
 	rm -rf $(INSTALLBASE)/$(INSTALLNAME)
+	rm -f "$(DESTDIR)/usr/share/icons/hicolor/usr/share/pixmaps/asus-nb-gex-*"
+	rm -f "$(DESTDIR)/usr/share/icons/hicolor/64x64/status/asus-nb-gex-*"
+	rm -f "$(DESTDIR)/usr/share/icons/hicolor/128x128/status/asus-nb-gex-*"
+	rm -f "$(DESTDIR)/usr/share/icons/hicolor/256x256/status/asus-nb-gex-*"
+	rm -f "$(DESTDIR)/usr/share/icons/hicolor/512x512/status/asus-nb-gex-*"
 
 restart-shell:
 	echo "Restart shell!"

@@ -1,17 +1,21 @@
 # ASUS-NB-Ctrl (Gnome extension)
 
-Extension for visualizing most of the asus-nb-ctrl(asusd) settings and status.
+Extension for visualizing of the asus-nb-ctrl(asusd) settings and status.
 
 ## Status
 
 Done:
 
 * Panel Icon
-* Basic FanMode Info - Experimental
+* Basic Profile (FanMode) Info
+* Basic GFX Info
 
 ToDo:
 
 * Configuration interface (prefs)
+* make profile changable
+* make gfx changable
+* bind ROG-Button
 * Status overview (ui)
 
 highly WiP - use at own risk!
@@ -20,7 +24,7 @@ highly WiP - use at own risk!
 
 * nodejs >= 14.0.0
 * npm >= 6.14.0
-* [asus-nb-ctrl](https://gitlab.com/asus-linux/asus-nb-ctrl) >= 0.1.0
+* [asus-nb-ctrl](https://gitlab.com/asus-linux/asus-nb-ctrl) >= 2.0.5
 * gnome >= 3.36.0
 
 ## Installation
@@ -29,19 +33,18 @@ In a gnome-terminal(user) enter the following two commands:
 
 ```bash
 git clone git@gitlab.com:asus-linux/asus-nb-gex.git /tmp/asus-nb-gex && cd /tmp/asus-nb-gex
-make install && make enable && make restart-shell
+make install && sudo make install_icons && make enable && make restart-shell 
 ```
 
 ## Debuging / Building
 
 ```bash
 make all
-# OR
-make nohw
 # install and enable
 make install
+sudo make install_icons
 make enable
 make restart-shell
 ```
 
-only use 'nohw' if the hardware thermal interface is missing.
+only root is allowed to install the icons, use sudo or use a diffrent root-shell to install them.
