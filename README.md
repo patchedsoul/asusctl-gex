@@ -1,6 +1,20 @@
 # ASUS-NB-Ctrl (Gnome extension)
 
-Extension for visualizing of the asus-nb-ctrl(asusd) settings and status.
+Extension for visualizing [asus-nb-ctrl](https://gitlab.com/asus-linux/asus-nb-ctrl)(`asusd`) settings and status.
+
+## Views
+
+Panel icon(color changes due profilechange):
+
+![](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/panel-icon.png)
+
+Panelmenu subentry which shows the current GFX mode:
+
+![](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/gfx-mode.png)
+
+Notification on profilechange:
+
+![](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/profile-change-notice.png)
 
 ## Status
 
