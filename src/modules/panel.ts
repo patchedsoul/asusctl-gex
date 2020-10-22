@@ -2,6 +2,8 @@ declare const global: any, imports: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
+import * as Log from './log';
+import * as Popup from './popup';
 import {IDestroyableModule} from '../interfaces/iDestroyableModule';
 
 const Lang = imports.lang;
@@ -24,6 +26,11 @@ export class Button implements IDestroyableModule {
 
                 // setting icon (placeholder - contains nothing then dimensions)
                 this.add_actor(new St.Icon({style_class: 'panel-icon'}));
+
+                // populating panelMenu (extend)
+                let popupMenu = new Popup.Menu();
+                popupMenu.createMenu(this.menu); // WiP
+
         }
     });
 
@@ -52,5 +59,15 @@ export class Actions {
 
         if (panelIcon !== "")
             Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon ' + panelIcon;
+    }
+
+    public static updateGfxMode(vendor:string, power:string) {
+        let menuItem = Main.panel.statusArea['asus-nb-gex.panel'].menu.firstMenuItem;
+        Log.info(`(panel) new mode: ${vendor}:${power}`);
+
+        // manipulating label
+        menuItem.label.text = `GFX status: ${vendor} (dGPU: ${power})`;
+        menuItem.label.height = 0; // correcting height
+        menuItem.label.style_class = `gfx-mode ${vendor}`;
     }
 }

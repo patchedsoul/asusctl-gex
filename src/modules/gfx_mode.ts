@@ -18,6 +18,10 @@ export class Client implements IStoppableModule {
         }
     }
 
+    public getCurrentMode() {
+        return this.connector.getCurrentMode();
+    }
+
     start() {
         Log.info(`Starting GfxMode client...`);
 

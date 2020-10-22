@@ -5,22 +5,22 @@
     width: 24px;
 }
 .panel-icon.red {
-    background-image: url("icons/asus-nb-gex_default_red.png");
+    background-image: url("icons/64x64/asus-nb-gex-red.png");
 }
 .panel-icon.orange {
-    background-image: url("icons/asus-nb-gex_default_orange.png");
+    background-image: url("icons/64x64/asus-nb-gex-orange.png");
 }
 .panel-icon.yellow {
-    background-image: url("icons/asus-nb-gex_default_yellow.png");
+    background-image: url("icons/64x64/asus-nb-gex-yellow.png");
 }
 .panel-icon.green {
-    background-image: url("icons/asus-nb-gex_default_green.png");
+    background-image: url("icons/64x64/asus-nb-gex-green.png");
 }
 .panel-icon.blue {
-    background-image: url("icons/asus-nb-gex_default_blue.png");
+    background-image: url("icons/64x64/asus-nb-gex-blue.png");
 }
 .panel-icon.white {
-    background-image: url("icons/asus-nb-gex_default_white.png");
+    background-image: url("icons/64x64/asus-nb-gex-white.png");
 }
 
 /* notification icons */
@@ -30,20 +30,43 @@
     width: 64px;
 }
 .notification-icon.red {
-    background-image: url("icons/raw/asus-nb-gex_default_red.png");
+    background-image: url("icons/64x64/asus-nb-gex-red.png");
 }
 .notification-icon.orange {
-    background-image: url("icons/raw/asus-nb-gex_default_orange.png");
+    background-image: url("icons/64x64/asus-nb-gex-orange.png");
 }
 .notification-icon.yellow {
-    background-image: url("icons/raw/asus-nb-gex_default_yellow.png");
+    background-image: url("icons/64x64/asus-nb-gex-yellow.png");
 }
 .notification-icon.green {
-    background-image: url("icons/raw/asus-nb-gex_default_green.png");
+    background-image: url("icons/64x64/asus-nb-gex-green.png");
 }
 .notification-icon.blue {
-    background-image: url("icons/raw/asus-nb-gex_default_blue.png");
+    background-image: url("icons/64x64/asus-nb-gex-blue.png");
 }
 .notification-icon.white {
-    background-image: url("icons/raw/asus-nb-gex_default_white.png");
+    background-image: url("icons/64x64/asus-nb-gex-white.png");
+}
+
+/* gfx-mode icons */
+.gfx-mode {
+    height: 64px;
+    margin-left: 24px;
+    background-size: contain;
+    background-position: -42px 0;
+}
+.gfx-mode.default {
+    background-image: url("icons/64x64/asus-nb-gex-white.png");
+}
+.gfx-mode.nvidia {
+    background-image: url("icons/64x64/asus-nb-gex-green.png");
+}
+.gfx-mode.hybrid {
+    background-image: url("icons/64x64/asus-nb-gex-orange.png");
+}
+.gfx-mode.compute {
+    background-image: url("icons/64x64/asus-nb-gex-blue.png");
+}
+.gfx-mode.integrated {
+    background-image: url("icons/64x64/asus-nb-gex-red.png");
 }

@@ -28,10 +28,10 @@ export class Profile implements IStoppableModule {
         if(this.connected)
             try {
                 // TODO: replace with gshema
-                let curActiveProfile = this.asusLinuxProxy.ActiveProfileNameSync();
+                let curActiveProfile = this.asusLinuxProxy.ActiveProfileNameSync().toString().trim();
                 let curState = ProfileBase.ProfileDescr.indexOf(`${curActiveProfile}`);
 
-                if (curState !== undefined && !isNaN(curState)  && this.lastState !== curState) {
+                if (curState !== undefined && !isNaN(curState) && curState !== -1 && this.lastState !== curState) {
                     Log.info(`[dbus_profile_poller]: The Profile changed, new Profile is ${curActiveProfile}`);
                     let message = ((this.lastState === -1)?'initial':'changed') + ' profile: ' + ProfileBase.ProfileDescr[curState];
 
@@ -41,7 +41,7 @@ export class Profile implements IStoppableModule {
                     Panel.Actions.notify(
                         Panel.Title, 
                         message,
-                        ProfileBase.ProfileIcons[curState], 
+                        ProfileBase.ProfileIcons[curState],
                         ProfileBase.ProfileColor[curState]
                     );
                 }
@@ -69,7 +69,7 @@ export class Profile implements IStoppableModule {
 
         if (this.connected) {
             // getting initial profile
-            let curActiveProfile = this.asusLinuxProxy.ActiveProfileNameSync();
+            let curActiveProfile = this.asusLinuxProxy.ActiveProfileNameSync().toString().trim();
             this.lastState = ProfileBase.ProfileDescr.indexOf(`${curActiveProfile}`);
             Log.info(`Initial Profile is ${this.lastState} (${curActiveProfile})`);
             try {
@@ -122,17 +122,15 @@ export class Profile implements IStoppableModule {
 
     stop() {
         Log.info(`Stopping Profile DBus client...`);
+        // needed for dbus workaround
+        this.enabled = false;
+        if(this.sourceId !== null) {
+            // remove the callback loop
+            GLib.g_source_remove(this.sourceId);
+        }
 
         if (this.connected) {
             this.connected = false;
-
-            // needed for dbus workaround
-            this.enabled = false;
-            if(this.sourceId !== null) {
-                // remove the callback loop
-                GLib.g_source_remove(this.sourceId);
-            }
-            
             this.asusLinuxProxy = null;
         }
     }
