@@ -144,7 +144,9 @@ export class Profile implements IStoppableModule {
         this.enabled = false;
         if(this.sourceId !== null) {
             // remove the callback loop
-            GLib.g_source_remove(this.sourceId);
+
+            // g_source_remove is not a function? I get this error after suspend and the extension grashes
+            // GLib.g_source_remove(this.sourceId);
         }
 
         if (this.connected) {
