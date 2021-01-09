@@ -34,6 +34,8 @@ export class Profile implements IStoppableModule {
                     ProfileBase.ProfileIcons[curState], 
                     ProfileBase.ProfileColor[curState]
                 );
+
+                // Gio.Icon.new_for_string(Me.path+'/icons/512x512/'+ProfileBase.ProfileIcons[curState]+'.png'), 
             }
         } finally {
             return this.enabled ? GLib.SOURCE_CONTINUE : false;

@@ -10,6 +10,7 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const Main = imports.ui.main;
 
 export class Profile implements IStoppableModule {
     sourceId: any = null;       // needed for dbus workaround
@@ -44,10 +45,25 @@ export class Profile implements IStoppableModule {
                         ProfileBase.ProfileIcons[curState],
                         ProfileBase.ProfileColor[curState]
                     );
+
+                    this.updateProfile(curActiveProfile);
                 }
             } finally {
                 return this.enabled ? GLib.SOURCE_CONTINUE : false;
             }
+    }
+
+    updateProfile(curActiveProfile: string){
+        let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
+        menuItems.forEach((mi: { style_class: string; }) => {
+            if (mi.style_class.includes('fan-mode')){
+                if (mi.style_class.includes(curActiveProfile)){
+                    mi.style_class = mi.style_class+' active';
+                } else if (mi.style_class.includes('active')){
+                    mi.style_class = mi.style_class.split('active').join(' ');
+                }
+            }
+        });
     }
 
     start() {
@@ -79,6 +95,8 @@ export class Profile implements IStoppableModule {
                     ProfileBase.ProfileIcons[this.lastState],
                     ProfileBase.ProfileColor[this.lastState]
                 );
+
+                this.updateProfile(curActiveProfile);
             } catch (e) {
                 Log.error(e);
             }

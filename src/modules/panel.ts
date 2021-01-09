@@ -62,12 +62,24 @@ export class Actions {
     }
 
     public static updateGfxMode(vendor:string, power:string) {
-        let menuItem = Main.panel.statusArea['asus-nb-gex.panel'].menu.firstMenuItem;
+        // let menuItem = Main.panel.statusArea['asus-nb-gex.panel'].menu.firstMenuItem;
         Log.info(`(panel) new mode: ${vendor}:${power}`);
 
         // manipulating label
-        menuItem.label.text = `GFX status: ${vendor} (dGPU: ${power})`;
-        menuItem.label.height = 0; // correcting height
-        menuItem.label.style_class = `gfx-mode ${vendor}`;
+        // menuItem.label.text = `GFX status: ${vendor} (dGPU: ${power})`;
+        // menuItem.label.height = 0; // correcting height
+        // menuItem.label.style_class = `gfx-mode ${vendor}`;
+
+        let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
+        // Log.info(menuItems);
+        menuItems.forEach((mi: { style_class: string; }) => {
+            if (mi.style_class.includes('gfx-mode')){
+                if (mi.style_class.includes(vendor)){
+                    mi.style_class = mi.style_class+' active';
+                } else if (mi.style_class.includes('active')){
+                    mi.style_class = mi.style_class.split('active').join(' ');
+                }
+            }
+        });
     }
 }
