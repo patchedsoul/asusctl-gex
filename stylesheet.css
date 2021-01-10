@@ -63,21 +63,12 @@
     background-repeat: no-repeat;
     padding-left: 35px;
 }
-.gfx-mode.default {
-    background-image: url("icons/128x128/asus-nb-gex-white.png");
-}
-/* .gfx-mode.nvidia, */
 .fan-mode.silent {
     background-image: url("icons/128x128/asus-nb-gex-green.png");
 }
-/* .gfx-mode.hybrid {
-    background-image: url("icons/128x128/asus-nb-gex-orange.png");
-} */
-/* .gfx-mode.compute, */
 .fan-mode.normal {
-    background-image: url("icons/128x128/asus-nb-gex-blue.png");
+    background-image: url("icons/128x128/asus-nb-gex-yellow.png");
 }
-/* .gfx-mode.integrated, */
 .fan-mode.boost {
     background-image: url("icons/128x128/asus-nb-gex-red.png");
 }
