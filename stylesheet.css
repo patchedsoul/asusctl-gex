@@ -1,9 +1,10 @@
 /* panel icons */
 .panel-icon {
-    background-size: contain;
-    height: 24px;
-    width: 24px;
+    background-size: 24px;
+    height: 100%;
+    width: 40px;
 }
+
 .panel-icon.red {
     background-image: url("icons/64x64/asus-nb-gex-red.png");
 }
@@ -49,9 +50,11 @@
 }
 
 .headline{
+    margin-bottom: 10px;
+}
+.headline-label{
     font-weight: bold;
     text-align: center;
-    margin-bottom: 15px;
 }
 
 /* gfx-mode icons */
@@ -74,5 +77,5 @@
 }
 
 .active{
-    background-color: #5C804B;
+    /* background-color: #5C804B; */
 }

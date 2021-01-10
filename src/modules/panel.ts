@@ -72,12 +72,14 @@ export class Actions {
 
         let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
         // Log.info(menuItems);
-        menuItems.forEach((mi: { style_class: string; }) => {
+        menuItems.forEach((mi: { label: any; style_class: string; }) => {
             if (mi.style_class.includes('gfx-mode')){
                 if (mi.style_class.includes(vendor)){
                     mi.style_class = mi.style_class+' active';
+                    mi.label.set_text(mi.label.text+'  🗸');
                 } else if (mi.style_class.includes('active')){
                     mi.style_class = mi.style_class.split('active').join(' ');
+                    mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
                 }
             }
         });

@@ -24,6 +24,10 @@ export class Menu {
         for (const item in menuItems){
             menu.addMenuItem(menuItems[item]);
 
+            if (menuItems[item].style_class.includes('headline')) {
+                menuItems[item].label.style_class = 'headline-label';
+            }
+
             if (menuItems[item].style_class.includes('gfx-mode')) {
                 menuItems[item].connect('activate', () => {this.gfxModeCallback(item)});
             }
