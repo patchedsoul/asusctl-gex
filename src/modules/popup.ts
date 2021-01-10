@@ -7,20 +7,6 @@ const Gio = imports.gi.Gio;
 
 export class Menu {
     createMenu(menu: any): void {
-        // [
-        //     // adding menu-items
-        //     [new PM.PopupMenuItem(`GFX status: Initializing...`), ['button-press-event', this.gfxModeCallback]],
-        //     [new PM.PopupSeparatorMenuItem()],
-        //     [new PM.PopupMenuItem(`integrated`), ['button-press-event', this.gfxModeCallback]],
-        // ].forEach(mi => {
-        //     if (mi.length === 2 && mi[1].length === 2) {
-        //         mi[0].label.height = 0; // correcting height
-        //         mi[0].label.style_class = `gfx-mode default`;
-        //         mi[0].connect(mi[1][0], mi[1][1]);
-        //     }
-
-        //     menu.addMenuItem(mi[0]);
-        // });
 
         let  menuItems: any = {
             gfxHeadline: new PM.PopupMenuItem('Graphics Mode', {style_class: 'headline'}),
@@ -38,20 +24,11 @@ export class Menu {
         for (const item in menuItems){
             menu.addMenuItem(menuItems[item]);
 
-            if (
-                item == 'integrated' ||
-                item == 'hybrid' ||
-                item == 'compute' ||
-                item == 'dedicated'
-            ) {
+            if (menuItems[item].style_class.includes('gfx-mode')) {
                 menuItems[item].connect('activate', () => {this.gfxModeCallback(item)});
             }
 
-            if (
-                item == 'silent' ||
-                item == 'normal' ||
-                item == 'boost'
-            ) {
+            if (menuItems[item].style_class.includes('fan-mode')) {
                 menuItems[item].connect('activate', () => {this.fanModeCallback(item)});
             }
         }
