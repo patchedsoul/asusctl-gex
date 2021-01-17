@@ -4,7 +4,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
 import * as DBus from './profile_dbus';
-import * as Poller from './profile_poller';
+// import * as Poller from './profile_poller';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 
@@ -28,18 +28,7 @@ export class Client implements IStoppableModule {
         Log.info(`Starting Profile client...`);
 
         try {
-            // trying fallback
-            try {
-                this.connector.start();
-                this.connected = true;
-            } catch {
-                Log.warn(`Profile client start(DBus) failed!`);
-                this.connector = new Poller.Profile();
-            }
-
-            if (!this.connected)
-                this.connector.start();
-
+            this.connector.start();
             this.connected = true;
         } catch {
             Log.error(`Profile client start failed!`);

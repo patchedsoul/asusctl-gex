@@ -11,6 +11,7 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Main = imports.ui.main;
+const ByteArray = imports.byteArray;
 
 export class Profile implements IStoppableModule {
     sourceId: any = null;       // needed for dbus workaround
@@ -19,6 +20,8 @@ export class Profile implements IStoppableModule {
     connected: boolean = false;
     lastState: number = -1;
     xml: string;
+    lockMonitor: any;
+    lock: any;
 
     constructor(xml: string) {
         this.xml = Resources.File.DBus(xml);
@@ -66,6 +69,13 @@ export class Profile implements IStoppableModule {
                 }
             }
         });
+
+        Panel.Actions.notify(
+            Panel.Title,
+            `initial profile: ${ProfileBase.ProfileDescr[this.lastState]}`,
+            ProfileBase.ProfileIcons[this.lastState],
+            ProfileBase.ProfileColor[this.lastState]
+        );
     }
 
     start() {
@@ -91,51 +101,25 @@ export class Profile implements IStoppableModule {
             this.lastState = ProfileBase.ProfileDescr.indexOf(`${curActiveProfile}`);
             Log.info(`Initial Profile is ${this.lastState} (${curActiveProfile})`);
             try {
-                Panel.Actions.notify(
-                    Panel.Title,
-                    `initial profile: ${ProfileBase.ProfileDescr[this.lastState]}`,
-                    ProfileBase.ProfileIcons[this.lastState],
-                    ProfileBase.ProfileColor[this.lastState]
-                );
-
                 this.updateProfile(curActiveProfile);
             } catch (e) {
                 Log.error(e);
             }
-
-            // connect to Profile
-            /* TODO: must be fixed in asus-nb-ctrl (notification was removed!)
-            this.asusLinuxProxy.connectSignal(
-                "NotifyProfile",
-                (proxy_: any = null, name_: string, profile: string) => {
-                    if (proxy_) {
-                        Log.info(`[dbus${name_}]: The Profile changed, new Profile is ${profile}`);
-
-                        // update state
-                        this.lastState = ProfileBase.ProfileDescr.indexOf(`${value}`);
-
-                        // notify and change icon
-                        Panel.Actions.notify(
-                            Panel.Title,
-                            `changed profile: ${ProfileBase.ProfileDescr[this.lastState]}`,
-                            ProfileBase.ProfileIcons[this.lastState],
-                            ProfileBase.ProfileColor[this.lastState]
-                        );
-                    }
-                });
-            */
-
+        } else { // workaround should not be needed when dbus works
+            // made with monitor_file so no need to poll the file every time
+            // the file system manages the notification
             // needed for dbus workaround
-            Log.info(`Starting Profile Poller client (workaround)...`);
+            Log.info(`Starting Profile file watcher (workaround)...`);
+            let lockFile = '/sys/devices/platform/asus-nb-wmi/throttle_thermal_policy';
             try {
-                this.sourceId = GLib.timeout_add(
-                    GLib.PRIORITY_DEFAULT,
-                    250,
-                    this.poller.bind(this)
-                );
+                this.lockMonitor = Gio.File.new_for_path(lockFile);
+                this.lock = this.lockMonitor.monitor_file(Gio.FileMonitorFlags.NONE, null);
+                if (this.lockMonitor.query_exists(null)){
+                    this.updateProfile(ProfileBase.ProfileDescr[parseInt(ByteArray.toString(GLib.file_get_contents(lockFile)[1]), 10)]);
+                }
                 this.enabled = true;
             } catch {
-                Log.error(`Poller client start() failed!`);
+                Log.error('Error watching file '+lockFile);
             }
         }
     }
@@ -144,12 +128,6 @@ export class Profile implements IStoppableModule {
         Log.info(`Stopping Profile DBus client...`);
         // needed for dbus workaround
         this.enabled = false;
-        if(this.sourceId !== null) {
-            // remove the callback loop
-
-            // g_source_remove is not a function? I get this error after suspend and the extension grashes
-            // GLib.g_source_remove(this.sourceId);
-        }
 
         if (this.connected) {
             this.connected = false;
