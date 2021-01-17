@@ -30,8 +30,8 @@ export class Client implements IStoppableModule {
         try {
             this.connector.start();
             this.connected = true;
-        } catch {
-            Log.error(`Profile client start failed!`);
+        } catch (e) {
+            Log.error(e);
         }
     }
 
