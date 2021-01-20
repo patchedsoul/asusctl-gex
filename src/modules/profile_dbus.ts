@@ -27,6 +27,18 @@ export class Profile implements IStoppableModule {
         this.xml = Resources.File.DBus(xml);
     }
 
+    public setProfile(mode: string){
+        if (this.connected){
+            Log.error(mode);
+            // return this.asusLinuxProxy.SetProfileRemote(mode);
+            try {
+                GLib.spawn_command_line_async( `asusctl profile ${mode}`, null );
+            } catch ( e ) {
+                Log.error(e);
+            }
+        }
+    }
+
     // this is needed because of a missing signal trigger in asus-nb-ctrl-2.0.5
     poller() {
         if(this.connected){
@@ -124,6 +136,7 @@ export class Profile implements IStoppableModule {
             this.sourceId = null;
             this.connected = false;
             this.asusLinuxProxy = null;
+            this.lastState = -1;
         }
     }
 }

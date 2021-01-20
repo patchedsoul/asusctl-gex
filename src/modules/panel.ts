@@ -16,21 +16,20 @@ export const Title = 'AsusNB Control';
 
 export class Button implements IDestroyableModule {
     public indicator: any;
+
     AsusNb_Indicator = new Lang.Class({
         Name: 'asus-nb-gex.indicator',
         Extends: PanelMenu.Button,
 
         _init: function(){
-                this.parent(null, 'AsusNbPanel');
-                //this.parent(0.0);
+            this.parent(null, 'AsusNbPanel');
+            //this.parent(0.0);
 
-                // setting icon (placeholder - contains nothing then dimensions)
-                this.add_actor(new St.Icon({style_class: 'panel-icon'}));
+            // setting icon (placeholder - contains nothing then dimensions)
+            this.add_actor(new St.Icon({style_class: 'panel-icon'}));
 
-                // populating panelMenu (extend)
-                let popupMenu = new Popup.Menu();
-                popupMenu.createMenu(this.menu); // WiP
-
+            // populating panelMenu (extend)
+            this.popupMenu = new Popup.Menu(this.menu);
         }
     });
 
@@ -62,13 +61,7 @@ export class Actions {
     }
 
     public static updateGfxMode(vendor:string, power:string) {
-        // let menuItem = Main.panel.statusArea['asus-nb-gex.panel'].menu.firstMenuItem;
         Log.info(`(panel) new mode: ${vendor}:${power}`);
-
-        // manipulating label
-        // menuItem.label.text = `GFX status: ${vendor} (dGPU: ${power})`;
-        // menuItem.label.height = 0; // correcting height
-        // menuItem.label.style_class = `gfx-mode ${vendor}`;
 
         let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
         // Log.info(menuItems);

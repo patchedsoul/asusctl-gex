@@ -5,6 +5,10 @@
     width: 40px;
 }
 
+.panel-icon.reboot{
+    background-image: url("icons/scalable/reboot.svg");
+}
+
 .panel-icon.red {
     background-image: url("icons/64x64/asus-nb-gex-red.png");
 }

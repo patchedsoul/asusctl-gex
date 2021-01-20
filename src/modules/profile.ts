@@ -4,11 +4,10 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
 import * as DBus from './profile_dbus';
-// import * as Poller from './profile_poller';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 
-export const ProfileColor = ['yellow', 'red', 'green', 'blue', 'orange', 'white'];
+export const ProfileColor = ['yellow', 'red', 'green', 'blue', 'orange', 'white', 'reboot'];
 export const ProfileDescr = ['normal', 'boost', 'silent', '_1', '_2', '_3'];
 export const ProfileIcons = ['asus_notif_yellow', 'asus_notif_red', 'asus_notif_green', '_1', '_2', '_3'];
 
