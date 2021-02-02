@@ -5,7 +5,6 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 import * as Log from './log';
 import * as Panel from './panel';
 import * as Resources from './resources';
-import * as ProfileBase from './profile';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
@@ -28,6 +27,7 @@ export class GfxMode implements IStoppableModule {
 
     public setGfxMode(mode: string) {
         if (this.connected)
+            Log.info('setting '+mode);
             return `${this.asusLinuxProxy.SetVendorSync(mode)}`;
     }
 
@@ -74,17 +74,19 @@ export class GfxMode implements IStoppableModule {
 
                         // notify and change icon
                         // todo: implement me
+                        let msg = `The GfxMode changed, new GfxMode is ${value}`;
+                        if (value == 'reboot'){
+                            msg = 'The GfxMode changed, please reboot to apply the changes.';
+                        } else if (value == 'restartx') {
+                            msg = 'The GfxMode changed, please restart your display manager to apply the changes.';
+                        }
+
                         Panel.Actions.notify(
                             Panel.Title,
-                            `The GfxMode changed, new GfxMode is ${value}`,
-                            value,
-                            (value == 'reboot' ? ProfileBase.ProfileColor[value] : '')
+                            msg,
+                            'system-reboot-symbolic',
+                            value
                         );
-
-
-                        if (value == 'reboot'){
-                            // todo
-                        }
 
                         Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon '+value;
                     }

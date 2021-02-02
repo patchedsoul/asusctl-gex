@@ -11,6 +11,7 @@ const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 const MessageTray = imports.ui.messageTray;
+const GLib = imports.gi.GLib;
 
 export const Title = 'AsusNB Control';
 
@@ -49,11 +50,26 @@ export class Button implements IDestroyableModule {
 }
 
 export class Actions {
+    public static spawnCommandLine(command: string) {
+        try {
+            GLib.spawn_command_line_async(command, null);
+        } catch (e) {
+            Log.error(e);
+        }
+    }
+
     public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "") {
         let source = new MessageTray.Source(msg, icon);
         Main.messageTray.add(source);
         let notification = new MessageTray.Notification(source, msg, details);
         notification.setTransient(true);
+
+        if (panelIcon == 'reboot'){
+            notification.addAction('Reboot Now!', () => {this.spawnCommandLine('systemctl reboot')});
+        } else if (panelIcon == 'restartx'){
+            notification.addAction('Restart Display Manager Now!', () => {this.spawnCommandLine('systemctl restart display-manager')});
+        }
+
         source.showNotification(notification);
 
         if (panelIcon !== "")

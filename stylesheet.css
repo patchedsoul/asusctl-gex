@@ -5,7 +5,8 @@
     width: 40px;
 }
 
-.panel-icon.reboot{
+.panel-icon.reboot,
+.panel-icon.restartx{
     background-image: url("icons/scalable/reboot.svg");
 }
 
@@ -82,4 +83,9 @@
 
 .active{
     /* background-color: #5C804B; */
+}
+
+.asusctl-modal-dialog{
+    padding: 30px;
+    font-size: 2em;
 }

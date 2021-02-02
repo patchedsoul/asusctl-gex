@@ -76,15 +76,19 @@ export class Profile implements IStoppableModule {
             Log.info(`[updateProfile]: The Profile changed, new Profile is ${curActiveProfileName}`);
             let message = ((this.lastState === -1)?'initial':'changed') + ' profile: ' + ProfileBase.ProfileDescr[curState];
 
+            if (this.lastState !== -1){
+                Panel.Actions.notify(
+                    Panel.Title, 
+                    message,
+                    ProfileBase.ProfileIcons[curState],
+                    ProfileBase.ProfileColor[curState]
+                );
+            } else {
+                Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon ' + ProfileBase.ProfileColor[curState];
+            }
+
             // update state
             this.lastState = curState;
-
-            Panel.Actions.notify(
-                Panel.Title, 
-                message,
-                ProfileBase.ProfileIcons[curState],
-                ProfileBase.ProfileColor[curState]
-            );
         }
     }
 

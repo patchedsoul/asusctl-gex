@@ -7,7 +7,7 @@ import * as DBus from './profile_dbus';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 
-export const ProfileColor = ['yellow', 'red', 'green', 'blue', 'orange', 'white', 'reboot'];
+export const ProfileColor = ['yellow', 'red', 'green', 'blue', 'orange', 'white', 'reboot', 'restartx'];
 export const ProfileDescr = ['normal', 'boost', 'silent', '_1', '_2', '_3'];
 export const ProfileIcons = ['asus_notif_yellow', 'asus_notif_red', 'asus_notif_green', '_1', '_2', '_3'];
 
