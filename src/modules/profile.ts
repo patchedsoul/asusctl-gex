@@ -4,13 +4,12 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
 import * as DBus from './profile_dbus';
-import * as Poller from './profile_poller';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 
-export const ProfileColor = ['blue', 'red', 'green', 'yellow', 'orange', 'white'];
+export const ProfileColor = ['yellow', 'red', 'green', 'blue', 'orange', 'white', 'reboot', 'restartx'];
 export const ProfileDescr = ['normal', 'boost', 'silent', '_1', '_2', '_3'];
-export const ProfileIcons = ['asus-nb-gex-blue', 'asus-nb-gex-red', 'asus-nb-gex-green', '_1', '_2', '_3'];
+export const ProfileIcons = ['asus_notif_yellow', 'asus_notif_red', 'asus_notif_green', '_1', '_2', '_3'];
 
 export class Client implements IStoppableModule {
     connector: any = null
@@ -28,21 +27,10 @@ export class Client implements IStoppableModule {
         Log.info(`Starting Profile client...`);
 
         try {
-            // trying fallback
-            try {
-                this.connector.start();
-                this.connected = true;
-            } catch {
-                Log.warn(`Profile client start(DBus) failed!`);
-                this.connector = new Poller.Profile();
-            }
-
-            if (!this.connected)
-                this.connector.start();
-
+            this.connector.start();
             this.connected = true;
-        } catch {
-            Log.error(`Profile client start failed!`);
+        } catch (e) {
+            Log.error(e);
         }
     }
 

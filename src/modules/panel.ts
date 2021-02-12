@@ -11,26 +11,26 @@ const Main = imports.ui.main;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 const MessageTray = imports.ui.messageTray;
+const GLib = imports.gi.GLib;
 
 export const Title = 'AsusNB Control';
 
 export class Button implements IDestroyableModule {
     public indicator: any;
+
     AsusNb_Indicator = new Lang.Class({
         Name: 'asus-nb-gex.indicator',
         Extends: PanelMenu.Button,
 
         _init: function(){
-                this.parent(null, 'AsusNbPanel');
-                //this.parent(0.0);
+            this.parent(null, 'AsusNbPanel');
+            //this.parent(0.0);
 
-                // setting icon (placeholder - contains nothing then dimensions)
-                this.add_actor(new St.Icon({style_class: 'panel-icon'}));
+            // setting icon (placeholder - contains nothing then dimensions)
+            this.add_actor(new St.Icon({style_class: 'panel-icon'}));
 
-                // populating panelMenu (extend)
-                let popupMenu = new Popup.Menu();
-                popupMenu.createMenu(this.menu); // WiP
-
+            // populating panelMenu (extend)
+            this.popupMenu = new Popup.Menu(this.menu);
         }
     });
 
@@ -50,11 +50,26 @@ export class Button implements IDestroyableModule {
 }
 
 export class Actions {
+    public static spawnCommandLine(command: string) {
+        try {
+            GLib.spawn_command_line_async(command, null);
+        } catch (e) {
+            Log.error(e);
+        }
+    }
+
     public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "") {
         let source = new MessageTray.Source(msg, icon);
         Main.messageTray.add(source);
         let notification = new MessageTray.Notification(source, msg, details);
         notification.setTransient(true);
+
+        if (panelIcon == 'reboot'){
+            notification.addAction('Reboot Now!', () => {this.spawnCommandLine('systemctl reboot')});
+        } else if (panelIcon == 'restartx'){
+            notification.addAction('Restart Display Manager Now!', () => {this.spawnCommandLine('systemctl restart display-manager')});
+        }
+
         source.showNotification(notification);
 
         if (panelIcon !== "")
@@ -62,12 +77,20 @@ export class Actions {
     }
 
     public static updateGfxMode(vendor:string, power:string) {
-        let menuItem = Main.panel.statusArea['asus-nb-gex.panel'].menu.firstMenuItem;
         Log.info(`(panel) new mode: ${vendor}:${power}`);
 
-        // manipulating label
-        menuItem.label.text = `GFX status: ${vendor} (dGPU: ${power})`;
-        menuItem.label.height = 0; // correcting height
-        menuItem.label.style_class = `gfx-mode ${vendor}`;
+        let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
+        // Log.info(menuItems);
+        menuItems.forEach((mi: { label: any; style_class: string; }) => {
+            if (mi.style_class.includes('gfx-mode')){
+                if (mi.style_class.includes(vendor)){
+                    mi.style_class = mi.style_class+' active';
+                    mi.label.set_text(mi.label.text+'  🗸');
+                } else if (mi.style_class.includes('active')){
+                    mi.style_class = mi.style_class.split('active').join(' ');
+                    mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
+                }
+            }
+        });
     }
 }

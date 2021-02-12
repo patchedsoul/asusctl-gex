@@ -3,27 +3,32 @@ declare const global: any, imports: any;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
-// todo: implement me
 import * as Panel from './panel';
-//import * as GfxModeBase from './gfx_mode';
 import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
+const Main = imports.ui.main;
 
 export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null;
     connected: boolean = false;
-    lastState: number = -1;
+    lastState: string = '';
     xml: string;
 
     constructor(xml: string) {
         this.xml = Resources.File.DBus(xml);
     }
 
-    public getCurrentMode() {
+    public getGfxMode() {
         if (this.connected)
             return `${this.asusLinuxProxy.VendorSync()}`;
+    }
+
+    public setGfxMode(mode: string) {
+        if (this.connected)
+            Log.info('setting '+mode);
+            return `${this.asusLinuxProxy.SetVendorSync(mode)}`;
     }
 
     start() {
@@ -65,13 +70,28 @@ export class GfxMode implements IStoppableModule {
                         Log.info(`[dbus${name_}]: The GfxMode changed, new GfxMode is ${value}`);
 
                         // update state
-                        //this.lastState = value;
+                        this.lastState = value;
 
                         // notify and change icon
                         // todo: implement me
-                        // Panel.Actions.notify();
+                        let msg = `The GfxMode changed, new GfxMode is ${value}`;
+                        if (value == 'reboot'){
+                            msg = 'The GfxMode changed, please reboot to apply the changes.';
+                        } else if (value == 'restartx') {
+                            msg = 'The GfxMode changed, please restart your display manager to apply the changes.';
+                        }
+
+                        Panel.Actions.notify(
+                            Panel.Title,
+                            msg,
+                            'system-reboot-symbolic',
+                            value
+                        );
+
+                        Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon '+value;
                     }
-                });
+                }
+            );
         }
     }
 

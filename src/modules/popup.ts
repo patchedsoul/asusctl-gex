@@ -3,24 +3,24 @@ declare const global: any, imports: any;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const PM = imports.ui.popupMenu;
-const Main = imports.ui.main;
 
 export class Menu {
-    createMenu(menu: any): void {[
-            // adding menu-items
-            [new PM.PopupMenuItem(`GFX status: Initializing...`), ['button-press-event', this.gfxModeCallback]],
-        ].forEach(mi => {
-            mi[0].label.height = 0; // correcting height
-            mi[0].label.style_class = `gfx-mode default`;
-            if (mi.length === 2 && mi[1].length === 2) {
-                mi[0].connect(mi[1][0], mi[1][1]);
-                menu.addMenuItem(mi[0]);
-            }
-        });
-    }
+    constructor(menu: any) {
+        let  menuItems: any = {
+            gfxHeadline: new PM.PopupMenuItem('Graphics Mode', {hover: false, can_focus: false, style_class: 'headline gfx'}),
+            init_gfx: new PM.PopupMenuItem('Graphics mode not initialized', {hover: false, can_focus: false, style_class: 'none gfx-mode'}),
+            seperator1: new PM.PopupSeparatorMenuItem(),
+            fanHeadline: new PM.PopupMenuItem('Profile', {hover: false, can_focus: false, style_class: 'headline fan'}),
+            init_profile: new PM.PopupMenuItem('Profiles not initialized', {hover: false, can_focus: false, style_class: 'none fan-mode'}),
+        }
 
-    gfxModeCallback(): void {
-        Main.notify('Warning', 'Not implemented!');
-        
+        for (const item in menuItems){
+            menu.addMenuItem(menuItems[item]);
+
+            if (menuItems[item].style_class.includes('headline')) {
+                // add CSS class to the label of headlines to style them
+                menuItems[item].label.style_class = 'headline-label';
+            }
+        }
     }
 }
