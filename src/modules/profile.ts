@@ -9,7 +9,7 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 export const ProfileColor = ['yellow', 'red', 'green', 'blue', 'orange', 'white', 'reboot', 'restartx'];
 export const ProfileDescr = ['normal', 'boost', 'silent', '_1', '_2', '_3'];
-export const ProfileIcons = ['asus_notif_yellow', 'asus_notif_red', 'asus_notif_green', '_1', '_2', '_3'];
+export const ProfileIcons = ['asus-nb-gex-yellow', 'asus-nb-gex-red', 'asus-nb-gex-green', '_1', '_2', '_3'];
 
 export class Client implements IStoppableModule {
     connector: any = null

@@ -32,7 +32,7 @@ export class Profile implements IStoppableModule {
             Log.error(mode);
             // return this.asusLinuxProxy.SetProfileRemote(mode);
             try {
-                GLib.spawn_command_line_async( `asusctl profile ${mode}`, null );
+                GLib.spawn_command_line_async( `asusctl profile ${mode}` );
             } catch ( e ) {
                 Log.error(e);
             }
