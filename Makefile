@@ -88,19 +88,29 @@ install_icons:
 		false; \
 	fi
 
-	install -D -m 0644 icons/64x64/asus-nb-gex-* "$(DESTDIR)/usr/share/icons/hicolor/64x64/status/"
-	install -D -m 0644 icons/128x128/asus-nb-gex-* "$(DESTDIR)/usr/share/pixmaps/"
-	install -D -m 0644 icons/128x128/asus-nb-gex-* "$(DESTDIR)/usr/share/icons/hicolor/128x128/status/"
-	install -D -m 0644 icons/256x256/asus-nb-gex-* "$(DESTDIR)/usr/share/icons/hicolor/256x256/status/"
-	install -D -m 0644 icons/512x512/asus-nb-gex-* "$(DESTDIR)/usr/share/icons/hicolor/512x512/status/"
+	install -D -m 0644 icons/64x64/asus-nb-gex-* /usr/share/icons/hicolor/64x64/status/
+	install -D -m 0644 icons/128x128/asus-nb-gex-* /usr/share/pixmaps/
+	install -D -m 0644 icons/128x128/asus-nb-gex-* /usr/share/icons/hicolor/128x128/status/
+	install -D -m 0644 icons/256x256/asus-nb-gex-* /usr/share/icons/hicolor/256x256/status/
+	install -D -m 0644 icons/512x512/asus-nb-gex-* /usr/share/icons/hicolor/512x512/status/
+	gtk-update-icon-cache
 
 uninstall:
 	rm -rf $(INSTALLBASE)/$(INSTALLNAME)
-	rm -f "$(DESTDIR)/usr/share/icons/hicolor/usr/share/pixmaps/asus-nb-gex-*"
-	rm -f "$(DESTDIR)/usr/share/icons/hicolor/64x64/status/asus-nb-gex-*"
-	rm -f "$(DESTDIR)/usr/share/icons/hicolor/128x128/status/asus-nb-gex-*"
-	rm -f "$(DESTDIR)/usr/share/icons/hicolor/256x256/status/asus-nb-gex-*"
-	rm -f "$(DESTDIR)/usr/share/icons/hicolor/512x512/status/asus-nb-gex-*"
+
+uninstall_icons:
+	@echo removing icons:
+	@if [ $$(id -u) != 0 ]; then \
+		echo "you need to be root to remove the icons"; \
+		false; \
+	fi
+
+	rm -f /usr/share/pixmaps/asus-nb-gex-*
+	rm -f /usr/share/icons/hicolor/64x64/status/asus-nb-gex-*
+	rm -f /usr/share/icons/hicolor/128x128/status/asus-nb-gex-*
+	rm -f /usr/share/icons/hicolor/256x256/status/asus-nb-gex-*
+	rm -f /usr/share/icons/hicolor/512x512/status/asus-nb-gex-*
+	gtk-update-icon-cache
 
 restart-shell:
 	echo "Restart shell!"
