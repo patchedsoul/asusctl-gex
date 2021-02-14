@@ -58,24 +58,13 @@ export class Profile implements IStoppableModule {
     }
 
     updateProfile(curState: number){
-        if (curState !== undefined && !isNaN(curState) && curState !== -1 && this.lastState !== curState) {
+        if (curState !== -1 && this.lastState !== curState) {
             let curActiveProfileName = ProfileBase.ProfileDescr[curState];
-            let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
-            menuItems.forEach((mi: { label: any; style_class: string; }) => {
-                if (mi.style_class.includes('fan-mode')){
-                    if (mi.style_class.includes(curActiveProfileName)){
-                        mi.style_class = mi.style_class+' active';
-                        mi.label.set_text(mi.label.text+'  🗸');
-                    } else if (mi.style_class.includes('active')){
-                        mi.style_class = mi.style_class.split('active').join(' ');
-                        mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
-                    }
-                }
-            });
-            
-            Log.info(`[updateProfile]: The Profile changed, new Profile is ${curActiveProfileName}`);
             let message = ((this.lastState === -1)?'initial':'changed') + ' profile: ' + ProfileBase.ProfileDescr[curState];
-
+            
+            // updating panel popup-menulist
+            Panel.Actions.updateMode('fan-mode', curActiveProfileName);
+            
             if (this.lastState !== -1){
                 Panel.Actions.notify(
                     Panel.Title, 
@@ -107,7 +96,7 @@ export class Profile implements IStoppableModule {
             this.enabled = true;
 
             try {
-                this.sourceId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 10, this.poller.bind(this));
+                this.sourceId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, this.poller.bind(this));
             } catch (e) {
                 Log.error(e);
             }

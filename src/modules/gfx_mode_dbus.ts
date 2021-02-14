@@ -51,13 +51,10 @@ export class GfxMode implements IStoppableModule {
         if (this.connected) {
             let vendor = this.asusLinuxProxy.VendorSync().toString().trim();
             let power = this.asusLinuxProxy.PowerSync().toString().trim();
-            // getting initial fan-mode
-            //this.lastState = this.asusLinuxProxy.PowerSync();
+            
             Log.info(`Initial GfxMode is ${vendor} ${power}`);
             try {
-                // todo: implement me
-                // Panel.Actions.notify();
-                Panel.Actions.updateGfxMode(vendor, power);
+                Panel.Actions.updateMode('gfx-mode', vendor, power);
             } catch (e) {
                 Log.error(e);
             }

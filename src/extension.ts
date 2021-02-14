@@ -75,7 +75,7 @@ export class Extension implements IEnableableModule {
                     for (const item in menuItems){
                         if (item == vendor){
                             menuItems[item].style_class = menuItems[item].style_class+' active';
-                            menuItems[item].label.set_text(menuItems[item].label.text+'  🗸');
+                            menuItems[item].label.set_text(menuItems[item].label.text+'  ✔');
                         }
                         menu.addMenuItem(menuItems[item], position);
                         menuItems[item].connect('activate', () => {this.gfxMode.connector.setGfxMode(item)});

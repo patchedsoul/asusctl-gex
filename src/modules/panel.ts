@@ -24,7 +24,6 @@ export class Button implements IDestroyableModule {
 
         _init: function(){
             this.parent(null, 'AsusNbPanel');
-            //this.parent(0.0);
 
             // setting icon (placeholder - contains nothing then dimensions)
             this.add_actor(new St.Icon({style_class: 'panel-icon'}));
@@ -35,7 +34,7 @@ export class Button implements IDestroyableModule {
     });
 
     public create(): void {
-        this.indicator =  new this.AsusNb_Indicator();
+        this.indicator = new this.AsusNb_Indicator();
 
         Main.panel.addToStatusArea('asus-nb-gex.panel', this.indicator, 1, Main.panel._rightBox);
         Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon white';
@@ -76,16 +75,16 @@ export class Actions {
             Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon ' + panelIcon;
     }
 
-    public static updateGfxMode(vendor:string, power:string) {
-        Log.info(`(panel) new mode: ${vendor}:${power}`);
+    public static updateMode(selector:string, vendor:string, value:string = '') {
+        Log.info(`(panel) new ${selector} mode: ${vendor}:${value}`);
 
         let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
         // Log.info(menuItems);
         menuItems.forEach((mi: { label: any; style_class: string; }) => {
-            if (mi.style_class.includes('gfx-mode')){
+            if (mi.style_class.includes(selector)){
                 if (mi.style_class.includes(vendor)){
                     mi.style_class = mi.style_class+' active';
-                    mi.label.set_text(mi.label.text+'  🗸');
+                    mi.label.set_text(mi.label.text+'  ✔');
                 } else if (mi.style_class.includes('active')){
                     mi.style_class = mi.style_class.split('active').join(' ');
                     mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
