@@ -30,9 +30,10 @@ export class GfxMode implements IStoppableModule {
     }
 
     public setGfxMode(mode: string) {
-        if (this.connected)
+        if (this.connected){
             Log.info('setting '+mode);
             return this.asusLinuxProxy.SetVendorSync(mode);
+        }
     }
 
     start() {

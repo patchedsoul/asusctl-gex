@@ -38,15 +38,19 @@ export class Extension implements IEnableableModule {
                 if (mi.style_class.includes('fan-mode') && mi.style_class.includes('none')){
                     mi.destroy();
 
-                    let  menuItems: any = {
-                        silent: new PM.PopupMenuItem('silent', {style_class: 'silent callmode-silent fan-mode'}),
-                        normal: new PM.PopupMenuItem('normal', {style_class: 'normal callmode-normal fan-mode'}),
-                        boost: new PM.PopupMenuItem('boost', {style_class: 'boost callmode-boost fan-mode'}),
-                    }
+                    Log.info('profiles:');
+                    Log.info(this.profile.connector.profileDesc.toString());
 
-                    for (const item in menuItems){
-                        menu.addMenuItem(menuItems[item]);
-                        menuItems[item].connect('activate', () => {this.profile.connector.setProfile(item)});
+                    if (this.profile.connector.profileDesc.length > 0){
+                        let menuItems: any = {};
+                        this.profile.connector.profileDesc.forEach((el: any) => {
+                            menuItems[el] = new PM.PopupMenuItem(el, {style_class: el+' callmode-'+el+' fan-mode'});
+                        });
+
+                        for (const item in menuItems){
+                            menu.addMenuItem(menuItems[item]);
+                            menuItems[item].connect('activate', () => {this.profile.connector.setProfile(item)});
+                        }
                     }
                 }
             });
