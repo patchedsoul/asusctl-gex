@@ -8,7 +8,6 @@ import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
-const Main = imports.ui.main;
 
 export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null;
@@ -19,13 +18,6 @@ export class GfxMode implements IStoppableModule {
         0: 'logout',
         1: 'reboot',
         2: 'none'
-    };
-    gfxModesNumbers: any = {
-        'nvidia': 0,
-        'integrated': 1,
-        'compute': 2,
-        'vfio': 3,
-        'hybrid': 4
     };
 
     constructor(xml: string) {
@@ -40,7 +32,7 @@ export class GfxMode implements IStoppableModule {
     public setGfxMode(mode: string) {
         if (this.connected)
             Log.info('setting '+mode);
-            return this.asusLinuxProxy.SetVendorSync(this.gfxModesNumbers[mode]);
+            return this.asusLinuxProxy.SetVendorSync(mode);
     }
 
     start() {
@@ -78,7 +70,7 @@ export class GfxMode implements IStoppableModule {
                     if (proxy_) {
 
                         Log.info(`[dbus${name_}]: The Graphics Mode has changed.`);
-                        Log.info(`${value}`);
+                        // Log.info(`${value}`);
 
                         let msg = `The Graphics Mode has changed.`;
                         if (value !== 2){
