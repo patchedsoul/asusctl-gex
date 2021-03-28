@@ -15,6 +15,18 @@ export class GfxMode implements IStoppableModule {
     connected: boolean = false;
     lastState: string = '';
     xml: string;
+    userAction: any = {
+        0: 'logout',
+        1: 'reboot',
+        2: 'none'
+    };
+    gfxModesNumbers: any = {
+        'nvidia': 0,
+        'integrated': 1,
+        'compute': 2,
+        'vfio': 3,
+        'hybrid': 4
+    };
 
     constructor(xml: string) {
         this.xml = Resources.File.DBus(xml);
@@ -28,11 +40,11 @@ export class GfxMode implements IStoppableModule {
     public setGfxMode(mode: string) {
         if (this.connected)
             Log.info('setting '+mode);
-            return `${this.asusLinuxProxy.SetVendorSync(mode)}`;
+            return this.asusLinuxProxy.SetVendorSync(this.gfxModesNumbers[mode]);
     }
 
     start() {
-        Log.info(`Starting GfxMode DBus client...`);
+        Log.info(`Starting Graphics Mode DBus client...`);
 
         try {
             // creating the proxy
@@ -43,16 +55,16 @@ export class GfxMode implements IStoppableModule {
                 "/org/asuslinux/Gfx"
             );
             this.connected = true;
-        } catch {
-            Log.error("GfxMode DBus initialization failed!");
+        } catch(e) {
+            Log.error("Graphics Mode DBus initialization failed!");
+            Log.error(e);
         }
-
 
         if (this.connected) {
             let vendor = this.asusLinuxProxy.VendorSync().toString().trim();
             let power = this.asusLinuxProxy.PowerSync().toString().trim();
             
-            Log.info(`Initial GfxMode is ${vendor} ${power}`);
+            Log.info(`Initial Graphics Mode is ${vendor} ${power}`);
             try {
                 Panel.Actions.updateMode('gfx-mode', vendor, power);
             } catch (e) {
@@ -62,30 +74,24 @@ export class GfxMode implements IStoppableModule {
             // connect to Gfx
             this.asusLinuxProxy.connectSignal(
                 "NotifyAction",
-                (proxy_: any = null, name_: string, value: any) => {
+                (proxy_: any = null, name_: string, value: number) => {
                     if (proxy_) {
-                        Log.info(`[dbus${name_}]: The GfxMode changed, new GfxMode is ${value}`);
 
-                        // update state
-                        this.lastState = value;
+                        Log.info(`[dbus${name_}]: The Graphics Mode has changed.`);
+                        Log.info(`${value}`);
 
-                        // notify and change icon
-                        // todo: implement me
-                        let msg = `The GfxMode changed, new GfxMode is ${value}`;
-                        if (value == 'reboot'){
-                            msg = 'The GfxMode changed, please reboot to apply the changes.';
-                        } else if (value == 'restartx') {
-                            msg = 'The GfxMode changed, please restart your display manager to apply the changes.';
+                        let msg = `The Graphics Mode has changed.`;
+                        if (value !== 2){
+                            msg = `The Graphics Mode has changed. Please ${this.userAction[value]} to apply the changes.`;
                         }
 
                         Panel.Actions.notify(
                             Panel.Title,
                             msg,
                             'system-reboot-symbolic',
-                            value
+                            this.userAction[value],
+                            this.userAction[value]
                         );
-
-                        Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon '+value;
                     }
                 }
             );

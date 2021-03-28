@@ -53,6 +53,8 @@ export class Extension implements IEnableableModule {
         }
 
         if (this.gfxMode.connected){
+            let iGPU:string = this.gfxMode.getIGPU();
+
             // gfx connected, populating menu
             let menu = Main.panel.statusArea['asus-nb-gex.panel'].menu;
             let menuItems = menu._getMenuItems();
@@ -61,14 +63,15 @@ export class Extension implements IEnableableModule {
                 if (mi.style_class.includes('gfx-mode') && mi.style_class.includes('none')){
                     mi.destroy();
 
-                    let vendor = this.gfxMode.connector.asusLinuxProxy.VendorSync().toString().trim();
-                    // let power = this.gfxMode.connector.asusLinuxProxy.power;
+                    let vendor = this.gfxMode.connector.getGfxMode();
+                    Log.info(`Current one is ${vendor}`);
 
                     let  menuItems: any = {
-                        integrated: new PM.PopupMenuItem('integrated', {style_class: 'integrated gfx-mode'}),
-                        hybrid: new PM.PopupMenuItem('hybrid', {style_class: 'hybrid gfx-mode'}),
-                        compute: new PM.PopupMenuItem('compute', {style_class: 'compute gfx-mode'}),
-                        dedicated: new PM.PopupMenuItem('nvidia', {style_class: 'nvidia gfx-mode'}),
+                        1: new PM.PopupMenuItem('integrated', {style_class: 'integrated gfx-mode ' + iGPU}),
+                        2: new PM.PopupMenuItem('compute', {style_class: 'compute gfx-mode ' + iGPU}),
+                        3: new PM.PopupMenuItem('vfio', {style_class: 'vfio gfx-mode ' + iGPU}),
+                        4: new PM.PopupMenuItem('hybrid', {style_class: 'hybrid gfx-mode ' + iGPU}),
+                        0: new PM.PopupMenuItem('nvidia', {style_class: 'nvidia gfx-mode'})
                     }
 
                     let position = 1;

@@ -51,22 +51,22 @@ export class Button implements IDestroyableModule {
 export class Actions {
     public static spawnCommandLine(command: string) {
         try {
-            GLib.spawn_command_line_async(command, null);
+            GLib.spawn_command_line_async(command);
         } catch (e) {
             Log.error(e);
         }
     }
 
-    public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "") {
+    public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "", action: string = "") {
         let source = new MessageTray.Source(msg, icon);
         Main.messageTray.add(source);
         let notification = new MessageTray.Notification(source, msg, details);
         notification.setTransient(true);
 
-        if (panelIcon == 'reboot'){
+        if (action == 'reboot'){
             notification.addAction('Reboot Now!', () => {this.spawnCommandLine('systemctl reboot')});
-        } else if (panelIcon == 'restartx'){
-            notification.addAction('Restart Display Manager Now!', () => {this.spawnCommandLine('systemctl restart display-manager')});
+        } else if (action == 'logout'){
+            notification.addAction('Log Out Now!', () => {this.spawnCommandLine('gnome-session-quit')});
         }
 
         source.showNotification(notification);
