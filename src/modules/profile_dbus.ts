@@ -21,9 +21,9 @@ export class Profile implements IStoppableModule {
     lock: any;
     profileDesc = new Array();
     profileIcons: any = {
-        'boost': 'asus_notif_red',
-        'normal': 'asus_notif_yellow',
-        'silent': 'asus_notif_green'
+        'boost': 'asus-nb-gex-red',
+        'normal': 'asus-nb-gex-yellow',
+        'silent': 'asus-nb-gex-green'
     };
     profileColor: any = {
         'boost': 'red',

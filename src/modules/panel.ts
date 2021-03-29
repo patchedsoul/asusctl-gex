@@ -6,12 +6,14 @@ import * as Log from './log';
 import * as Popup from './popup';
 import {IDestroyableModule} from '../interfaces/iDestroyableModule';
 
+
+const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 const Main = imports.ui.main;
+const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
-const MessageTray = imports.ui.messageTray;
-const GLib = imports.gi.GLib;
 
 export const Title = 'AsusNB Control';
 
@@ -58,7 +60,10 @@ export class Actions {
     }
 
     public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "", action: string = "") {
-        let source = new MessageTray.Source(msg, icon);
+        // no need for system-icons
+        let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/128x128/${icon}.png`);
+        let source = new MessageTray.Source(msg, {gicon: gIcon});
+
         Main.messageTray.add(source);
         let notification = new MessageTray.Notification(source, msg, details);
         notification.setTransient(true);
