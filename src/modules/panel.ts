@@ -13,6 +13,7 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
+const Gio = imports.gi.Gio;
 const St = imports.gi.St;
 
 export const Title = 'AsusNB Control';
@@ -60,10 +61,8 @@ export class Actions {
     }
 
     public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "", action: string = "") {
-        // no need for system-icons
-        let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/128x128/${icon}.png`);
-        let source = new MessageTray.Source(msg, {gicon: gIcon});
-
+        let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/128x128/${icon}.png`); // no need for system-icons
+        let source = new MessageTray.Source(msg, icon, {gicon: gIcon});
         Main.messageTray.add(source);
         let notification = new MessageTray.Notification(source, msg, details);
         notification.setTransient(true);
