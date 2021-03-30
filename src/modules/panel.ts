@@ -13,7 +13,6 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
-const Gio = imports.gi.Gio;
 const St = imports.gi.St;
 
 export const Title = 'AsusNB Control';
