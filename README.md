@@ -1,20 +1,20 @@
-# ASUS-NB-Ctrl (Gnome extension)
+# asusctl ([-gex]: Gnome extension)
 
-Extension for visualizing [asus-nb-ctrl](https://gitlab.com/asus-linux/asus-nb-ctrl)(`asusd`) settings and status.
+Extension for visualizing [asusctl](https://gitlab.com/asus-linux/asusctl)(`asusd`) settings and status.
 
 ## Views
 
 Panel icon(color changes due profilechange):
 
-![panel-icon.png](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/panel-icon.png)
+![panel-icon.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/icons/examples/panel-icon.png)
 
 Panelmenu subentry which shows the current GFX mode as well as the selected profile:
 
-![gfx-mode.png](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/gfx-mode-profile.png)
+![gfx-mode.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/icons/examples/gfx-mode-profile.png)
 
 Notification on profile change:
 
-![profile-change-notice.png](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/profile-change-notice.png)
+![profile-change-notice.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/icons/examples/profile-change-notice.png)
 
 ## Status
 
@@ -39,7 +39,7 @@ This project is still WiP, but safe to use.
 
 * nodejs >= 14.0.0
 * npm >= 6.14.0
-* [asus-nb-ctrl](https://gitlab.com/asus-linux/asus-nb-ctrl) >= 3.0.0
+* [asusctl](https://gitlab.com/asus-linux/asusctl) >= 3.4.0
 * gnome >= 3.36.0
 
 ## Installation
@@ -47,7 +47,7 @@ This project is still WiP, but safe to use.
 In a gnome-terminal(user) enter the following two commands:
 
 ```bash
-git clone git@gitlab.com:asus-linux/asus-nb-gex.git /tmp/asus-nb-gex && cd /tmp/asus-nb-gex
+git clone git@gitlab.com:asus-linux/asusctl-gex.git /tmp/asusctl-gex && cd /tmp/asusctl-gex
 make install && make enable && make restart-shell
 ```
 

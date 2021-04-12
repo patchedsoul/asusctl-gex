@@ -31,7 +31,7 @@ export class Extension implements IEnableableModule {
 
         if (this.profile.connected){
             // profile connected, populating menu
-            let menu = Main.panel.statusArea['asus-nb-gex.panel'].menu;
+            let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
             let menuItems = menu._getMenuItems();
             menuItems.forEach((mi: any) => {
                 Log.info('menu item '+mi.style_class);
@@ -60,7 +60,7 @@ export class Extension implements IEnableableModule {
             let iGPU:string = this.gfxMode.getIGPU();
 
             // gfx connected, populating menu
-            let menu = Main.panel.statusArea['asus-nb-gex.panel'].menu;
+            let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
             let menuItems = menu._getMenuItems();
             menuItems.forEach((mi: any) => {
                 Log.info('menu item '+mi.style_class);

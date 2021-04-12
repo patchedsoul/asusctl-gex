@@ -21,7 +21,7 @@ export class Button implements IDestroyableModule {
     public indicator: any;
 
     AsusNb_Indicator = new Lang.Class({
-        Name: 'asus-nb-gex.indicator',
+        Name: 'asusctl-gex.indicator',
         Extends: PanelMenu.Button,
 
         _init: function(){
@@ -38,8 +38,8 @@ export class Button implements IDestroyableModule {
     public create(): void {
         this.indicator = new this.AsusNb_Indicator();
 
-        Main.panel.addToStatusArea('asus-nb-gex.panel', this.indicator, 1, Main.panel._rightBox);
-        Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon white';
+        Main.panel.addToStatusArea('asusctl-gex.panel', this.indicator, 1, Main.panel._rightBox);
+        Main.panel.statusArea['asusctl-gex.panel'].style_class = 'panel-icon white';
     }
 
     public destroy(): void {
@@ -75,13 +75,13 @@ export class Actions {
         source.showNotification(notification);
 
         if (panelIcon !== '')
-            Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon ' + panelIcon;
+            Main.panel.statusArea['asusctl-gex.panel'].style_class = 'panel-icon ' + panelIcon;
     }
 
     public static updateMode(selector:string, vendor:string, value:string = '') {
         Log.info(`(panel) new ${selector} mode: ${vendor}:${value}`);
 
-        let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
+        let menuItems = Main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
         // Log.info(menuItems);
         menuItems.forEach((mi: { label: any; style_class: string; }) => {
             if (mi.style_class.includes(selector)){

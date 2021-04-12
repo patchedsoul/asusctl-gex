@@ -21,9 +21,9 @@ export class Profile implements IStoppableModule {
     lock: any;
     profileDesc = new Array();
     profileIcons: any = {
-        'boost': 'asus-nb-gex-red',
-        'normal': 'asus-nb-gex-yellow',
-        'silent': 'asus-nb-gex-green'
+        'boost': 'asusctl-gex-red',
+        'normal': 'asusctl-gex-yellow',
+        'silent': 'asusctl-gex-green'
     };
     profileColor: any = {
         'boost': 'red',
@@ -58,7 +58,7 @@ export class Profile implements IStoppableModule {
         }
     }
 
-    // this is needed because of a missing signal trigger in asus-nb-ctrl-2.0.5
+    // this is needed because of a missing signal trigger in asusctl-2.0.5
     poller() {
         if(this.connected){
             try {
@@ -90,7 +90,7 @@ export class Profile implements IStoppableModule {
                     this.profileColor[curState]
                 );
             } else {
-                Main.panel.statusArea['asus-nb-gex.panel'].style_class = `panel-icon ${this.profileColor[curState]}`;
+                Main.panel.statusArea['asusctl-gex.panel'].style_class = `panel-icon ${this.profileColor[curState]}`;
             }
 
             // update state
