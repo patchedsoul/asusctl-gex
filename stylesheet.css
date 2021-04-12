@@ -104,9 +104,9 @@
     background-image: url("icons/128x128/asus-nb-gex-red.png");
 }
 
-.active {
-    /* background-color: #5C804B; */
-}
+/* .active {
+    background-color: #5C804B;
+} */
 
 .asusctl-modal-dialog{
     padding: 30px;

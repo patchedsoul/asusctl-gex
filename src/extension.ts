@@ -44,7 +44,7 @@ export class Extension implements IEnableableModule {
                     if (this.profile.connector.profileDesc.length > 0){
                         let menuItems: any = {};
                         this.profile.connector.profileDesc.forEach((el: any) => {
-                            menuItems[el] = new PM.PopupMenuItem(el, {style_class: el+' callmode-'+el+' fan-mode'});
+                            menuItems[el] = new PM.PopupMenuItem(el, {style_class: `${el} callmode-${el} fan-mode`});
                         });
 
                         for (const item in menuItems){
@@ -81,8 +81,8 @@ export class Extension implements IEnableableModule {
                     let position = 1;
                     for (const item in menuItems){
                         if (item == vendor){
-                            menuItems[item].style_class = menuItems[item].style_class+' active';
-                            menuItems[item].label.set_text(menuItems[item].label.text+'  ✔');
+                            menuItems[item].style_class = `${menuItems[item].style_class} active`;
+                            menuItems[item].label.set_text(`${menuItems[item].label.text}  ✔`);
                         }
                         menu.addMenuItem(menuItems[item], position);
                         menuItems[item].connect('activate', () => {this.gfxMode.connector.setGfxMode(item)});

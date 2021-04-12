@@ -6,39 +6,40 @@ Extension for visualizing [asus-nb-ctrl](https://gitlab.com/asus-linux/asus-nb-c
 
 Panel icon(color changes due profilechange):
 
-![](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/panel-icon.png)
+![panel-icon.png](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/panel-icon.png)
 
-Panelmenu subentry which shows the current GFX mode:
+Panelmenu subentry which shows the current GFX mode as well as the selected profile:
 
-![](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/gfx-mode.png)
+![gfx-mode.png](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/gfx-mode-profile.png)
 
-Notification on profilechange:
+Notification on profile change:
 
-![](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/profile-change-notice.png)
+![profile-change-notice.png](https://gitlab.com/asus-linux/asus-nb-gex/-/raw/master/icons/examples/profile-change-notice.png)
 
 ## Status
 
 Done:
 
-* Panel Icon
+* Panel Icon (diffrent colors for each profile)
+* Notification with colored icons
+* Reboot/Logout information with icon and interactive confirmation
 * Basic Profile (FanMode) Info
 * Basic GFX Info
+* Change profile
+* Change GFX mode
 
 ToDo:
 
 * Configuration interface (prefs)
-* make profile changable
-* make gfx changable
 * bind ROG-Button
-* Status overview (ui)
 
-highly WiP - use at own risk!
+This project is still WiP, but safe to use.
 
 ## Dependencies
 
 * nodejs >= 14.0.0
 * npm >= 6.14.0
-* [asus-nb-ctrl](https://gitlab.com/asus-linux/asus-nb-ctrl) >= 2.0.5
+* [asus-nb-ctrl](https://gitlab.com/asus-linux/asus-nb-ctrl) >= 3.0.0
 * gnome >= 3.36.0
 
 ## Installation
@@ -47,7 +48,7 @@ In a gnome-terminal(user) enter the following two commands:
 
 ```bash
 git clone git@gitlab.com:asus-linux/asus-nb-gex.git /tmp/asus-nb-gex && cd /tmp/asus-nb-gex
-make install && sudo make install_icons && make enable && make restart-shell 
+make install && make enable && make restart-shell
 ```
 
 ## Debuging / Building
@@ -56,9 +57,6 @@ make install && sudo make install_icons && make enable && make restart-shell
 make all
 # install and enable
 make install
-sudo make install_icons
 make enable
 make restart-shell
 ```
-
-only root is allowed to install the icons, use sudo or use a diffrent root-shell to install them.

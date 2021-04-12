@@ -77,7 +77,7 @@ export class Profile implements IStoppableModule {
 
     updateProfile(curState: string){
         if (curState !== '' && this.lastState !== curState) {
-            let message = ((this.lastState === '')?'initial':'changed') + ' profile: ' + curState;
+            let message = `${((this.lastState === '')?'initial':'changed')} profile: ${curState}`;
             
             // updating panel popup-menulist
             Panel.Actions.updateMode('fan-mode', curState);
@@ -90,7 +90,7 @@ export class Profile implements IStoppableModule {
                     this.profileColor[curState]
                 );
             } else {
-                Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon ' + this.profileColor[curState];
+                Main.panel.statusArea['asus-nb-gex.panel'].style_class = `panel-icon ${this.profileColor[curState]}`;
             }
 
             // update state
@@ -106,8 +106,8 @@ export class Profile implements IStoppableModule {
             let _asusLinuxProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
             this.asusLinuxProxy = new _asusLinuxProxy(
                 Gio.DBus.system,
-                "org.asuslinux.Daemon",
-                "/org/asuslinux/Profile"
+                'org.asuslinux.Daemon',
+                '/org/asuslinux/Profile'
             );
 
             this.connected = true;
@@ -118,7 +118,7 @@ export class Profile implements IStoppableModule {
                 Log.error(e);
             }
         } catch (e) {
-            Log.error("Profile DBus initialization failed!");
+            Log.error(`Profile DBus initialization failed!`);
             Log.error(e);
         }
     }
