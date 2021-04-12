@@ -5,7 +5,7 @@
       <arg type="u" direction="out"/>
     </method>
     <method name="Power">
-      <arg type="s" direction="out"/>
+      <arg type="u" direction="out"/>
     </method>
     <method name="SetVendor">
       <arg name="vendor" type="u" direction="in"/>
@@ -16,9 +16,6 @@
     </signal>
     <signal name="NotifyAction">
       <arg name="action" type="u"/>
-    </signal>
-    <signal name="GfxGetMode">
-      <arg type="u" direction="out"/>
     </signal>
   </interface>
   <interface name="org.freedesktop.DBus.Properties">
