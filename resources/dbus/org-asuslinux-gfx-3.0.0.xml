@@ -5,7 +5,7 @@
       <arg type="u" direction="out"/>
     </method>
     <method name="Power">
-      <arg type="s" direction="out"/>
+      <arg type="u" direction="out"/>
     </method>
     <method name="SetVendor">
       <arg name="vendor" type="u" direction="in"/>
