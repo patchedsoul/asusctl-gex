@@ -61,9 +61,10 @@ export class Actions {
 
     public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "", action: string = "") {
         let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/128x128/${icon}.png`); // no need for system-icons
-        let source = new MessageTray.Source(msg, icon, {gicon: gIcon});
+        let source = new MessageTray.Source(msg, icon);
+        let notification = new MessageTray.Notification(source, msg, details, {gicon: gIcon});
+        
         Main.messageTray.add(source);
-        let notification = new MessageTray.Notification(source, msg, details);
         notification.setTransient(true);
 
         if (action == 'reboot'){
