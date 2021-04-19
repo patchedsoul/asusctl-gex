@@ -21,7 +21,7 @@ export class Button implements IDestroyableModule {
     public indicator: any;
 
     AsusNb_Indicator = new Lang.Class({
-        Name: 'asus-nb-gex.indicator',
+        Name: 'asusctl-gex.indicator',
         Extends: PanelMenu.Button,
 
         _init: function(){
@@ -38,8 +38,8 @@ export class Button implements IDestroyableModule {
     public create(): void {
         this.indicator = new this.AsusNb_Indicator();
 
-        Main.panel.addToStatusArea('asus-nb-gex.panel', this.indicator, 1, Main.panel._rightBox);
-        Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon white';
+        Main.panel.addToStatusArea('asusctl-gex.panel', this.indicator, 1, Main.panel._rightBox);
+        Main.panel.statusArea['asusctl-gex.panel'].style_class = 'panel-icon white';
     }
 
     public destroy(): void {
@@ -61,9 +61,11 @@ export class Actions {
 
     public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "", action: string = "") {
         let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/128x128/${icon}.png`); // no need for system-icons
+        // unsure, "gicon" might be needed on both, notif needs it in any case
         let source = new MessageTray.Source(msg, icon, {gicon: gIcon});
+        let notification = new MessageTray.Notification(source, msg, details, {gicon: gIcon});
+        
         Main.messageTray.add(source);
-        let notification = new MessageTray.Notification(source, msg, details);
         notification.setTransient(true);
 
         if (action == 'reboot'){
@@ -74,20 +76,20 @@ export class Actions {
 
         source.showNotification(notification);
 
-        if (panelIcon !== "")
-            Main.panel.statusArea['asus-nb-gex.panel'].style_class = 'panel-icon ' + panelIcon;
+        if (panelIcon !== '')
+            Main.panel.statusArea['asusctl-gex.panel'].style_class = 'panel-icon ' + panelIcon;
     }
 
     public static updateMode(selector:string, vendor:string, value:string = '') {
-        Log.info(`(panel) new ${selector} mode: ${vendor}:${value}`);
+        Log.info(`(panel) new ${selector} mode: ${vendor}${(value?':'+value:'')}`);
 
-        let menuItems = Main.panel.statusArea['asus-nb-gex.panel'].menu._getMenuItems();
+        let menuItems = Main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
         // Log.info(menuItems);
         menuItems.forEach((mi: { label: any; style_class: string; }) => {
             if (mi.style_class.includes(selector)){
                 if (mi.style_class.includes(vendor)){
-                    mi.style_class = mi.style_class+' active';
-                    mi.label.set_text(mi.label.text+'  ✔');
+                    mi.style_class = `${mi.style_class} active`;
+                    mi.label.set_text(`${mi.label.text}  ✔`);
                 } else if (mi.style_class.includes('active')){
                     mi.style_class = mi.style_class.split('active').join(' ');
                     mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));

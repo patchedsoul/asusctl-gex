@@ -24,9 +24,9 @@ package:
     - make all
     - make zip-file
     - rm -rf target
-    - mv _build asus-nb-gex@asus-linux.org
+    - mv _build asusctl-gex@asus-linux.org
   artifacts:
-    name: "asus-nb-gex-$CI_COMMIT_TAG"
+    name: "asusctl-gex-$CI_COMMIT_TAG"
     untracked: true
     expire_in: 2 days
   only:
