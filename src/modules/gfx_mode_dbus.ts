@@ -44,12 +44,12 @@ export class GfxMode implements IStoppableModule {
             let _asusLinuxProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
             this.asusLinuxProxy = new _asusLinuxProxy(
                 Gio.DBus.system,
-                "org.asuslinux.Daemon",
-                "/org/asuslinux/Gfx"
+                'org.asuslinux.Daemon',
+                '/org/asuslinux/Gfx'
             );
             this.connected = true;
         } catch(e) {
-            Log.error("Graphics Mode DBus initialization failed!");
+            Log.error('Graphics Mode DBus initialization failed!');
             Log.error(e);
         }
 

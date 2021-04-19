@@ -2,7 +2,7 @@ declare const log: any;
 var log_level = 4;
 
 export function raw(text: string) {
-    log(`asus-nb-gex: ${text}`);
+    log(`asusctl-gex: ${text}`);
 }
 
 export function info(text: string) {

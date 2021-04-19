@@ -12,22 +12,22 @@
 }
 
 .panel-icon.red {
-    background-image: url("icons/64x64/asus-nb-gex-red.png");
+    background-image: url("icons/64x64/asusctl-gex-red.png");
 }
 .panel-icon.orange {
-    background-image: url("icons/64x64/asus-nb-gex-orange.png");
+    background-image: url("icons/64x64/asusctl-gex-orange.png");
 }
 .panel-icon.yellow {
-    background-image: url("icons/64x64/asus-nb-gex-yellow.png");
+    background-image: url("icons/64x64/asusctl-gex-yellow.png");
 }
 .panel-icon.green {
-    background-image: url("icons/64x64/asus-nb-gex-green.png");
+    background-image: url("icons/64x64/asusctl-gex-green.png");
 }
 .panel-icon.blue {
-    background-image: url("icons/64x64/asus-nb-gex-blue.png");
+    background-image: url("icons/64x64/asusctl-gex-blue.png");
 }
 .panel-icon.white {
-    background-image: url("icons/64x64/asus-nb-gex-white.png");
+    background-image: url("icons/64x64/asusctl-gex-white.png");
 }
 
 /* notification icons */
@@ -37,22 +37,22 @@
     width: 64px;
 }
 .notification-icon.red {
-    background-image: url("icons/256x256/asus-nb-gex-red.png");
+    background-image: url("icons/256x256/asusctl-gex-red.png");
 }
 .notification-icon.orange {
-    background-image: url("icons/256x256/asus-nb-gex-orange.png");
+    background-image: url("icons/256x256/asusctl-gex-orange.png");
 }
 .notification-icon.yellow {
-    background-image: url("icons/256x256/asus-nb-gex-yellow.png");
+    background-image: url("icons/256x256/asusctl-gex-yellow.png");
 }
 .notification-icon.green {
-    background-image: url("icons/256x256/asus-nb-gex-green.png");
+    background-image: url("icons/256x256/asusctl-gex-green.png");
 }
 .notification-icon.blue {
-    background-image: url("icons/256x256/asus-nb-gex-blue.png");
+    background-image: url("icons/256x256/asusctl-gex-blue.png");
 }
 .notification-icon.white {
-    background-image: url("icons/256x256/asus-nb-gex-white.png");
+    background-image: url("icons/256x256/asusctl-gex-white.png");
 }
 
 .headline {
@@ -95,18 +95,18 @@
 }
 
 .fan-mode.silent {
-    background-image: url("icons/128x128/asus-nb-gex-green.png");
+    background-image: url("icons/128x128/asusctl-gex-green.png");
 }
 .fan-mode.normal {
-    background-image: url("icons/128x128/asus-nb-gex-yellow.png");
+    background-image: url("icons/128x128/asusctl-gex-yellow.png");
 }
 .fan-mode.boost {
-    background-image: url("icons/128x128/asus-nb-gex-red.png");
+    background-image: url("icons/128x128/asusctl-gex-red.png");
 }
 
-.active {
-    /* background-color: #5C804B; */
-}
+/* .active {
+    background-color: #5C804B;
+} */
 
 .asusctl-modal-dialog{
     padding: 30px;
