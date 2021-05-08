@@ -1,8 +1,8 @@
 #!/bin/sh
-UUID = $(shell grep -E '^[ ]*"uuid":' ../metadata.json | sed 's@^[ ]*"uuid":[ ]*"\(.\+\)",[ ]*@\1@')
-INSTALLBASE = $(HOME)/.local/share/gnome-shell/extensions
+UUID=`grep -E '^[ ]*"uuid":' metadata.json | sed 's@^[ ]*"uuid":[ ]*"\(.\+\)",[ ]*@\1@'`
+INSTALLBASE=~/.local/share/gnome-shell/extensions
 
-rm -rf $(INSTALLBASE)/$(UUID)
-mkdir -p $(INSTALLBASE)/$(UUID)
-cp -r _build/* $(INSTALLBASE)/$(UUID)/
-gnome-extensions enable $(UUID)
+rm -rf "$INSTALLBASE/$UUID"
+mkdir -p "$INSTALLBASE/$UUID"
+cp -r _build/* "$INSTALLBASE/$UUID/"
+gnome-extensions enable "$UUID"
