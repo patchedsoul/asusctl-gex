@@ -27,8 +27,22 @@ export class Button implements IDestroyableModule {
         _init: function(){
             this.parent(null, 'AsusNbPanel');
 
-            // setting icon (placeholder - contains nothing then dimensions)
-            this.add_actor(new St.Icon({style_class: 'panel-icon'}));
+            this.add_style_class_name('panel-status-button asusctl-gex-panel-button');
+
+            this._icon = new St.Icon({
+                style_class: 'system-status-icon asusctl-gex-panel-icon'
+            });
+
+            this._button = new St.Bin({
+                style_class: 'panel-button',
+                reactive: true,
+                can_focus: true,
+                track_hover: true
+            });
+
+            this._button.set_child(this._icon);
+
+            this.add_actor(this._button);
 
             // populating panelMenu (extend)
             this.popupMenu = new Popup.Menu(this.menu);
@@ -38,8 +52,7 @@ export class Button implements IDestroyableModule {
     public create(): void {
         this.indicator = new this.AsusNb_Indicator();
 
-        Main.panel.addToStatusArea('asusctl-gex.panel', this.indicator, 1, Main.panel._rightBox);
-        Main.panel.statusArea['asusctl-gex.panel'].style_class = 'panel-icon white';
+        Main.panel.addToStatusArea('asusctl-gex.panel', this.indicator);
     }
 
     public destroy(): void {

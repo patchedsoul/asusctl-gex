@@ -93,7 +93,7 @@ export class Profile implements IStoppableModule {
                     this.profileColor[curState]
                 );
             } else {
-                Main.panel.statusArea['asusctl-gex.panel'].style_class = `panel-icon ${this.profileColor[curState]}`;
+                Main.panel.statusArea['asusctl-gex.panel'].style_class = `${this.profileColor[curState]}`;
             }
 
             // update state
