@@ -4,3 +4,5 @@ _build
 target
 schemas/gschemas.compiled
 .confirm_shortcut_change
+node_modules
+package-lock.json
