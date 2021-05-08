@@ -9,16 +9,16 @@ build:
   artifacts:
     when: on_failure
   before_script:
-    # installing typescript
-    - if [[ ! `builtin type -p tsc` ]]; then npm install -g typescript &>/dev/null; fi
+    # installing dependencies
+    - npm install
   script:
     - npm run build
 
 package:
   stage: package
   before_script:
-    # installing typescript and zip
-    - if [[ ! `builtin type -p tsc` ]]; then npm install -g typescript &>/dev/null; fi
+    # installing dependencies and zip
+    - npm install
     - if [[ ! `builtin type -p zip` ]]; then apt update &>/dev/null && apt install zip -yy &>/dev/null; fi
   script:
     - npm run zip
