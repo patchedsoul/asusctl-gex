@@ -1,6 +1,6 @@
 /* panel icons */
 .asusctl-gex-panel-icon {
-    background-size: contain;
+    background-size: 30px;
     width: 40px;
     background-image: url("icons/scalable/rog-white.svg");
 }
