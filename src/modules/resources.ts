@@ -15,6 +15,7 @@ export class File {
             return _ok ? imports.byteArray.toString(bytes) : null;
         } catch (e) {
             Log.error(`Failed to load "${file}"`);
+            Log.error(e);
         }
     }
 }

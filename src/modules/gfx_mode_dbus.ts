@@ -14,7 +14,19 @@ export class GfxMode implements IStoppableModule {
     connected: boolean = false;
     lastState: string = '';
     xml: string;
-    userAction: any = {
+    public gfxLabels: any = {
+        1: 'integrated',
+        2: 'compute',
+        3: 'vfio',
+        4: 'hybrid',
+        0: 'nvidia'
+    };
+    public powerLabel: any = {
+        0: 'suspended',
+        1: 'active',
+        2: 'off'
+    };
+    public userAction: any = {
         0: 'logout',
         1: 'reboot',
         2: 'none'
@@ -25,15 +37,33 @@ export class GfxMode implements IStoppableModule {
     }
 
     public getGfxMode() {
-        if (this.connected)
-            return `${this.asusLinuxProxy.VendorSync()}`;
+        let currentMode:any = false;
+
+        if (this.connected) {
+            try {
+                currentMode = this.asusLinuxProxy.VendorSync();
+            } catch(e) {
+                Log.error('Graphics Mode DBus: get current mode failed!');
+                Log.error(e);
+            }
+        }
+
+        return currentMode;
     }
 
     public setGfxMode(mode: string) {
+        let newMode:any = false;
+
         if (this.connected){
-            Log.info('setting '+mode);
-            return this.asusLinuxProxy.SetVendorSync(mode);
+            try {
+                newMode = this.asusLinuxProxy.SetVendorSync(mode);
+            } catch(e) {
+                Log.error('Graphics Mode DBus switching failed!');
+                Log.error(e);
+            }
         }
+
+        return newMode;
     }
 
     start() {
@@ -57,10 +87,11 @@ export class GfxMode implements IStoppableModule {
             let vendor = this.asusLinuxProxy.VendorSync().toString().trim();
             let power = this.asusLinuxProxy.PowerSync().toString().trim();
             
-            Log.info(`Initial Graphics Mode is ${vendor} ${power}`);
+            Log.info(`Initial Graphics Mode is ${this.gfxLabels[vendor]}. Power State at the moment is ${this.powerLabel[power]} (this can change on hybrid and compute mode)`);
             try {
                 Panel.Actions.updateMode('gfx-mode', vendor, power);
             } catch (e) {
+                Log.error(`Update Panel Graphics mode failed!`);
                 Log.error(e);
             }
 

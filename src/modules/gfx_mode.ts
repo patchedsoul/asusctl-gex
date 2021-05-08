@@ -28,10 +28,10 @@ export class Client implements IStoppableModule {
     public getIGPU(){
         try {
             let isAMD:boolean = GLib.file_test('/sys/bus/pci/drivers/amdgpu', GLib.FileTest.EXISTS);
-            Log.error(isAMD.toString());
+            Log.info(`integrated GPU: AMD`);
             return isAMD ? 'amd' : 'intel';
         } catch (e) {
-            Log.error(e);
+            Log.info(`integrated GPU: Intel`);
             return 'intel';
         }
     }

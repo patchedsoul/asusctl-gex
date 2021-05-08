@@ -55,6 +55,7 @@ export class Actions {
         try {
             GLib.spawn_command_line_async(command);
         } catch (e) {
+            Log.error(`Spawning command failed: ${command}`);
             Log.error(e);
         }
     }

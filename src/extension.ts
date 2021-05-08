@@ -34,12 +34,10 @@ export class Extension implements IEnableableModule {
             let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
             let menuItems = menu._getMenuItems();
             menuItems.forEach((mi: any) => {
-                Log.info('menu item '+mi.style_class);
                 if (mi.style_class.includes('fan-mode') && mi.style_class.includes('none')){
                     mi.destroy();
 
-                    Log.info('profiles:');
-                    Log.info(this.profile.connector.profileDesc.toString());
+                    Log.info('Available Power Profiles: '+this.profile.connector.profileDesc.toString());
 
                     if (this.profile.connector.profileDesc.length > 0){
                         let menuItems: any = {};
@@ -63,19 +61,15 @@ export class Extension implements IEnableableModule {
             let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
             let menuItems = menu._getMenuItems();
             menuItems.forEach((mi: any) => {
-                Log.info('menu item '+mi.style_class);
                 if (mi.style_class.includes('gfx-mode') && mi.style_class.includes('none')){
                     mi.destroy();
 
                     let vendor = this.gfxMode.connector.getGfxMode();
-                    Log.info(`Current one is ${vendor}`);
+                    Log.info(`Current Graphics Mode is ${this.gfxMode.connector.gfxLabels[vendor]}`);
 
-                    let  menuItems: any = {
-                        1: new PM.PopupMenuItem('integrated', {style_class: 'integrated gfx-mode ' + iGPU}),
-                        2: new PM.PopupMenuItem('compute', {style_class: 'compute gfx-mode ' + iGPU}),
-                        3: new PM.PopupMenuItem('vfio', {style_class: 'vfio gfx-mode ' + iGPU}),
-                        4: new PM.PopupMenuItem('hybrid', {style_class: 'hybrid gfx-mode ' + iGPU}),
-                        0: new PM.PopupMenuItem('nvidia', {style_class: 'nvidia gfx-mode'})
+                    let  menuItems: any = {}
+                    for (const key in this.gfxMode.connector.gfxLabels) {
+                        menuItems[key] = new PM.PopupMenuItem(this.gfxMode.connector.gfxLabels[key], {style_class: this.gfxMode.connector.gfxLabels[key]+' gfx-mode ' + iGPU})
                     }
 
                     let position = 1;

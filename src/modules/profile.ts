@@ -13,8 +13,9 @@ export class Client implements IStoppableModule {
     constructor() {
         try {
             this.connector = new DBus.Profile("org-asuslinux-profile-3.0.0");
-        } catch {
+        } catch(e) {
             Log.error(`Profile client initialization failed!`);
+            Log.error(e);
         }
     }
 
@@ -29,6 +30,7 @@ export class Client implements IStoppableModule {
 
             this.connected = true;
         } catch (e) {
+            Log.error(`Profile start failed!`);
             Log.error(e);
         }
     }

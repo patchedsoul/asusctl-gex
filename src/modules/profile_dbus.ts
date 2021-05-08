@@ -40,6 +40,7 @@ export class Profile implements IStoppableModule {
             try {
                 return this.asusLinuxProxy.ProfileNamesSync();
             } catch ( e ) {
+                Log.error(`Profile DBus getting power profile names failed!`);
                 Log.error(e);
             }
         }
@@ -53,6 +54,7 @@ export class Profile implements IStoppableModule {
                 // DBUS Method currently does not seem to work 
                 // return this.asusLinuxProxy.SetProfileSync(mode);
             } catch ( e ) {
+                Log.error(`Profile DBus set power profile failed!`);
                 Log.error(e);
             }
         }
@@ -66,6 +68,7 @@ export class Profile implements IStoppableModule {
 
                 this.updateProfile(curActiveProfile);
             } catch (e){
+                Log.error(`Profile DBus getting current power profile name failed!`);
                 Log.error(e);
             } finally {
                 return this.connected ? GLib.SOURCE_CONTINUE : GLib.SOURCE_REMOVE;
@@ -115,6 +118,7 @@ export class Profile implements IStoppableModule {
             try {
                 this.sourceId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, this.poller.bind(this));
             } catch (e) {
+                Log.error(`Profile DBus Poller initialization failed!`);
                 Log.error(e);
             }
         } catch (e) {
