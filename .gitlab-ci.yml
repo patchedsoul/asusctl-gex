@@ -12,7 +12,7 @@ build:
     # installing typescript
     - if [[ ! `builtin type -p tsc` ]]; then npm install -g typescript &>/dev/null; fi
   script:
-    - make compile
+    - npm run build
 
 package:
   stage: package
@@ -21,8 +21,7 @@ package:
     - if [[ ! `builtin type -p tsc` ]]; then npm install -g typescript &>/dev/null; fi
     - if [[ ! `builtin type -p zip` ]]; then apt update &>/dev/null && apt install zip -yy &>/dev/null; fi
   script:
-    - make all
-    - make zip-file
+    - npm run zip
     - rm -rf target
     - mv _build asusctl-gex@asus-linux.org
   artifacts:
