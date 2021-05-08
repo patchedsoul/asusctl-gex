@@ -48,15 +48,12 @@ In a gnome-terminal(user) enter the following two commands:
 
 ```bash
 git clone git@gitlab.com:asus-linux/asusctl-gex.git /tmp/asusctl-gex && cd /tmp/asusctl-gex
-make install && make enable && make restart-shell
+npm install
+npm run build && npm run install
 ```
 
 ## Debuging / Building
 
 ```bash
-make all
-# install and enable
-make install
-make enable
-make restart-shell
+npm run debug
 ```

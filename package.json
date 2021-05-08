@@ -1,0 +1,45 @@
+{
+  "name": "asusctl-gex",
+  "version": "1.0.0-rc2",
+  "description": "This extension allows you to visualize most of the asusd settings and status",
+  "main": "_build/extension.js",
+  "dependencies": {
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "debug": "run-p build && dbus-run-session -- gnome-shell --nested --wayland",
+    "enable": "gnome-extensions enable \"asusctl-gex@asus-linux.org\"",
+    "disable": "gnome-extensions disable \"asusctl-gex@asus-linux.org\"",
+    "install": "scripts/install",
+    "uninstall": "scripts/uninstall",
+    "zip": "scripts/zipit",
+    "build:clean": "rm -rf _build schemas/gschemas.compiled target",
+    "build:transpile": "npx tsc",
+    "build:schemas": "touch schemas/gschemas.compiled && glib-compile-schemas schemas",
+    "build:convert": "scripts/convert",
+    "build:compile": "scripts/compile",
+    "build": "run-p build:clean && run-p build:transpile && run-p build:schemas && run-p build:convert && run-p build:compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/asus-linux/asusctl-gex.git"
+  },
+  "keywords": [
+    "gnome-shell",
+    "extension",
+    "asusctl",
+    "asus",
+    "rog",
+    "gnome",
+    "gjs",
+    "typescript"
+  ],
+  "author": "Armas Spann, Marco Laux",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/asus-linux/asusctl-gex/issues"
+  },
+  "homepage": "https://gitlab.com/asus-linux/asusctl-gex#readme"
+}
