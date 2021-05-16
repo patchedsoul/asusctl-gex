@@ -21,6 +21,7 @@ package:
     - npm install
     - if [[ ! `builtin type -p zip` ]]; then apt update &>/dev/null && apt install zip -yy &>/dev/null; fi
   script:
+    - npm run build
     - npm run zip
     - rm -rf target
     - mv _build asusctl-gex@asus-linux.org
