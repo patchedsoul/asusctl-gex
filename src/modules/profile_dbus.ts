@@ -1,4 +1,5 @@
 declare const global: any, imports: any;
+declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -9,7 +10,6 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
-const Main = imports.ui.main;
 
 export class Profile implements IStoppableModule {
     sourceId: any = null;       // needed for dbus workaround
@@ -21,9 +21,9 @@ export class Profile implements IStoppableModule {
     lock: any;
     profileDesc = new Array();
     profileIcons: any = {
-        'boost': 'asusctl-gex-red',
-        'normal': 'asusctl-gex-yellow',
-        'silent': 'asusctl-gex-green'
+        'boost': 'rog-red',
+        'normal': 'rog-yellow',
+        'silent': 'rog-green'
     };
     profileColor: any = {
         'boost': 'red',
@@ -66,7 +66,10 @@ export class Profile implements IStoppableModule {
             try {
                 let curActiveProfile = this.asusLinuxProxy.ActiveProfileNameSync().toString().trim();
 
-                this.updateProfile(curActiveProfile);
+                if (curActiveProfile !== this.lastState){
+                    this.updateProfile(curActiveProfile);
+                    this.lastState = curActiveProfile;
+                }
             } catch (e){
                 Log.error(`Profile DBus getting current power profile name failed!`);
                 Log.error(e);
@@ -92,9 +95,11 @@ export class Profile implements IStoppableModule {
                     this.profileIcons[curState],
                     this.profileColor[curState]
                 );
-            } else {
-                Main.panel.statusArea['asusctl-gex.panel'].style_class = `${this.profileColor[curState]}`;
             }
+
+            ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${curState} ${ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState]} ${ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower]}`;
+
+            Log.info(ext.panelButton.indicator.style_class);
 
             // update state
             this.lastState = curState;

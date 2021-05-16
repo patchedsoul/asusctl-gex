@@ -1,4 +1,5 @@
 declare const global: any, imports: any;
+declare var ext: any;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Main = imports.ui.main;
 const PM = imports.ui.popupMenu;
@@ -82,6 +83,10 @@ export class Extension implements IEnableableModule {
                         menuItems[item].connect('activate', () => {this.gfxMode.connector.setGfxMode(item)});
                         position++;
                     }
+
+                    // gpu power items
+                    let gpuPowerItem = new PM.PopupMenuItem('dedicated GPU: on', {style_class: 'gpupower on'});
+                    menu.addMenuItem(gpuPowerItem, 1);
                 }
             });
         }
@@ -94,8 +99,6 @@ export class Extension implements IEnableableModule {
         this.panelButton.destroy();
     }
 }
-
-let ext: Extension | null = null;
 
 // @ts-ignore
 function init() {

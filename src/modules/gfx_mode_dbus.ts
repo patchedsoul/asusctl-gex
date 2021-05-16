@@ -1,4 +1,5 @@
 declare const global: any, imports: any;
+declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -8,11 +9,13 @@ import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
+const GLib = imports.gi.GLib;
 
 export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null;
     connected: boolean = false;
-    lastState: string = '';
+    lastState: number = 4;
+    lastStatePower: number = 3;
     xml: string;
     public gfxLabels: any = {
         1: 'integrated',
@@ -22,15 +25,17 @@ export class GfxMode implements IStoppableModule {
         0: 'nvidia'
     };
     public powerLabel: any = {
-        0: 'suspended',
-        1: 'active',
-        2: 'off'
+        0: 'active',
+        1: 'suspended',
+        2: 'off',
+        3: 'unknown'
     };
     public userAction: any = {
         0: 'logout',
         1: 'reboot',
         2: 'none'
     };
+    timeoutPollerGpuPower: any = null;
 
     constructor(xml: string) {
         this.xml = Resources.File.DBus(xml);
@@ -48,6 +53,8 @@ export class GfxMode implements IStoppableModule {
             }
         }
 
+        if (currentMode !== this.lastState) this.lastState = currentMode;
+
         return currentMode;
     }
 
@@ -57,13 +64,68 @@ export class GfxMode implements IStoppableModule {
         if (this.connected){
             try {
                 newMode = this.asusLinuxProxy.SetVendorSync(mode);
+
+                ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[newMode]} ${this.powerLabel[this.lastStatePower]}`;
+
+                Panel.Actions.updateMode('gfx-mode', newMode);
             } catch(e) {
                 Log.error('Graphics Mode DBus switching failed!');
                 Log.error(e);
             }
         }
 
+        if (newMode !== this.lastState) this.lastState = newMode;
+
         return newMode;
+    }
+
+    public getGpuPower(){
+        let modePower:number = 9;
+
+        if (this.connected){
+            try {
+                modePower = this.asusLinuxProxy.PowerSync().toString().trim();
+            } catch(e) {
+                Log.error('Graphics Mode DBus getting power mode failed!');
+                Log.error(e);
+            }
+        }
+
+        return modePower;
+    }
+
+    updatePanelPower(gpuPowerLocal: number){
+        if (gpuPowerLocal !== this.lastStatePower) {
+
+            Log.info(`Graphics Mode DBus power mode changed: ${this.powerLabel[gpuPowerLocal]}/${gpuPowerLocal}`);
+
+            ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[this.lastState]} ${this.powerLabel[gpuPowerLocal]}`;
+
+            Panel.Actions.updateMode('gpupower', this.powerLabel[gpuPowerLocal]);
+
+            // update state
+            this.lastStatePower = gpuPowerLocal;
+        }
+    }
+
+    pollerGpuPower() {
+        if(this.connected){
+            try {
+                let gpuPowerLocal = this.getGpuPower();
+
+                if (gpuPowerLocal !== this.lastStatePower){
+                    this.updatePanelPower(gpuPowerLocal);
+                }
+                this.updatePanelPower(gpuPowerLocal);
+            } catch (e){
+                Log.error(`Graphics Mode DBus power mode poller init failed!`);
+                Log.error(e);
+            } finally {
+                return this.connected ? GLib.SOURCE_CONTINUE : GLib.SOURCE_REMOVE;
+            }
+        } else {
+            return GLib.SOURCE_REMOVE;
+        }
     }
 
     start() {
@@ -87,9 +149,9 @@ export class GfxMode implements IStoppableModule {
             let vendor = this.asusLinuxProxy.VendorSync().toString().trim();
             let power = this.asusLinuxProxy.PowerSync().toString().trim();
             
-            Log.info(`Initial Graphics Mode is ${this.gfxLabels[vendor]}. Power State at the moment is ${this.powerLabel[power]} (this can change on hybrid and compute mode)`);
+            Log.info(`Initial Graphics Mode is ${this.gfxLabels[vendor]}. Power State at the moment is ${this.powerLabel[power]}${(power == 0 ? " (this can change on hybrid and compute mode)" : "")}`);
             try {
-                Panel.Actions.updateMode('gfx-mode', vendor, power);
+                Panel.Actions.updateMode('gfx-mode', vendor);
             } catch (e) {
                 Log.error(`Update Panel Graphics mode failed!`);
                 Log.error(e);
@@ -119,6 +181,13 @@ export class GfxMode implements IStoppableModule {
                     }
                 }
             );
+
+            try {
+                this.timeoutPollerGpuPower = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, this.pollerGpuPower.bind(this));
+            } catch (e) {
+                Log.error(`Graphics Mode DBus power mode Poller initialization failed!`);
+                Log.error(e);
+            }
         }
     }
 
@@ -128,6 +197,7 @@ export class GfxMode implements IStoppableModule {
         if (this.connected) {
             this.connected = false;
             this.asusLinuxProxy = null;
+            this.timeoutPollerGpuPower = null;
         }
     }
 }

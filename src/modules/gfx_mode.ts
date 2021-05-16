@@ -1,4 +1,5 @@
 declare const global: any, imports: any;
+declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -9,10 +10,13 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 const GLib = imports.gi.GLib;
 
 export class Client implements IStoppableModule {
+    panelButton: any = null;
     connector: any = null
     connected: boolean = false;
 
-    constructor() {
+    constructor(panelButton: any = null) {
+        this.panelButton = panelButton;
+        
         try {
             this.connector = new DBus.GfxMode("org-asuslinux-gfx-3.0.0");
         } catch(e) {

@@ -10,7 +10,7 @@ export class Client implements IStoppableModule {
     connector: any = null
     connected: boolean = false;
 
-    constructor() {
+    constructor() {        
         try {
             this.connector = new DBus.Profile("org-asuslinux-profile-3.0.0");
         } catch(e) {

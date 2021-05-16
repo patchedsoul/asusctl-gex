@@ -1,35 +1,43 @@
 /* panel icons */
+
+.asusctl-gex-panel-layout{
+    width: 80px;
+    padding: 0 5px;
+}
 .asusctl-gex-panel-icon {
-    background-size: 30px;
-    width: 40px;
+    background-size: 28px;
+    width: 20px;
+    padding: 0 10px;
     background-image: url("icons/scalable/rog-white.svg");
 }
+.asusctl-gex-panel-icon-gpupower{
+    background-size: 18px;
+}
 
-.logout .asusctl-gex-panel-icon,
-.reboot .asusctl-gex-panel-icon,
-.restartx .asusctl-gex-panel-icon {
+.logout .asusctl-gex-panel-icon-profile,
+.reboot .asusctl-gex-panel-icon-profile,
+.restartx .asusctl-gex-panel-icon-profile {
     background-image: url("icons/scalable/reboot.svg");
+    background-size: 18px;
 }
 
-.red:hover .asusctl-gex-panel-icon,
-.red:active .asusctl-gex-panel-icon {
-    background-image: url("icons/scalable/rog-red.svg");
-}
-.orange:hover .asusctl-gex-panel-icon,
-.orange:active .asusctl-gex-panel-icon {
-    background-image: url("icons/scalable/rog-orange.svg");
-}
-.yellow:hover .asusctl-gex-panel-icon,
-.yellow:active .asusctl-gex-panel-icon {
+.normal:hover .asusctl-gex-panel-icon-profile {
     background-image: url("icons/scalable/rog-yellow.svg");
 }
-.green:hover .asusctl-gex-panel-icon,
-.green:active .asusctl-gex-panel-icon {
+.boost:hover .asusctl-gex-panel-icon-profile {
+    background-image: url("icons/scalable/rog-red.svg");
+}
+.silent:hover .asusctl-gex-panel-icon-profile {
     background-image: url("icons/scalable/rog-green.svg");
 }
-.blue:hover .asusctl-gex-panel-icon,
-.blue:active .asusctl-gex-panel-icon {
-    background-image: url("icons/scalable/rog-blue.svg");
+
+.active .asusctl-gex-panel-icon-gpupower {
+    background-image: url("icons/scalable/bulb-on.svg");
+}
+.off .asusctl-gex-panel-icon-gpupower,
+.suspended .asusctl-gex-panel-icon-gpupower{
+    background-image: url("icons/scalable/bulb-off.svg");
+    background-size: 12px;
 }
 
 /* notification icons */
@@ -66,11 +74,13 @@
 }
 
 .gfx-mode,
-.fan-mode {
+.fan-mode,
+.gpupower {
     background-size: contain;
     background-position: 15px 0;
     background-repeat: no-repeat;
     padding-left: 35px;
+    padding-right: 25px;
 }
 .gfx-mode{
     background-size: 24px;
@@ -110,9 +120,22 @@
     background-image: url("icons/scalable/rog-red.svg");
 }
 
-/* .active {
-    background-color: #5C804B;
-} */
+.gpupower{
+    background-size: 18px;
+    background-position: 27px 0px;
+    padding-left: 40px;
+    height: 40px;
+}
+.gpupower.active{
+    background-image: url("icons/scalable/bulb-on.svg");
+}
+.gpupower.off,
+.gpupower.suspended,
+.gpupower.unknown{
+    background-image: url("icons/scalable/bulb-off.svg");
+    background-position: 30px 2px;
+    background-size: 13px;
+}
 
 .asusctl-modal-dialog{
     padding: 30px;
