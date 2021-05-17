@@ -4,13 +4,9 @@ Extension for visualizing [asusctl](https://gitlab.com/asus-linux/asusctl)(`asus
 
 ## Views
 
-Panel icon(color changes due profilechange):
+Panel icon and Popup Menu:
 
-![panel-icon.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/icons/examples/panel-icon.png)
-
-Panelmenu subentry which shows the current GFX mode as well as the selected profile:
-
-![gfx-mode.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/icons/examples/gfx-mode-profile.png)
+![panel-menu.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/icons/examples/panel-menu.png)
 
 Notification on profile change:
 
@@ -27,6 +23,9 @@ Done:
 * Basic GFX Info
 * Change profile
 * Change GFX mode
+* Show dGPU power status in panel and menu
+* Show GFX mode status in panel and menu
+* react on changes of power profiles, dGPU power states and GFX modes 
 
 ToDo:
 
