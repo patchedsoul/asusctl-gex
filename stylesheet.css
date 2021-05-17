@@ -1,7 +1,7 @@
 /* panel icons */
 
 .asusctl-gex-panel-layout{
-    width: 80px;
+    width: 75px;
     padding: 0 5px;
 }
 .asusctl-gex-panel-icon {
@@ -11,7 +11,7 @@
     background-image: url("icons/scalable/rog-white.svg");
 }
 .asusctl-gex-panel-icon-gpupower{
-    background-size: 18px;
+    background-size: 17px;
 }
 
 .logout .asusctl-gex-panel-icon-profile,
@@ -35,7 +35,8 @@
     background-image: url("icons/scalable/bulb-on.svg");
 }
 .off .asusctl-gex-panel-icon-gpupower,
-.suspended .asusctl-gex-panel-icon-gpupower{
+.suspended .asusctl-gex-panel-icon-gpupower,
+.unknown .asusctl-gex-panel-icon-gpupower{
     background-image: url("icons/scalable/bulb-off.svg");
     background-size: 12px;
 }
