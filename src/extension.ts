@@ -80,7 +80,9 @@ export class Extension implements IEnableableModule {
                             menuItems[item].label.set_text(`${menuItems[item].label.text}  ✔`);
                         }
                         menu.addMenuItem(menuItems[item], position);
-                        menuItems[item].connect('activate', () => {this.gfxMode.connector.setGfxMode(item)});
+                        menuItems[item].connect('activate', () => {
+                            this.gfxMode.connector.setGfxMode(item);
+                        });
                         position++;
                     }
 

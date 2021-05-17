@@ -58,7 +58,7 @@ export class GfxMode implements IStoppableModule {
         return currentMode;
     }
 
-    public setGfxMode(mode: string) {
+    public setGfxMode(mode: number) {
         let newMode:any = false;
 
         if (this.connected){
@@ -67,7 +67,7 @@ export class GfxMode implements IStoppableModule {
 
                 ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[newMode]} ${this.powerLabel[this.lastStatePower]}`;
 
-                Panel.Actions.updateMode('gfx-mode', newMode);
+                Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
             } catch(e) {
                 Log.error('Graphics Mode DBus switching failed!');
                 Log.error(e);
@@ -150,12 +150,8 @@ export class GfxMode implements IStoppableModule {
             let power = this.asusLinuxProxy.PowerSync().toString().trim();
             
             Log.info(`Initial Graphics Mode is ${this.gfxLabels[vendor]}. Power State at the moment is ${this.powerLabel[power]}${(power == 0 ? " (this can change on hybrid and compute mode)" : "")}`);
-            try {
-                Panel.Actions.updateMode('gfx-mode', vendor);
-            } catch (e) {
-                Log.error(`Update Panel Graphics mode failed!`);
-                Log.error(e);
-            }
+
+            Panel.Actions.updateMode('gfx-mode', vendor);
 
             // connect to Gfx
             this.asusLinuxProxy.connectSignal(
@@ -164,10 +160,10 @@ export class GfxMode implements IStoppableModule {
                     if (proxy_) {
 
                         Log.info(`[dbus${name_}]: The Graphics Mode has changed.`);
-                        // Log.info(`${value}`);
 
                         let msg = `The Graphics Mode has changed.`;
-                        if (value !== 2){
+
+                        if (this.userAction[value] !== 'none'){
                             msg = `The Graphics Mode has changed. Please ${this.userAction[value]} to apply the changes.`;
                         }
 
@@ -175,7 +171,6 @@ export class GfxMode implements IStoppableModule {
                             Panel.Title,
                             msg,
                             'system-reboot-symbolic',
-                            this.userAction[value],
                             this.userAction[value]
                         );
                     }

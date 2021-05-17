@@ -92,7 +92,6 @@ export class Profile implements IStoppableModule {
                 Panel.Actions.notify(
                     Panel.Title, 
                     message,
-                    this.profileIcons[curState],
                     this.profileColor[curState]
                 );
             }

@@ -98,7 +98,7 @@ export class Actions {
         }
     }
 
-    public static notify(msg:string = Title, details:string, icon: string, panelIcon: string = "", action: string = "") {
+    public static notify(msg:string = Title, details:string, icon: string, action: string = "") {
         Log.info(`${Me.path}/icons/scalable/${icon}.svg`);
         let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/scalable/${icon}.svg`); // no need for system-icons
         // unsure, "gicon" might be needed on both, notif needs it in any case
@@ -115,9 +115,6 @@ export class Actions {
         }
 
         source.showNotification(notification);
-
-        if (panelIcon !== '')
-            Main.panel.statusArea['asusctl-gex.panel'].style_class = 'panel-icon ' + panelIcon;
     }
 
     public static updateMode(selector:string, vendor:string) {
