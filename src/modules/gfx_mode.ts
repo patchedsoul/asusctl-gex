@@ -11,6 +11,7 @@ const GLib = imports.gi.GLib;
 
 export class Client implements IStoppableModule {
     panelButton: any = null;
+    igpu: string = 'intel';
     connector: any = null
     connected: boolean = false;
 
@@ -33,7 +34,8 @@ export class Client implements IStoppableModule {
         try {
             let isAMD:boolean = GLib.file_test('/sys/bus/pci/drivers/amdgpu', GLib.FileTest.EXISTS);
             Log.info(`integrated GPU: AMD`);
-            return isAMD ? 'amd' : 'intel';
+            this.igpu = isAMD ? 'amd' : 'intel';
+            return this.igpu;
         } catch (e) {
             Log.info(`integrated GPU: Intel`);
             return 'intel';

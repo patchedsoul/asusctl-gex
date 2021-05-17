@@ -47,6 +47,13 @@ export class Button implements IDestroyableModule {
                 track_hover: true
             });
 
+            this._binGpu = new St.Bin({ 
+                style_class: 'panel-bin-gpu',
+                reactive: true,
+                can_focus: true,
+                track_hover: true
+            });
+
             this._binGpuPower = new St.Bin({ 
                 style_class: 'panel-bin-gpupower',
                 reactive: true,
@@ -57,14 +64,19 @@ export class Button implements IDestroyableModule {
             this._iconProfile = new St.Icon({
                 style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-profile'
             });
+            this._iconGpu = new St.Icon({
+                style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpu'
+            });
             this._iconGpuPower = new St.Icon({
                 style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpupower'
             });
 
             this._binProfile.add_actor(this._iconProfile);
+            this._binGpu.add_actor(this._iconGpu);
             this._binGpuPower.add_actor(this._iconGpuPower);
 
             indicatorLayout.add_child(this._binProfile);
+            indicatorLayout.add_child(this._binGpu);
             indicatorLayout.add_child(this._binGpuPower);
 
 		    this.add_child(indicatorLayout);
@@ -99,7 +111,6 @@ export class Actions {
     }
 
     public static notify(msg:string = Title, details:string, icon: string, action: string = "") {
-        Log.info(`${Me.path}/icons/scalable/${icon}.svg`);
         let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/scalable/${icon}.svg`); // no need for system-icons
         // unsure, "gicon" might be needed on both, notif needs it in any case
         let source = new MessageTray.Source(msg, icon, {gicon: gIcon});
@@ -130,6 +141,7 @@ export class Actions {
                         mi.label.set_text(`${mi.label.text}  ✔`);
                     } else if (mi.style_class.includes('active')){
                         mi.style_class = mi.style_class.split('active').join(' ');
+                        Log.info(mi.style_class);
                         mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
                     }
                 }

@@ -1,7 +1,7 @@
 /* panel icons */
 
 .asusctl-gex-panel-layout{
-    width: 75px;
+    width: 115px;
     padding: 0 5px;
 }
 .asusctl-gex-panel-icon {
@@ -12,6 +12,11 @@
 }
 .asusctl-gex-panel-icon-gpupower{
     background-size: 17px;
+    width: 17px;
+}
+.asusctl-gex-panel-icon-gpu{
+    background-size: 20px;
+    background-image: url("icons/scalable/gpu-none.svg");
 }
 
 .logout .asusctl-gex-panel-icon-profile,
@@ -38,32 +43,26 @@
 .suspended .asusctl-gex-panel-icon-gpupower,
 .unknown .asusctl-gex-panel-icon-gpupower{
     background-image: url("icons/scalable/bulb-off.svg");
-    background-size: 12px;
+    background-size: 11px;
 }
-
-/* notification icons */
-.notification-icon {
-    background-size: contain;
-    height: 64px;
-    width: 64px;
+.integrated.amd:hover .asusctl-gex-panel-icon-gpu{
+    background-image: url("icons/scalable/gpu-amd.svg");
 }
-.notification-icon.red {
-    background-image: url("icons/scalable/rog-red.svg");
+.hybrid.amd:hover .asusctl-gex-panel-icon-gpu,
+.compute.amd:hover .asusctl-gex-panel-icon-gpu,
+.vfio.amd:hover .asusctl-gex-panel-icon-gpu{
+    background-image: url("icons/scalable/gpu-amd-nvidia.svg");
 }
-.notification-icon.orange {
-    background-image: url("icons/scalable/rog-orange.svg");
+.integrated.intel:hover .asusctl-gex-panel-icon-gpu{
+    background-image: url("icons/scalable/gpu-intel.svg");
 }
-.notification-icon.yellow {
-    background-image: url("icons/scalable/rog-yellow.svg");
+.hybrid.intel:hover .asusctl-gex-panel-icon-gpu,
+.compute.intel:hover .asusctl-gex-panel-icon-gpu,
+.vfio.intel:hover .asusctl-gex-panel-icon-gpu{
+    background-image: url("icons/scalable/gpu-intel-nvidia.svg");
 }
-.notification-icon.green {
-    background-image: url("icons/scalable/rog-green.svg");
-}
-.notification-icon.blue {
-    background-image: url("icons/scalable/rog-blue.svg");
-}
-.notification-icon.white {
-    background-image: url("icons/scalable/rog-white.svg");
+.nvidia:hover .asusctl-gex-panel-icon-gpu{
+    background-image: url("icons/scalable/gpu-nvidia.svg");
 }
 
 .headline {

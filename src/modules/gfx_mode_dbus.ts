@@ -65,7 +65,7 @@ export class GfxMode implements IStoppableModule {
             try {
                 newMode = this.asusLinuxProxy.SetVendorSync(mode);
 
-                ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[newMode]} ${this.powerLabel[this.lastStatePower]}`;
+                ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[newMode]} ${this.powerLabel[this.lastStatePower]} ${ext.gfxMode.igpu}`;
 
                 Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
             } catch(e) {
@@ -99,7 +99,7 @@ export class GfxMode implements IStoppableModule {
 
             Log.info(`Graphics Mode DBus power mode changed: ${this.powerLabel[gpuPowerLocal]}/${gpuPowerLocal}`);
 
-            ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[this.lastState]} ${this.powerLabel[gpuPowerLocal]}`;
+            ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[this.lastState]} ${this.powerLabel[gpuPowerLocal]} ${ext.gfxMode.igpu}`;
 
             Panel.Actions.updateMode('gpupower', this.powerLabel[gpuPowerLocal]);
 
@@ -116,7 +116,6 @@ export class GfxMode implements IStoppableModule {
                 if (gpuPowerLocal !== this.lastStatePower){
                     this.updatePanelPower(gpuPowerLocal);
                 }
-                this.updatePanelPower(gpuPowerLocal);
             } catch (e){
                 Log.error(`Graphics Mode DBus power mode poller init failed!`);
                 Log.error(e);
