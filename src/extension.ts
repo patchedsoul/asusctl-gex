@@ -87,7 +87,8 @@ export class Extension implements IEnableableModule {
                     }
 
                     // gpu power items
-                    let gpuPowerItem = new PM.PopupMenuItem('dedicated GPU: on', {style_class: 'gpupower on'});
+                    let gpuPower = this.gfxMode.connector.getGpuPower();
+                    let gpuPowerItem = new PM.PopupMenuItem(`dedicated GPU: ${this.gfxMode.connector.powerLabel[gpuPower]}`, {style_class: `gpupower ${this.gfxMode.connector.powerLabel[gpuPower]}`});
                     menu.addMenuItem(gpuPowerItem, 1);
                 }
             });
@@ -104,6 +105,9 @@ export class Extension implements IEnableableModule {
 
 // @ts-ignore
 function init() {
-    ext = new Extension();
+    // @ts-ignore
+    if (typeof ext !== 'Extension'){
+        ext = new Extension();
+    }
     return ext;
 }
