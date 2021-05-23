@@ -23,7 +23,7 @@ package:
   script:
     - npm run build
     - npm run zip
-    - rm -rf target
+    - rm -rf target node_modules schemas *lock.json
     - mv _build asusctl-gex@asus-linux.org
   artifacts:
     name: "asusctl-gex-$CI_COMMIT_TAG"
