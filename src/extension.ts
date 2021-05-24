@@ -88,7 +88,11 @@ export class Extension implements IEnableableModule {
 
                     // gpu power items
                     let gpuPower = this.gfxMode.connector.getGpuPower();
-                    let gpuPowerItem = new PM.PopupMenuItem(`dedicated GPU: ${this.gfxMode.connector.powerLabel[gpuPower]}`, {style_class: `gpupower ${this.gfxMode.connector.powerLabel[gpuPower]}`});
+                    let gpuPowerItem = new PM.PopupMenuItem(`dedicated GPU: ${this.gfxMode.connector.powerLabel[gpuPower]}`, {
+                        hover: false,
+                        can_focus: false,
+                        style_class: `gpupower ${this.gfxMode.connector.powerLabel[gpuPower]}`
+                    });
                     menu.addMenuItem(gpuPowerItem, 1);
                 }
             });

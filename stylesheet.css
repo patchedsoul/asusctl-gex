@@ -26,6 +26,18 @@
     background-size: 18px;
 }
 
+/* Profile icons default */
+.normal .asusctl-gex-panel-icon-profile {
+    background-image: url("icons/scalable/rog-yellow-panel.svg");
+}
+.boost .asusctl-gex-panel-icon-profile {
+    background-image: url("icons/scalable/rog-red-panel.svg");
+}
+.silent .asusctl-gex-panel-icon-profile {
+    background-image: url("icons/scalable/rog-green-panel.svg");
+}
+
+/* Profile icons hover */
 .normal:hover .asusctl-gex-panel-icon-profile {
     background-image: url("icons/scalable/rog-yellow.svg");
 }
@@ -36,6 +48,7 @@
     background-image: url("icons/scalable/rog-green.svg");
 }
 
+/* GPU Power icons */
 .active .asusctl-gex-panel-icon-gpupower {
     background-image: url("icons/scalable/bulb-on.svg");
 }

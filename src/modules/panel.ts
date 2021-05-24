@@ -141,7 +141,6 @@ export class Actions {
                         mi.label.set_text(`${mi.label.text}  ✔`);
                     } else if (mi.style_class.includes('active')){
                         mi.style_class = mi.style_class.split('active').join(' ');
-                        Log.info(mi.style_class);
                         mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
                     }
                 }
