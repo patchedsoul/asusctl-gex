@@ -95,7 +95,7 @@ export class Profile implements IStoppableModule {
 
             this.connected = true;
 
-            // This is the _data, how on earth do we parse it?
+            // This is the _data
             // string, byte, byte, bool, uint32, string
             // pub struct Profile {
             //     pub name: String,
@@ -106,14 +106,16 @@ export class Profile implements IStoppableModule {
             //     pub fan_curve: String,
             // }
             // {name: string, _min: number, _max: number, _turbo: boolean, _fan: number, _curve: string}
+            //
+            // example return of data_: [["silent",0,100,false,2,""]]
             this.asusLinuxProxy.connectSignal(
                 "NotifyProfile",
-                (proxy_: any = null, name_: string, _data: object) => {
+                (proxy_: any = null, name_: string, data_: object) => {
                     if (proxy_) {
-                        let profile = this.asusLinuxProxy.ActiveNameSync().toString().trim();
-                        //if (profile !== this.lastState) {
+                        let dataArray = data_.toString().split(',');
+                        
+                        let profile = dataArray[0];
                         this.updateProfile(profile);
-                        //}
                         Log.info(`[dbus${name_}]: The profile has changed to ${profile}`);
                     }
                 }

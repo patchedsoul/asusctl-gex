@@ -65,18 +65,15 @@ export class GfxMode implements IStoppableModule {
             try {
                 newMode = this.asusLinuxProxy.SetVendorSync(mode);
 
-                ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[newMode]} ${this.powerLabel[this.lastStatePower]} ${ext.gfxMode.igpu}`;
+                if (newMode !== this.lastState) this.lastState = newMode;
 
-                Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
+                return newMode;
             } catch(e) {
                 Log.error('Graphics Mode DBus switching failed!');
                 Log.error(e);
+                return false;
             }
         }
-
-        if (newMode !== this.lastState) this.lastState = newMode;
-
-        return newMode;
     }
 
     public getGpuPower(){
@@ -152,7 +149,7 @@ export class GfxMode implements IStoppableModule {
 
             Panel.Actions.updateMode('gfx-mode', vendor);
 
-            // connect to Gfx
+            // connect NotifyAction
             this.asusLinuxProxy.connectSignal(
                 "NotifyAction",
                 (proxy_: any = null, name_: string, value: number) => {
@@ -160,11 +157,17 @@ export class GfxMode implements IStoppableModule {
 
                         Log.info(`[dbus${name_}]: The Graphics Mode has changed.`);
 
+                        let newMode = this.asusLinuxProxy.VendorSync();
+
                         let msg = `The Graphics Mode has changed.`;
 
                         if (this.userAction[value] !== 'none'){
-                            msg = `The Graphics Mode has changed. Please ${this.userAction[value]} to apply the changes.`;
+                            msg = `The Graphics Mode has changed to ${this.gfxLabels[newMode]}. Please ${this.userAction[value]} to apply the changes.`;
                         }
+
+                        ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[newMode]} ${this.powerLabel[this.lastStatePower]} ${ext.gfxMode.igpu}`;
+
+                        Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
 
                         Panel.Actions.notify(
                             Panel.Title,
