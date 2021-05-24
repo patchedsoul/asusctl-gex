@@ -18,11 +18,11 @@ export class GfxMode implements IStoppableModule {
     lastStatePower: number = 3;
     xml: string;
     public gfxLabels: any = {
+        0: 'nvidia',
         1: 'integrated',
         2: 'compute',
         3: 'vfio',
         4: 'hybrid',
-        0: 'nvidia'
     };
     public powerLabel: any = {
         0: 'active',

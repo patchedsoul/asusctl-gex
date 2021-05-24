@@ -16,7 +16,7 @@ Notification on profile change:
 
 Done:
 
-* Panel Icon (diffrent colors for each profile)
+* Panel Icon (different colors for each profile)
 * Notification with colored icons
 * Reboot/Logout information with icon and interactive confirmation
 * Basic Profile (FanMode) Info
@@ -25,7 +25,7 @@ Done:
 * Change GFX mode
 * Show dGPU power status in panel and menu
 * Show GFX mode status in panel and menu
-* react on changes of power profiles, dGPU power states and GFX modes 
+* react on changes of power profiles, dGPU power states and GFX modes
 
 ToDo:
 
@@ -48,7 +48,7 @@ In a gnome-terminal(user) enter the following two commands:
 ```bash
 git clone git@gitlab.com:asus-linux/asusctl-gex.git /tmp/asusctl-gex && cd /tmp/asusctl-gex
 npm install
-npm run build && npm run install
+npm run build && npm run install-user
 ```
 
 ## Debuging / Building
