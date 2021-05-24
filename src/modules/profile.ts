@@ -12,7 +12,7 @@ export class Client implements IStoppableModule {
 
     constructor() {        
         try {
-            this.connector = new DBus.Profile("org-asuslinux-profile-3.0.0");
+            this.connector = new DBus.Profile("org-asuslinux-profile-3.5.3");
         } catch(e) {
             Log.error(`Profile client initialization failed!`);
             Log.error(e);
