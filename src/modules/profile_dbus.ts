@@ -74,7 +74,7 @@ export class Profile implements IStoppableModule {
 
             ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${curState} ${ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState]} ${ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower]} ${ext.gfxMode.igpu}`;
 
-            Log.info(ext.panelButton.indicator.style_class);
+            // Log.info(ext.panelButton.indicator.style_class);
 
             // update state
             this.lastState = curState;
@@ -112,11 +112,47 @@ export class Profile implements IStoppableModule {
                 "NotifyProfile",
                 (proxy_: any = null, name_: string, data_: object) => {
                     if (proxy_) {
-                        let dataArray = data_.toString().split(',');
+                        let profileValues = {
+                            name: '',
+                            min: 0,
+                            max: 100,
+                            turbo: true,
+                            fan: 1,
+                            curve: null
+                        };
                         
-                        let profile = dataArray[0];
-                        this.updateProfile(profile);
-                        Log.info(`[dbus${name_}]: The profile has changed to ${profile}`);
+                        if (typeof data_ === 'object'){
+                            //@ts-ignore
+                            for (const [key, value] of Object.entries(data_)) {
+                                value.forEach((element:any, index:number) => {
+                                    if (index == 0){
+                                        profileValues.name = element;
+                                    }
+                                    if (index == 1){
+                                        profileValues.min = element;
+                                    }
+                                    if (index == 2){
+                                        profileValues.max = element;
+                                    }
+                                    if (index == 3){
+                                        profileValues.turbo = element;
+                                    }
+                                    if (index == 4){
+                                        profileValues.fan = element;
+                                    }
+                                    if (index == 5){
+                                        profileValues.curve = element;
+                                    }
+                                });
+                            }
+                        }
+                        
+                        if (profileValues.name !== ''){
+                            this.updateProfile(profileValues.name);
+                            Log.info(`[dbus${name_}]: The profile has changed to ${profileValues.name}`);
+                        } else {
+                            Log.error(`[dbus${name_}]: The profile has not been changed: no profile name given.`);
+                        }
                     }
                 }
             );
