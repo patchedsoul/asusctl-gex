@@ -111,18 +111,30 @@ export class Actions {
     }
 
     public static notify(msg:string = Title, details:string, icon: string, action: string = "") {
-        let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/scalable/rog-${icon}.svg`); // no need for system-icons
+        Log.info(`notification-${icon}`);
+
+        let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/scalable/notification-${icon}.svg`); // no need for system-icons
         // unsure, "gicon" might be needed on both, notif needs it in any case
-        let source = new MessageTray.Source(msg, icon, {gicon: gIcon});
-        let notification = new MessageTray.Notification(source, msg, details, {gicon: gIcon});
+
+        let params = {
+            bannerMarkup: true,
+            gicon: gIcon
+        };
+
+        let source = new MessageTray.Source(msg, icon, params);
+        let notification = new MessageTray.Notification(source, msg, details, params);
         
         Main.messageTray.add(source);
         notification.setTransient(true);
 
         if (action == 'reboot'){
+            notification.setUrgency(3);
             notification.addAction('Reboot Now!', () => {this.spawnCommandLine('systemctl reboot')});
         } else if (action == 'logout'){
+            notification.setUrgency(3);
             notification.addAction('Log Out Now!', () => {this.spawnCommandLine('gnome-session-quit')});
+        } else {
+            notification.setUrgency(2);
         }
 
         source.showNotification(notification);
