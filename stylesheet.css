@@ -3,7 +3,7 @@
 .asusctl-gex-panel-icon-gpu{
     width: 0px;
 }
-.asusctl-gex-panel-layout:active .asusctl-gex-panel-icon-gpu,
+.asusctl-gex-panel-layout.active .asusctl-gex-panel-icon-gpu,
 .asusctl-gex-panel-layout:hover .asusctl-gex-panel-icon-gpu{
     width: 30px;
 }

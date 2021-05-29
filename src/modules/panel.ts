@@ -16,7 +16,7 @@ const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 
-export const Title = 'AsusNB Control';
+export const Title = 'ASUS Notebook Control';
 
 export class Button implements IDestroyableModule {
     public indicator: any;
@@ -32,7 +32,7 @@ export class Button implements IDestroyableModule {
 
             this.style_class = this._defaultClasses;
 
-            let indicatorLayout = new St.BoxLayout({
+            this._indicatorLayout = new St.BoxLayout({
                 vertical: false,
                 style_class: 'asusctl-gex-panel-layout system-status-icon panel-button',
                 reactive: true,
@@ -68,13 +68,21 @@ export class Button implements IDestroyableModule {
             this._binProfile.add_actor(this._iconProfile);
             this._binGpu.add_actor(this._iconGpu);
 
-            indicatorLayout.add_child(this._binProfile);
-            indicatorLayout.add_child(this._binGpu);
+            this._indicatorLayout.add_child(this._binProfile);
+            this._indicatorLayout.add_child(this._binGpu);
 
-		    this.add_child(indicatorLayout);
+		    this.add_child(this._indicatorLayout);
 
             // populating panelMenu (extend)
             this.popupMenu = new Popup.Menu(this.menu);
+
+            this.menu.connect('open-state-changed', Lang.bind(this._indicatorLayout, () => {
+                if (this._indicatorLayout.style_class.includes('active')){
+                    this._indicatorLayout.style_class = this._indicatorLayout.style_class.split('active').join(' ');
+                } else {
+                    this._indicatorLayout.style_class = `${this._indicatorLayout.style_class} active`;
+                }
+            }));
         }
     });
 
