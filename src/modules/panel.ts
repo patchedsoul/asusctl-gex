@@ -16,7 +16,7 @@ const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
 
-export const Title = 'AsusNB Control';
+export const Title = 'ASUS Notebook Control';
 
 export class Button implements IDestroyableModule {
     public indicator: any;
@@ -32,7 +32,7 @@ export class Button implements IDestroyableModule {
 
             this.style_class = this._defaultClasses;
 
-            let indicatorLayout = new St.BoxLayout({
+            this._indicatorLayout = new St.BoxLayout({
                 vertical: false,
                 style_class: 'asusctl-gex-panel-layout system-status-icon panel-button',
                 reactive: true,
@@ -54,35 +54,35 @@ export class Button implements IDestroyableModule {
                 track_hover: true
             });
 
-            this._binGpuPower = new St.Bin({ 
-                style_class: 'panel-bin-gpupower',
-                reactive: true,
-                can_focus: true,
-                track_hover: true
-            });
-
             this._iconProfile = new St.Icon({
+                gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-boost.svg`),
                 style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-profile'
             });
+
             this._iconGpu = new St.Icon({
+                gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/gpu-none.svg`),
+                icon_size: 12,
                 style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpu'
-            });
-            this._iconGpuPower = new St.Icon({
-                style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpupower'
             });
 
             this._binProfile.add_actor(this._iconProfile);
             this._binGpu.add_actor(this._iconGpu);
-            this._binGpuPower.add_actor(this._iconGpuPower);
 
-            indicatorLayout.add_child(this._binProfile);
-            indicatorLayout.add_child(this._binGpu);
-            indicatorLayout.add_child(this._binGpuPower);
+            this._indicatorLayout.add_child(this._binProfile);
+            this._indicatorLayout.add_child(this._binGpu);
 
-		    this.add_child(indicatorLayout);
+		    this.add_child(this._indicatorLayout);
 
             // populating panelMenu (extend)
             this.popupMenu = new Popup.Menu(this.menu);
+
+            this.menu.connect('open-state-changed', Lang.bind(this._indicatorLayout, () => {
+                if (this._indicatorLayout.style_class.includes('active')){
+                    this._indicatorLayout.style_class = this._indicatorLayout.style_class.split('active').join(' ');
+                } else {
+                    this._indicatorLayout.style_class = `${this._indicatorLayout.style_class} active`;
+                }
+            }));
         }
     });
 
@@ -140,6 +140,40 @@ export class Actions {
     }
 
     public static updateMode(selector:string, vendor:string) {
+        // update panel class
+        ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState]} ${ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower]} ${ext.gfxMode.igpu}`;
+
+        // update profile icon panel
+        let profileIconName = ext.profile.connector.lastState;
+        if (ext.profile.connector.lastState !== 'normal' &&
+            ext.profile.connector.lastState !== 'silent' &&
+            ext.profile.connector.lastState !== 'boost'){
+            profileIconName = 'boost';
+        }
+        if (ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower] == 'active'){
+            profileIconName += '-active';
+        }
+
+        ext.panelButton.indicator._iconProfile = new St.Icon({
+            gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-${profileIconName}.svg`),
+            style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-profile'
+        });
+        ext.panelButton.indicator._binProfile.add_actor(ext.panelButton.indicator._iconProfile);
+
+        // update gpu icon panel
+        let gpuIconName = ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState];
+        if (gpuIconName !== 'nvidia'){
+            gpuIconName = `${ext.gfxMode.igpu}-${gpuIconName}`;
+        }
+        
+        ext.panelButton.indicator._iconGpu = new St.Icon({
+            gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/panel-${gpuIconName}.svg`),
+            icon_size: 12,
+            style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpu'
+        });
+        ext.panelButton.indicator._binGpu.add_actor(ext.panelButton.indicator._iconGpu);
+
+        // update menu items
         let menuItems = Main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
         menuItems.forEach((mi: { label: any; style_class: string; }) => {
             if (mi.style_class.includes(selector)){

@@ -6,26 +6,27 @@ Extension for visualizing [asusctl](https://gitlab.com/asus-linux/asusctl)(`asus
 
 Panel icon and Popup Menu:
 
-![panel-menu.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/icons/examples/panel-menu.png)
+![panel-open.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-open.png)
 
 Notification on profile change:
 
-![profile-change-notice.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/icons/examples/profile-change-notice.png)
+![notification.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/notification.png)
 
 ## Status
 
 Done:
 
-* Panel Icon (different colors for each profile)
-* Notification with colored icons
-* Reboot/Logout information with icon and interactive confirmation
-* Basic Profile (FanMode) Info
-* Basic GFX Info
-* Change profile
-* Change GFX mode
-* Show dGPU power status in panel and menu
-* Show GFX mode status in panel and menu
-* react on changes of power profiles, dGPU power states and GFX modes
+* Panel Icon
+  * changes dynamically on:
+    * profile changes
+    * dedicated GPU power status changes
+    * graphics mode changes
+* Notification with profile icons
+* Reboot / Logout information with icon and interactive confirmation
+* Popup Menu with the possibilities to:
+  * view the power status of the dedicated GPU
+  * change the power profile
+  * change the graphics mode
 
 ToDo:
 

@@ -96,12 +96,9 @@ export class GfxMode implements IStoppableModule {
 
             Log.info(`Graphics Mode DBus power mode changed: ${this.powerLabel[gpuPowerLocal]}/${gpuPowerLocal}`);
 
-            ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[this.lastState]} ${this.powerLabel[gpuPowerLocal]} ${ext.gfxMode.igpu}`;
+            this.lastStatePower = gpuPowerLocal;
 
             Panel.Actions.updateMode('gpupower', this.powerLabel[gpuPowerLocal]);
-
-            // update state
-            this.lastStatePower = gpuPowerLocal;
         }
     }
 
@@ -155,17 +152,17 @@ export class GfxMode implements IStoppableModule {
                 (proxy_: any = null, name_: string, value: number) => {
                     if (proxy_) {
 
-                        Log.info(`[dbus${name_}]: The Graphics Mode has changed.`);
+                        Log.info(`[dbus${name_}]: Graphics Mode has changed.`);
 
                         let newMode = this.asusLinuxProxy.VendorSync();
 
-                        let msg = `The Graphics Mode has changed.`;
+                        if (newMode !== this.lastState) this.lastState = newMode;
+
+                        let msg = `Graphics Mode has changed.`;
 
                         if (this.userAction[value] !== 'none'){
-                            msg = `The Graphics Mode has changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]}, to apply the changes.`;
+                            msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]}, to apply the changes.`;
                         }
-
-                        ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[newMode]} ${this.powerLabel[this.lastStatePower]} ${ext.gfxMode.igpu}`;
 
                         Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
 
