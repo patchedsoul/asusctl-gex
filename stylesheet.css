@@ -1,82 +1,14 @@
 /* panel icons */
 
-.asusctl-gex-panel-layout{
-    width: 115px;
-    padding: 0 5px;
-}
-.asusctl-gex-panel-icon {
-    background-size: 28px;
-    width: 20px;
-    padding: 0 10px;
-    background-image: url("icons/scalable/rog-white.svg");
-}
-.asusctl-gex-panel-icon-gpupower{
-    background-size: 17px;
-    width: 17px;
-}
 .asusctl-gex-panel-icon-gpu{
-    background-size: 20px;
-    background-image: url("icons/scalable/gpu-none.svg");
+    width: 0px;
+}
+.asusctl-gex-panel-layout:active .asusctl-gex-panel-icon-gpu,
+.asusctl-gex-panel-layout:hover .asusctl-gex-panel-icon-gpu{
+    width: 30px;
 }
 
-.logout .asusctl-gex-panel-icon-profile,
-.reboot .asusctl-gex-panel-icon-profile,
-.restartx .asusctl-gex-panel-icon-profile {
-    background-image: url("icons/scalable/reboot.svg");
-    background-size: 18px;
-}
-
-/* Profile icons default */
-.normal .asusctl-gex-panel-icon-profile {
-    background-image: url("icons/scalable/rog-yellow-panel.svg");
-}
-.boost .asusctl-gex-panel-icon-profile {
-    background-image: url("icons/scalable/rog-red-panel.svg");
-}
-.silent .asusctl-gex-panel-icon-profile {
-    background-image: url("icons/scalable/rog-green-panel.svg");
-}
-
-/* Profile icons hover */
-.normal:hover .asusctl-gex-panel-icon-profile {
-    background-image: url("icons/scalable/rog-yellow.svg");
-}
-.boost:hover .asusctl-gex-panel-icon-profile {
-    background-image: url("icons/scalable/rog-red.svg");
-}
-.silent:hover .asusctl-gex-panel-icon-profile {
-    background-image: url("icons/scalable/rog-green.svg");
-}
-
-/* GPU Power icons */
-.active .asusctl-gex-panel-icon-gpupower {
-    background-image: url("icons/scalable/bulb-on.svg");
-}
-.off .asusctl-gex-panel-icon-gpupower,
-.suspended .asusctl-gex-panel-icon-gpupower,
-.unknown .asusctl-gex-panel-icon-gpupower{
-    background-image: url("icons/scalable/bulb-off.svg");
-    background-size: 11px;
-}
-.integrated.amd:hover .asusctl-gex-panel-icon-gpu{
-    background-image: url("icons/scalable/gpu-amd.svg");
-}
-.hybrid.amd:hover .asusctl-gex-panel-icon-gpu,
-.compute.amd:hover .asusctl-gex-panel-icon-gpu,
-.vfio.amd:hover .asusctl-gex-panel-icon-gpu{
-    background-image: url("icons/scalable/gpu-amd-nvidia.svg");
-}
-.integrated.intel:hover .asusctl-gex-panel-icon-gpu{
-    background-image: url("icons/scalable/gpu-intel.svg");
-}
-.hybrid.intel:hover .asusctl-gex-panel-icon-gpu,
-.compute.intel:hover .asusctl-gex-panel-icon-gpu,
-.vfio.intel:hover .asusctl-gex-panel-icon-gpu{
-    background-image: url("icons/scalable/gpu-intel-nvidia.svg");
-}
-.nvidia:hover .asusctl-gex-panel-icon-gpu{
-    background-image: url("icons/scalable/gpu-nvidia.svg");
-}
+/* PopupMenu */
 
 .headline {
     margin-bottom: 10px;
@@ -97,23 +29,23 @@
 }
 .gfx-mode{
     background-size: 24px;
-    background-position: 24px 7px;
+    background-position: 24px 6px;
 }
 .gfx-mode.integrated.amd{
-    background-image: url("icons/scalable/gpu-amd.svg");
+    background-image: url("icons/scalable/gpu-amd-integrated.svg");
 }
 .gfx-mode.hybrid.amd,
 .gfx-mode.compute.amd,
 .gfx-mode.vfio.amd{
-    background-image: url("icons/scalable/gpu-amd-nvidia.svg");
+    background-image: url("icons/scalable/gpu-amd-hybrid.svg");
 }
 .gfx-mode.integrated.intel{
-    background-image: url("icons/scalable/gpu-intel.svg");
+    background-image: url("icons/scalable/gpu-intel-integrated.svg");
 }
 .gfx-mode.hybrid.intel,
 .gfx-mode.compute.intel,
 .gfx-mode.vfio.intel{
-    background-image: url("icons/scalable/gpu-intel-nvidia.svg");
+    background-image: url("icons/scalable/gpu-intel-hybrid.svg");
 }
 .gfx-mode.nvidia{
     background-image: url("icons/scalable/gpu-nvidia.svg");
@@ -121,16 +53,16 @@
 
 .fan-mode{
     background-size: 24px;
-    background-position: 24px 8px;
+    background-position: 24px 5px;
 }
 .fan-mode.silent {
-    background-image: url("icons/scalable/rog-green.svg");
+    background-image: url("icons/scalable/profile-silent.svg");
 }
 .fan-mode.normal {
-    background-image: url("icons/scalable/rog-yellow.svg");
+    background-image: url("icons/scalable/profile-normal.svg");
 }
 .fan-mode.boost {
-    background-image: url("icons/scalable/rog-red.svg");
+    background-image: url("icons/scalable/profile-boost.svg");
 }
 
 .gpupower{
@@ -140,12 +72,10 @@
     height: 40px;
 }
 .gpupower.active{
-    background-image: url("icons/scalable/bulb-on.svg");
+    background-image: url("icons/scalable/dgpu-on.svg");
 }
 .gpupower.off,
 .gpupower.suspended,
 .gpupower.unknown{
-    background-image: url("icons/scalable/bulb-off.svg");
-    background-position: 30px 2px;
-    background-size: 13px;
+    background-image: url("icons/scalable/dgpu-off.svg");
 }

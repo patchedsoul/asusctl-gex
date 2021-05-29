@@ -1,6 +1,6 @@
 {
   "name": "asusctl-gex",
-  "version": "1.0.0-rc4",
+  "version": "1.0.0-rc5",
   "description": "This extension allows you to visualize most of the asusd settings and status",
   "main": "_build/extension.js",
   "dependencies": {
@@ -9,7 +9,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "debug": "run-p build && dbus-run-session -- gnome-shell --nested --wayland",
+    "debug": "run-p build && run-p install-user && dbus-run-session -- gnome-shell --nested --wayland",
     "enable": "gnome-extensions enable \"asusctl-gex@asus-linux.org\"",
     "disable": "gnome-extensions disable \"asusctl-gex@asus-linux.org\"",
     "install-user": "scripts/install",
@@ -37,7 +37,7 @@
     "typescript"
   ],
   "author": "Armas Spann, Marco Laux",
-  "license": "ISC",
+  "license": "MPL-2",
   "bugs": {
     "url": "https://gitlab.com/asus-linux/asusctl-gex/issues"
   },

@@ -61,9 +61,6 @@ export class Profile implements IStoppableModule {
         if (curState !== '' && this.lastState !== curState) {
             let message = `${((this.lastState === '') ? 'initial' : 'changed')} profile: ${curState}`;
 
-            // updating panel popup-menulist
-            Panel.Actions.updateMode('fan-mode', curState);
-
             if (this.lastState !== '') {
                 Panel.Actions.notify(
                     Panel.Title,
@@ -71,13 +68,13 @@ export class Profile implements IStoppableModule {
                     curState
                 );
             }
-
-            ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${curState} ${ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState]} ${ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower]} ${ext.gfxMode.igpu}`;
-
-            // Log.info(ext.panelButton.indicator.style_class);
-
+            
             // update state
             this.lastState = curState;
+
+            // updating panel popup-menulist
+            Panel.Actions.updateMode('fan-mode', curState);
+
         }
     }
 
