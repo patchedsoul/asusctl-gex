@@ -162,7 +162,7 @@ export class GfxMode implements IStoppableModule {
                         let msg = `The Graphics Mode has changed.`;
 
                         if (this.userAction[value] !== 'none'){
-                            msg = `The Graphics Mode has changed to ${this.gfxLabels[newMode]}. Please ${this.userAction[value]} to apply the changes.`;
+                            msg = `The Graphics Mode has changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]}, to apply the changes.`;
                         }
 
                         ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${this.gfxLabels[newMode]} ${this.powerLabel[this.lastStatePower]} ${ext.gfxMode.igpu}`;
@@ -172,7 +172,7 @@ export class GfxMode implements IStoppableModule {
                         Panel.Actions.notify(
                             Panel.Title,
                             msg,
-                            'system-reboot-symbolic',
+                            this.userAction[value],
                             this.userAction[value]
                         );
                     }
