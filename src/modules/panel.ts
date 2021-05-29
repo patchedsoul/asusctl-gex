@@ -117,7 +117,6 @@ export class Actions {
         // unsure, "gicon" might be needed on both, notif needs it in any case
 
         let params = {
-            bannerMarkup: true,
             gicon: gIcon
         };
 
