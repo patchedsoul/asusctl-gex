@@ -59,7 +59,7 @@ export class Profile implements IStoppableModule {
 
     updateProfile(curState: string) {
         if (curState !== '' && this.lastState !== curState) {
-            let message = `${((this.lastState === '') ? 'initial' : 'changed')} profile: ${curState}`;
+            let message = `Power profile has changed to ${curState}`;
 
             if (this.lastState !== '') {
                 Panel.Actions.notify(
@@ -68,7 +68,7 @@ export class Profile implements IStoppableModule {
                     curState
                 );
             }
-            
+
             // update state
             this.lastState = curState;
 

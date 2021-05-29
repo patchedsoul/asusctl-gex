@@ -152,16 +152,16 @@ export class GfxMode implements IStoppableModule {
                 (proxy_: any = null, name_: string, value: number) => {
                     if (proxy_) {
 
-                        Log.info(`[dbus${name_}]: The Graphics Mode has changed.`);
+                        Log.info(`[dbus${name_}]: Graphics Mode has changed.`);
 
                         let newMode = this.asusLinuxProxy.VendorSync();
 
                         if (newMode !== this.lastState) this.lastState = newMode;
 
-                        let msg = `The Graphics Mode has changed.`;
+                        let msg = `Graphics Mode has changed.`;
 
                         if (this.userAction[value] !== 'none'){
-                            msg = `The Graphics Mode has changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]}, to apply the changes.`;
+                            msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]}, to apply the changes.`;
                         }
 
                         Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
