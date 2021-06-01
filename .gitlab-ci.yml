@@ -32,4 +32,4 @@ package:
   only:
     - tags
   except:
-    - master
+    - main
