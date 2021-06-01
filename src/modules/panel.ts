@@ -60,8 +60,7 @@ export class Button implements IDestroyableModule {
             });
 
             this._iconGpu = new St.Icon({
-                gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/gpu-none.svg`),
-                icon_size: 12,
+                gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/gpu-hybrid.svg`),
                 style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpu'
             });
 
@@ -111,10 +110,8 @@ export class Actions {
     }
 
     public static notify(msg:string = Title, details:string, icon: string, action: string = "") {
-        Log.info(`notification-${icon}`);
-
-        let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/scalable/notification-${icon}.svg`); // no need for system-icons
-        // unsure, "gicon" might be needed on both, notif needs it in any case
+        Log.info(`${Me.path}/icons/${icon}`);
+        let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/${icon}`);
 
         let params = {
             gicon: gIcon
@@ -140,6 +137,8 @@ export class Actions {
     }
 
     public static updateMode(selector:string, vendor:string) {
+        let warningIntegrated = (ext.gfxMode.connector.lastStatePower == 0 && ext.gfxMode.connector.lastState == 1);
+
         // update panel class
         ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState]} ${ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower]} ${ext.gfxMode.igpu}`;
 
@@ -150,9 +149,6 @@ export class Actions {
             ext.profile.connector.lastState !== 'boost'){
             profileIconName = 'boost';
         }
-        if (ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower] == 'active'){
-            profileIconName += '-active';
-        }
 
         ext.panelButton.indicator._iconProfile = new St.Icon({
             gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-${profileIconName}.svg`),
@@ -160,15 +156,9 @@ export class Actions {
         });
         ext.panelButton.indicator._binProfile.add_actor(ext.panelButton.indicator._iconProfile);
 
-        // update gpu icon panel
-        let gpuIconName = ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState];
-        if (gpuIconName !== 'nvidia'){
-            gpuIconName = `${ext.gfxMode.igpu}-${gpuIconName}`;
-        }
-        
+        // update gpu icon panel        
         ext.panelButton.indicator._iconGpu = new St.Icon({
-            gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/panel-${gpuIconName}.svg`),
-            icon_size: 12,
+            gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/gpu-${ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState]}${(ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower] == 'active' ? '-active' : '')}.svg`),
             style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpu'
         });
         ext.panelButton.indicator._binGpu.add_actor(ext.panelButton.indicator._iconGpu);
@@ -179,7 +169,11 @@ export class Actions {
             if (mi.style_class.includes(selector)){
                 if (selector == 'gpupower'){
                     mi.style_class = `${selector} ${vendor}`;
-                    mi.label.set_text(`dedicated GPU: ${vendor}`);
+                    if (warningIntegrated){
+                        mi.label.set_text(`integrated mode, dGPU ${vendor}, please reboot`);
+                    } else {
+                        mi.label.set_text(`dedicated GPU: ${vendor}`);
+                    }
                 } else {
                     if (mi.style_class.includes(vendor) && !mi.style_class.includes('active')){
                         mi.style_class = `${mi.style_class} active`;

@@ -94,6 +94,7 @@ export class Extension implements IEnableableModule {
                         style_class: `gpupower ${this.gfxMode.connector.powerLabel[gpuPower]}`
                     });
                     menu.addMenuItem(gpuPowerItem, 1);
+                    menu.addMenuItem(new PM.PopupSeparatorMenuItem(), 2)
                 }
             });
         }

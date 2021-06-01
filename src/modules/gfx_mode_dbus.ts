@@ -99,6 +99,16 @@ export class GfxMode implements IStoppableModule {
             this.lastStatePower = gpuPowerLocal;
 
             Panel.Actions.updateMode('gpupower', this.powerLabel[gpuPowerLocal]);
+
+            // if integrated and active show notification
+            if (gpuPowerLocal == 0 && this.lastState == 1){
+                Panel.Actions.notify(
+                    Panel.Title,
+                    `Your dedicated GPU turned on while you are on the integrated mode. This should not happen. It could be that another application rescanned your PCI bus. Rebooting is advised.`,
+                    'gif/fire.gif',
+                    'reboot'
+                );
+            }
         }
     }
 
@@ -161,7 +171,7 @@ export class GfxMode implements IStoppableModule {
                         let msg = `Graphics Mode has changed.`;
 
                         if (this.userAction[value] !== 'none'){
-                            msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]}, to apply the changes.`;
+                            msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]} to apply the changes.`;
                         }
 
                         Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
@@ -169,7 +179,7 @@ export class GfxMode implements IStoppableModule {
                         Panel.Actions.notify(
                             Panel.Title,
                             msg,
-                            this.userAction[value],
+                            `scalable/notification-${this.userAction[value]}.svg`,
                             this.userAction[value]
                         );
                     }
