@@ -65,7 +65,7 @@ export class Profile implements IStoppableModule {
                 Panel.Actions.notify(
                     Panel.Title,
                     message,
-                    curState
+                    `scalable/notification-${curState}.svg`
                 );
             }
 
