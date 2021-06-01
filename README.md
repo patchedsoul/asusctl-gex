@@ -44,23 +44,23 @@ _The screenshots are just examples and might not represent the current used icon
 
 |Icon|Description (status)|
 |-|-|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-silent.svg" height="30" alt="Power Profile Silent">|silent|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-normal.svg" height="30" alt="Power Profile Normal">|normal|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-boost.svg" height="30" alt="Power Profile Boost">|boost|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-silent.svg" height="30" alt="Power Profile Silent">|silent|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-normal.svg" height="30" alt="Power Profile Normal">|normal|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-boost.svg" height="30" alt="Power Profile Boost">|boost|
 
 ### GFX profile icons
 
 |Icon|Description|
 |-|-|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-nvidia.svg" height="30" alt="Graphics Profile Nvidia">|Nvidia (discrete)|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-integrated.svg" height="30" alt="Graphics Profile Integrated GPU">|Integrated|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-integrated-active.svg" height="30" alt="Graphics Profile Integrated GPU, dedicated GPU active">|Integrated, dedicated GPU active*|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-compute.svg" height="30" alt="Graphics Profile Compute">|Compute|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-compute-active.svg" height="30" alt="Graphics Profile Compute, dedicated GPU active">|Compute, dedicated GPU active|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-vfio.svg" height="30" alt="Graphics Profile VFIO">|VFIO|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-vfio-active.svg" height="30" alt="Graphics Profile VFIO, dedicated GPU active">|VFIO, dedicated GPU active|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-hybrid.svg" height="30" alt="Graphics Profile Hybrid, dedicated GPU active">|Hybrid|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-hybrid-active.svg" height="30" alt="Graphics Profile Hybrid, dedicated GPU active">|Hybrid, dedicated GPU active|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-nvidia.svg" height="30" alt="Graphics Profile Nvidia">|Nvidia (discrete)|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-integrated.svg" height="30" alt="Graphics Profile Integrated GPU">|Integrated|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-integrated-active.svg" height="30" alt="Graphics Profile Integrated GPU, dedicated GPU active">|Integrated, dedicated GPU active*|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-compute.svg" height="30" alt="Graphics Profile Compute">|Compute|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-compute-active.svg" height="30" alt="Graphics Profile Compute, dedicated GPU active">|Compute, dedicated GPU active|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-vfio.svg" height="30" alt="Graphics Profile VFIO">|VFIO|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-vfio-active.svg" height="30" alt="Graphics Profile VFIO, dedicated GPU active">|VFIO, dedicated GPU active|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-hybrid.svg" height="30" alt="Graphics Profile Hybrid, dedicated GPU active">|Hybrid|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-hybrid-active.svg" height="30" alt="Graphics Profile Hybrid, dedicated GPU active">|Hybrid, dedicated GPU active|
 
 _\* on integrated the dedicated GPU should never be active. If this is the case it is possible that another application woke it up by rescanning the PCI bus. It's also possible that the NVIDIA drivers or asusctl is not configured properly._
 
@@ -68,21 +68,21 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 **CPU change notifications:**
 
-![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/cpu-change-silent.png)
+![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/cpu-change-silent.png)
 
-![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/cpu-change-silent.png)
+![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/cpu-change-silent.png)
 
 **GFX change notification:**
 
-![gfx-change-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/gfx-change-hybrid.png)
+![gfx-change-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/gfx-change-hybrid.png)
 
 **Panel (normal & hybrid):**
 
-![panel-normal-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-normal-hybrid.png)
+![panel-normal-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-normal-hybrid.png)
 
-![panel-normal-hybrid-hover.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-normal-hybrid-hover.png)
+![panel-normal-hybrid-hover.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-normal-hybrid-hover.png)
 
-![panel-normal-hybrid-open.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/icon-rework/screenshots/panel-normal-hybrid-open.png)
+![panel-normal-hybrid-open.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/master/screenshots/panel-normal-hybrid-open.png)
 
 ---
 
