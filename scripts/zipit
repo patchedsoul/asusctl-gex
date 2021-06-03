@@ -3,3 +3,5 @@ UUID=`grep -E '^[ ]*"uuid":' metadata.json | sed 's@^[ ]*"uuid":[ ]*"\(.\+\)",[ 
 VSTRING=`grep -E '^[ ]*"version":' metadata.json | sed 's@^[ ]*"version":[ ]*"\(.\+\)",[ ]*@\1@'`
 
 cd _build && zip -qr "../$UUID.zip" .
+
+exit 0;

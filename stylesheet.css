@@ -1,4 +1,9 @@
 /* PopupMenu */
+.asusctl-gex-panel-icon{
+    width: 30px;
+    height: 30px;
+    padding: 0 5px;
+}
 
 .headline {
     margin-bottom: 10px;
@@ -12,14 +17,13 @@
 .fan-mode,
 .gpupower {
     background-size: contain;
-    background-position: 15px 0px;
     background-repeat: no-repeat;
     padding-left: 35px;
     padding-right: 25px;
 }
 .gfx-mode{
     background-size: 33px;
-    background-position: 20px 3px;
+    background-position: 20px 0px;
 }
 .gfx-mode.hybrid{
     background-image: url("icons/scalable/gpu-hybrid.svg");

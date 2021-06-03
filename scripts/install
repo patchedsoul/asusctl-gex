@@ -14,3 +14,5 @@ gnome-extensions enable "$UUID"
 
 ## reloading gnome shell when X11 is detected
 [[ ${XDG_SESSION_TYPE} == "x11" ]] && busctl --user call org.gnome.Shell /org/gnome/Shell org.gnome.Shell Eval s 'Meta.restart("Restarting Gnome...")';
+
+exit 0;

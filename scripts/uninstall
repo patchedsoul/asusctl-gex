@@ -4,3 +4,5 @@ INSTALLBASE=~/.local/share/gnome-shell/extensions
 
 gnome-extensions disable "$UUID"
 rm -rf "$INSTALLBASE/$INSTALLNAME"
+
+exit 0;
