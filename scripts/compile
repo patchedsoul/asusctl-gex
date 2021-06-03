@@ -3,3 +3,5 @@ rm -rf _build
 mkdir -p _build/modules
 cp -r target/modules/*js _build/modules
 cp -r metadata.json icons schemas resources target/*.js *.css _build
+
+exit 0;

@@ -25,3 +25,5 @@ for file in target/modules/*.js; do \
   sed -i -E "s/from '.\/(\w+)'/= Me.imports.modules.\1/g" $file; \
   sed -i -E "s/import \{/var \{/g" $file; \
 done
+
+exit 0;
