@@ -17,23 +17,24 @@ export class GfxMode implements IStoppableModule {
     lastState: number = 4;
     lastStatePower: number = 3;
     xml: string;
-    public gfxLabels: any = {
+    public gfxLabels: Record<number, string> = {
         0: 'nvidia',
         1: 'integrated',
         2: 'compute',
         3: 'vfio',
         4: 'hybrid',
     };
-    public powerLabel: any = {
+    public powerLabel: Record<number, string> = {
         0: 'active',
         1: 'suspended',
         2: 'off',
         3: 'unknown'
     };
-    public userAction: any = {
+    public userAction: Record<number, string> = {
         0: 'logout',
         1: 'reboot',
-        2: 'none'
+        2: 'integrated',
+        3: 'none'
     };
     timeoutPollerGpuPower: any = null;
 
@@ -42,35 +43,29 @@ export class GfxMode implements IStoppableModule {
     }
 
     public getGfxMode() {
-        let currentMode:any = false;
-
         if (this.connected) {
             try {
-                currentMode = this.asusLinuxProxy.VendorSync();
+                let currentMode = parseInt(this.asusLinuxProxy.VendorSync());
+                this.lastState = currentMode;
+                return currentMode;
             } catch(e) {
                 Log.error('Graphics Mode DBus: get current mode failed!');
                 Log.error(e);
             }
         }
-
-        if (currentMode !== this.lastState) this.lastState = currentMode;
-
-        return currentMode;
     }
 
     public setGfxMode(mode: number) {
-        let newMode:any = false;
-
         if (this.connected){
             try {
-                newMode = this.asusLinuxProxy.SetVendorSync(mode);
-
-                if (newMode !== this.lastState) this.lastState = newMode;
-
-                return newMode;
+                // the proxy will return the required user action. Since it is also
+                // given in the notification we can ignore it here
+                this.asusLinuxProxy.SetVendorSync(mode);
             } catch(e) {
                 Log.error('Graphics Mode DBus switching failed!');
                 Log.error(e);
+                // TODO: match on 'Can not switch to vfio mode if disabled in config file'
+                //  and show a warning notification
                 return false;
             }
         }
@@ -149,29 +144,31 @@ export class GfxMode implements IStoppableModule {
         }
 
         if (this.connected) {
-            let vendor = this.asusLinuxProxy.VendorSync().toString().trim();
-            let power = this.asusLinuxProxy.PowerSync().toString().trim();
+            let vendor = parseInt(this.asusLinuxProxy.VendorSync());
+            let power = parseInt(this.asusLinuxProxy.PowerSync());
             
             Log.info(`Initial Graphics Mode is ${this.gfxLabels[vendor]}. Power State at the moment is ${this.powerLabel[power]}${(power == 0 ? " (this can change on hybrid and compute mode)" : "")}`);
 
-            Panel.Actions.updateMode('gfx-mode', vendor);
+            Panel.Actions.updateMode('gfx-mode', this.gfxLabels[vendor]);
+            this.lastState = vendor;
 
             // connect NotifyAction
             this.asusLinuxProxy.connectSignal(
                 "NotifyAction",
                 (proxy_: any = null, name_: string, value: number) => {
                     if (proxy_) {
-
                         Log.info(`[dbus${name_}]: Graphics Mode has changed.`);
 
                         let newMode = this.asusLinuxProxy.VendorSync();
-
-                        if (newMode !== this.lastState) this.lastState = newMode;
-
                         let msg = `Graphics Mode has changed.`;
 
-                        if (this.userAction[value] !== 'none'){
+                        if (this.userAction[value] === 'integrated'){
+                            msg = `You must switch to Integrated mode before switching to Compute or VFIO.`;
+                            newMode = this.lastState;
+                        } else if (this.userAction[value] !== 'none'){
                             msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]} to apply the changes.`;
+                            // do state update only if not none or integrated
+                            if (newMode !== this.lastState) this.lastState = newMode;
                         }
 
                         Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);

@@ -65,7 +65,7 @@ export class Extension implements IEnableableModule {
                 if (mi.style_class.includes('gfx-mode') && mi.style_class.includes('none')){
                     mi.destroy();
 
-                    let vendor = this.gfxMode.connector.getGfxMode();
+                    let vendor: number = this.gfxMode.connector.getGfxMode();
                     Log.info(`Current Graphics Mode is ${this.gfxMode.connector.gfxLabels[vendor]}`);
 
                     let  menuItems: any = {}
@@ -75,7 +75,7 @@ export class Extension implements IEnableableModule {
 
                     let position = 1;
                     for (const item in menuItems){
-                        if (item == vendor){
+                        if (parseInt(item) == vendor){
                             menuItems[item].style_class = `${menuItems[item].style_class} active`;
                             menuItems[item].label.set_text(`${menuItems[item].label.text}  ✔`);
                         }

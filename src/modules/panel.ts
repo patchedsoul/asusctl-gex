@@ -156,7 +156,7 @@ export class Actions {
         });
         ext.panelButton.indicator._binProfile.add_actor(ext.panelButton.indicator._iconProfile);
 
-        // update gpu icon panel        
+        // update gpu icon panel
         ext.panelButton.indicator._iconGpu = new St.Icon({
             gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/gpu-${ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState]}${(ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower] == 'active' ? '-active' : '')}.svg`),
             style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpu'
@@ -175,7 +175,9 @@ export class Actions {
                         mi.label.set_text(`dedicated GPU: ${vendor}`);
                     }
                 } else {
-                    if (mi.style_class.includes(vendor) && !mi.style_class.includes('active')){
+                    if (mi.style_class.includes(vendor) && mi.style_class.includes('active')){
+                        // ignore, don't change the text
+                    } else if (mi.style_class.includes(vendor) && !mi.style_class.includes('active')){
                         mi.style_class = `${mi.style_class} active`;
                         mi.label.set_text(`${mi.label.text}  ✔`);
                     } else if (mi.style_class.includes('active')){
