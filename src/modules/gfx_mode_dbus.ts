@@ -1,5 +1,4 @@
 declare const global: any, imports: any;
-declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -12,58 +11,54 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 
 export class GfxMode implements IStoppableModule {
-    asusLinuxProxy: any = null;
+    asusLinuxProxy: any = null; // strict-type: Gio.DBusProxy
     connected: boolean = false;
     lastState: number = 4;
     lastStatePower: number = 3;
-    xml: string;
-    public gfxLabels: Record<number, string> = {
-        0: 'nvidia',
-        1: 'integrated',
-        2: 'compute',
-        3: 'vfio',
-        4: 'hybrid',
-    };
-    public powerLabel: Record<number, string> = {
-        0: 'active',
-        1: 'suspended',
-        2: 'off',
-        3: 'unknown'
-    };
-    public userAction: Record<number, string> = {
-        0: 'logout',
-        1: 'reboot',
-        2: 'integrated',
-        3: 'none'
-    };
-    timeoutPollerGpuPower: any = null;
+    xml: string | null = null;
+    timeoutPollerGpuPower: number | null = null;
 
-    constructor(xml: string) {
-        this.xml = Resources.File.DBus(xml);
+    // no need to use Record<number, string> (as this are string arrays)
+    public gfxLabels: string[]  = ['nvidia', 'integrated', 'compute', 'vfio', 'hybrid', 'unknown'];
+    public powerLabel: string[] = ['active', 'suspended', 'off', 'unknown'];
+    public userAction: string[] = ['logout', 'reboot', 'integrated', 'none'];
+
+    // new feature of "access" lists.. (everytuple represents the accesslevel to a gfxLabel based on it's index)
+    public acls: boolean[][] = [
+        // access branches:
+        // [nvidia, integrated, compute, vfio, hybrid]
+        [true, true, false, false, true],   // nvidia
+        [true, true, true, true, true],     // integrated
+        [false, true, true, true, false],   // compute
+        [false, true, true, true, false],   // vfio
+        [true, true, false, false, true],   // hybrid
+    ];
+
+    constructor(xml: string | null = null) {
+        if (xml)
+            this.xml = Resources.File.DBus(xml);
     }
 
-    public getGfxMode() {
-        if (this.connected) {
+    public getGfxMode(): number | null {
+        if (this.isRunning()) {
             try {
-                let currentMode = parseInt(this.asusLinuxProxy.VendorSync());
-                this.lastState = currentMode;
-                return currentMode;
+                this.lastState = parseInt(this.asusLinuxProxy.VendorSync());
+                return this.lastState;
             } catch(e) {
-                Log.error('Graphics Mode DBus: get current mode failed!');
-                Log.error(e);
+                Log.error('Graphics Mode DBus: get current mode failed!', e);
             }
         }
+        return null;
     }
 
     public setGfxMode(mode: number) {
-        if (this.connected){
+        if (this.isRunning()){
             try {
                 // the proxy will return the required user action. Since it is also
                 // given in the notification we can ignore it here
                 this.asusLinuxProxy.SetVendorSync(mode);
             } catch(e) {
-                Log.error('Graphics Mode DBus switching failed!');
-                Log.error(e);
+                Log.error('Graphics Mode DBus switching failed!', e);
                 // TODO: match on 'Can not switch to vfio mode if disabled in config file'
                 //  and show a warning notification
                 return false;
@@ -72,23 +67,29 @@ export class GfxMode implements IStoppableModule {
     }
 
     public getGpuPower(){
-        let modePower:number = 9;
+        let modePower = 9;
 
         if (this.connected){
             try {
                 modePower = this.asusLinuxProxy.PowerSync().toString().trim();
             } catch(e) {
-                Log.error('Graphics Mode DBus getting power mode failed!');
-                Log.error(e);
+                Log.error('Graphics Mode DBus getting power mode failed!', e);
             }
         }
 
         return modePower;
     }
 
+    public getAcl(ven: number, idx: number) {
+        try {
+            return this.acls[ven][idx]; // current acl (vendor:index)
+        } catch {
+            return false;
+        }
+    }
+
     updatePanelPower(gpuPowerLocal: number){
         if (gpuPowerLocal !== this.lastStatePower) {
-
             Log.info(`Graphics Mode DBus power mode changed: ${this.powerLabel[gpuPowerLocal]}/${gpuPowerLocal}`);
 
             this.lastStatePower = gpuPowerLocal;
@@ -116,8 +117,7 @@ export class GfxMode implements IStoppableModule {
                     this.updatePanelPower(gpuPowerLocal);
                 }
             } catch (e){
-                Log.error(`Graphics Mode DBus power mode poller init failed!`);
-                Log.error(e);
+                Log.error(`Graphics Mode DBus power mode poller init failed!`, e);
             } finally {
                 return this.connected ? GLib.SOURCE_CONTINUE : GLib.SOURCE_REMOVE;
             }
@@ -126,8 +126,16 @@ export class GfxMode implements IStoppableModule {
         }
     }
 
+    isRunning(): boolean {
+        return this.connected;
+    }
+
     start() {
         Log.info(`Starting Graphics Mode DBus client...`);
+        if (this.xml == null) {
+            Log.error('Graphics Mode DBus initialization failed, no xml given!');
+            return;
+        }
 
         try {
             // creating the proxy
@@ -139,8 +147,7 @@ export class GfxMode implements IStoppableModule {
             );
             this.connected = true;
         } catch(e) {
-            Log.error('Graphics Mode DBus initialization failed!');
-            Log.error(e);
+            Log.error('Graphics Mode DBus initialization failed!', e);
         }
 
         if (this.connected) {
@@ -155,11 +162,11 @@ export class GfxMode implements IStoppableModule {
             // connect NotifyAction
             this.asusLinuxProxy.connectSignal(
                 "NotifyAction",
-                (proxy_: any = null, name_: string, value: number) => {
-                    if (proxy_) {
-                        Log.info(`[dbus${name_}]: Graphics Mode has changed.`);
+                (proxy: any = null, name: string, value: number) => {
+                    if (proxy) {
+                        Log.info(`[dbus${name}]: Graphics Mode has changed.`);
 
-                        let newMode = this.asusLinuxProxy.VendorSync();
+                        let newMode = parseInt(this.asusLinuxProxy.VendorSync());
                         let msg = `Graphics Mode has changed.`;
 
                         if (this.userAction[value] === 'integrated'){
@@ -186,8 +193,7 @@ export class GfxMode implements IStoppableModule {
             try {
                 this.timeoutPollerGpuPower = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, this.pollerGpuPower.bind(this));
             } catch (e) {
-                Log.error(`Graphics Mode DBus power mode Poller initialization failed!`);
-                Log.error(e);
+                Log.error(`Graphics Mode DBus power mode Poller initialization failed!`, e);
             }
         }
     }

@@ -1,0 +1,3 @@
+#!/bin/bash
+gnome-terminal -- /bin/sh -c "journalctl -o cat -n 0 -f $(which gnome-shell) | grep asusctl-gex"
+exit 0
