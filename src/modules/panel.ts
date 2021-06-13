@@ -104,19 +104,13 @@ export class Actions {
         try {
             GLib.spawn_command_line_async(command);
         } catch (e) {
-            Log.error(`Spawning command failed: ${command}`);
-            Log.error(e);
+            Log.error(`Spawning command failed: ${command}`, e);
         }
     }
 
     public static notify(msg:string = Title, details:string, icon: string, action: string = "") {
-        Log.info(`${Me.path}/icons/${icon}`);
         let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/${icon}`);
-
-        let params = {
-            gicon: gIcon
-        };
-
+        let params = { gicon: gIcon};
         let source = new MessageTray.Source(msg, icon, params);
         let notification = new MessageTray.Notification(source, msg, details, params);
         

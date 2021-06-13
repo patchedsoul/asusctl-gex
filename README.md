@@ -70,8 +70,6 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 ![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/cpu-change-silent.png)
 
-![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/cpu-change-silent.png)
-
 **GFX change notification:**
 
 ![gfx-change-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/gfx-change-hybrid.png)
@@ -88,7 +86,7 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 ## Dependencies
 
-* [asusctl](https://gitlab.com/asus-linux/asusctl) >= 3.6.2
+* [asusctl](https://gitlab.com/asus-linux/asusctl) >= 3.7.0
 * gnome >= 3.36.0
 
 ### Development dependencies

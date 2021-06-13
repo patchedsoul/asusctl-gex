@@ -1,22 +1,25 @@
 declare const log: any;
 var log_level = 4;
 
-export function raw(text: string) {
-    log(`asusctl-gex: ${text}`);
+export function raw(text: string, prefix: string, e: any = null) {
+    log(`asusctl-gex: ${prefix} ${text}`);
+    if (e) {
+        log(`asusctl-gex: ${prefix} Exception:\nasusctl-gex: ${e}`);
+    }
 }
 
-export function info(text: string) {
-    if (log_level > 0) raw(`[INFO] ${text}`);
+export function info(text: string, e: any = null) {
+    if (log_level > 0) raw(text, '[INFO]', e);
 }
 
-export function error(text: string) {
-    if (log_level > 1) raw(`[ERROR] ${text}`);
+export function error(text: string, e: any = null) {
+    if (log_level > 1) raw(text, '[ERROR]', e);
 }
 
-export function warn(text: string) {
-    if (log_level > 2) raw(`[WARN] ${text}`);
+export function warn(text: string, e: any = null) {
+    if (log_level > 2) raw(text, '[WARN]', e);
 }
 
-export function debug(text: string) {
-    if (log_level > 3) raw(`[DEBUG] ${text}`);
+export function debug(text: string, e: any = null) {
+    if (log_level > 3) raw(text, '[DEBUG]', e);
 }

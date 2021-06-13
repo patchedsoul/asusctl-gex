@@ -1,6 +1,6 @@
 {
   "name": "asusctl-gex",
-  "version": "3.7.0",
+  "version": "3.7.1",
   "description": "This extension allows you to visualize most of the asusd settings and status",
   "main": "_build/extension.js",
   "dependencies": {
@@ -9,18 +9,20 @@
   },
   "devDependencies": {},
   "scripts": {
-    "debug": "run-p build && run-p install-user && dbus-run-session -- gnome-shell --nested --wayland",
-    "enable": "gnome-extensions enable \"asusctl-gex@asus-linux.org\"",
+    "build:clean": "rm -rf _build schemas/gschemas.compiled target",
+    "build:compile": "scripts/compile",
+    "build:convert": "scripts/convert",
+    "build:schemas": "touch schemas/gschemas.compiled && glib-compile-schemas schemas",
+    "build:transpile": "npx tsc",
+    "build": "run-p build:clean && run-p build:transpile && run-p build:schemas && run-p build:convert && run-p build:compile",
+    "debug:journal_term": "scripts/journal_term",
+    "debug:nested_shell": "run-p build && run-p install-user && scripts/nested_shell",
+    "debug": "run-p debug:journal_term & run-p debug:nested_shell",
     "disable": "gnome-extensions disable \"asusctl-gex@asus-linux.org\"",
+    "enable": "gnome-extensions enable \"asusctl-gex@asus-linux.org\"",
     "install-user": "scripts/install",
     "uninstall-user": "scripts/uninstall",
-    "zip": "scripts/zipit",
-    "build:clean": "rm -rf _build schemas/gschemas.compiled target",
-    "build:transpile": "npx tsc",
-    "build:schemas": "touch schemas/gschemas.compiled && glib-compile-schemas schemas",
-    "build:convert": "scripts/convert",
-    "build:compile": "scripts/compile",
-    "build": "run-p build:clean && run-p build:transpile && run-p build:schemas && run-p build:convert && run-p build:compile"
+    "zip": "scripts/zipit"
   },
   "repository": {
     "type": "git",

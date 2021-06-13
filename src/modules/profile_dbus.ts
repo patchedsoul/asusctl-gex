@@ -1,5 +1,4 @@
 declare const global: any, imports: any;
-declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -9,59 +8,56 @@ import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
-//const GLib = imports.gi.GLib;
+
+// this type should be used as ProfileData (strictly typed)
+export type ProfileData = {
+    name: string | null,        // String
+    min: number,                // u8
+    max: number,                // u8
+    turbo: boolean,             // bool
+    fan: number,                // FanLevel
+    curve: string | null        // String
+};
 
 export class Profile implements IStoppableModule {
-    sourceId: any = null;       // needed for dbus workaround
-    asusLinuxProxy: any = null;
+    asusLinuxProxy: any = null; // type: Gio.DbusProxy (donno how to add)
     connected: boolean = false;
-    lastState: string = '';
-    xml: string;
-    lockMonitor: any;
-    lock: any;
-    profileDesc = new Array();
-    profileIcons: any = {
-        'boost': 'rog-red',
-        'normal': 'rog-yellow',
-        'silent': 'rog-green'
-    };
-    profileColor: any = {
-        'boost': 'red',
-        'normal': 'yellow',
-        'silent': 'green'
-    }
+    lastState: string | null = null;
+    xml: string | null = null;
+    profileDesc: string[] = [];
 
-    constructor(xml: string) {
-        this.xml = Resources.File.DBus(xml);
+    constructor(xml: string | null = null) {
+        if (xml)
+            this.xml = Resources.File.DBus(xml);
     }
 
     public getProfileNames() {
-        if (this.connected) {
+        if (this.isRunning()) {
             try {
-                return this.asusLinuxProxy.ProfileNamesSync();
+                this.profileDesc = this.asusLinuxProxy.ProfileNamesSync().toString().trim().split(',');
+                Log.info(`Profile DBus got power profiles: ${this.profileDesc.join(', ')}`);
             } catch (e) {
-                Log.error(`Profile DBus getting power profile names failed!`);
-                Log.error(e);
+                Log.error(`Profile DBus getting power profile names failed!`, e);
             }
         }
+        return this.profileDesc;
     }
 
     public setProfile(mode: string) {
-        if (this.connected) {
+        if (this.isRunning()) {
             try {
                 return this.asusLinuxProxy.SetProfileSync(mode);
             } catch (e) {
-                Log.error(`Profile DBus set power profile failed!`);
-                Log.error(e);
+                Log.error(`Profile DBus set power profile failed!`, e);
             }
         }
     }
 
-    updateProfile(curState: string) {
-        if (curState !== '' && this.lastState !== curState) {
+    updateProfile(curState: string | null = null) {
+        if (curState && curState !== '' && this.lastState !== curState) {
             let message = `Power profile has changed to ${curState}`;
 
-            if (this.lastState !== '') {
+            if (this.lastState !== null) {
                 Panel.Actions.notify(
                     Panel.Title,
                     message,
@@ -74,103 +70,80 @@ export class Profile implements IStoppableModule {
 
             // updating panel popup-menulist
             Panel.Actions.updateMode('fan-mode', curState);
-
         }
+    }
+
+    isRunning(): boolean {
+        return this.connected;
     }
 
     async start() {
         Log.info(`Starting Profile DBus client...`);
+        if (this.xml == null) {
+            Log.error('Starting Profile DBus initialization failed, no xml given!');
+            return;
+        }
 
         try {
             // creating the proxy
-            let _asusLinuxProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
-            this.asusLinuxProxy = new _asusLinuxProxy(
+            this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(this.xml)(
                 Gio.DBus.system,
                 'org.asuslinux.Daemon',
                 '/org/asuslinux/Profile'
             );
 
             this.connected = true;
+            this.getProfileNames();            
 
-            // This is the _data
-            // string, byte, byte, bool, uint32, string
-            // pub struct Profile {
-            //     pub name: String,
-            //     pub min_percentage: u8,
-            //     pub max_percentage: u8,
-            //     pub turbo: bool,
-            //     pub fan_preset: FanLevel,
-            //     pub fan_curve: String,
-            // }
-            // {name: string, _min: number, _max: number, _turbo: boolean, _fan: number, _curve: string}
-            //
-            // example return of data_: [["silent",0,100,false,2,""]]
+            // connecting to EP signal (and do parsing on callback)
             this.asusLinuxProxy.connectSignal(
                 "NotifyProfile",
-                (proxy_: any = null, name_: string, data_: object) => {
-                    if (proxy_) {
-                        let profileValues = {
-                            name: '',
-                            min: 0,
-                            max: 100,
-                            turbo: true,
-                            fan: 1,
-                            curve: null
-                        };
+                (proxy: any = null, name: string, data: object) => {
+                    if (proxy) {
+                        let profile: ProfileData = { name: null, min: 0, max: 100, turbo: true, fan: 1, curve: null };
                         
-                        if (typeof data_ === 'object'){
-                            //@ts-ignore
-                            for (const [key, value] of Object.entries(data_)) {
-                                value.forEach((element:any, index:number) => {
-                                    if (index == 0){
-                                        profileValues.name = element;
-                                    }
-                                    if (index == 1){
-                                        profileValues.min = element;
-                                    }
-                                    if (index == 2){
-                                        profileValues.max = element;
-                                    }
-                                    if (index == 3){
-                                        profileValues.turbo = element;
-                                    }
-                                    if (index == 4){
-                                        profileValues.fan = element;
-                                    }
-                                    if (index == 5){
-                                        profileValues.curve = element;
-                                    }
-                                });
-                            }
+                        for (const [_key, value] of Object.entries(data)) {
+                            value.forEach((element:any, index:number) => {
+                                switch(index) {
+                                    case 0: // name
+                                        profile.name = element.toString().trim(); break;
+                                    case 1: // min
+                                        profile.min = parseInt(element); break;
+                                    case 2: // max
+                                        profile.max = parseInt(element); break;
+                                    case 3: // turbo
+                                        profile.turbo = (/true/i).test(element.toString().toLowerCase().trim()); break;
+                                    case 4: // fan
+                                        profile.fan = parseInt(element); break;
+                                    case 5: // curve
+                                        profile.curve = element.toString().trim(); break;
+                                }
+                            });
                         }
                         
-                        if (profileValues.name !== ''){
-                            this.updateProfile(profileValues.name);
-                            Log.info(`[dbus${name_}]: The profile has changed to ${profileValues.name}`);
+                        // TODO: check if that is correct, might need comparsion to last profilename
+                        if (profile.name && profile.name !== '') {
+                            this.updateProfile(profile.name);
+                            Log.info(`[dbus${name}]: The profile has changed to ${profile.name}`);
                         } else {
-                            Log.error(`[dbus${name_}]: The profile has not been changed: no profile name given.`);
+                            Log.error(`[dbus${name}]: The profile has not been changed: no profile name given.`);
                         }
                     }
                 }
             );
-
             this.updateProfile(await this.asusLinuxProxy.ActiveNameSync().toString().trim());
         } catch (e) {
-            Log.error(`Profile DBus initialization failed!`);
-            Log.error(e);
+            Log.error(`Profile DBus initialization failed!`, e);
         }
     }
 
     stop() {
         Log.info(`Stopping Profile DBus client...`);
 
-        if (this.connected) {
-            this.sourceId = null;
+        if (this.isRunning()) {
             this.connected = false;
             this.asusLinuxProxy = null;
-            this.lastState = '';
+            this.lastState = null;
         }
     }
 }
-
-export type ProfileData = { name: string, _min: number, _max: number, _turbo: boolean, _fan: number, _curve: string };
