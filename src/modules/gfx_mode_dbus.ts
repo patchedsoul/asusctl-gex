@@ -15,6 +15,7 @@ export class GfxMode implements IStoppableModule {
     connected: boolean = false;
     lastState: number = 4;
     lastStatePower: number = 3;
+    pollerDelayTicks: number = 0;
     xml: string | null = null;
     timeoutPollerGpuPower: number | null = null;
 
@@ -61,17 +62,15 @@ export class GfxMode implements IStoppableModule {
                 Log.error('Graphics Mode DBus switching failed!', e);
                 // TODO: match on 'Can not switch to vfio mode if disabled in config file'
                 //  and show a warning notification
-                return false;
             }
         }
     }
 
     public getGpuPower(){
         let modePower = 9;
-
         if (this.connected){
             try {
-                modePower = this.asusLinuxProxy.PowerSync().toString().trim();
+                modePower = parseInt(this.asusLinuxProxy.PowerSync().toString().trim());
             } catch(e) {
                 Log.error('Graphics Mode DBus getting power mode failed!', e);
             }
@@ -88,39 +87,46 @@ export class GfxMode implements IStoppableModule {
         }
     }
 
-    updatePanelPower(gpuPowerLocal: number){
+    updatePanelPower(gpuPowerLocal: number) {
         if (gpuPowerLocal !== this.lastStatePower) {
-            Log.info(`Graphics Mode DBus power mode changed: ${this.powerLabel[gpuPowerLocal]}/${gpuPowerLocal}`);
-
             this.lastStatePower = gpuPowerLocal;
+            Log.info(`Graphics Mode DBus power mode changed: ${this.powerLabel[gpuPowerLocal]}/${gpuPowerLocal}`);
 
             Panel.Actions.updateMode('gpupower', this.powerLabel[gpuPowerLocal]);
 
             // if integrated and active show notification
-            if (gpuPowerLocal == 0 && this.lastState == 1){
-                Panel.Actions.notify(
-                    Panel.Title,
-                    `Your dedicated GPU turned on while you are on the integrated mode. This should not happen. It could be that another application rescanned your PCI bus. Rebooting is advised.`,
-                    'gif/fire.gif',
-                    'reboot'
-                );
+            if (gpuPowerLocal == 0 && this.lastState == 1) {
+                // let's check the vendor
+                try {
+                    let vendor = parseInt(this.asusLinuxProxy.VendorSync());
+                    if(vendor == 1)
+                        Panel.Actions.notify(
+                            Panel.Title,
+                            `Your dedicated GPU turned on while you are on the integrated mode. This should not happen. It could be that another application rescanned your PCI bus. Rebooting is advised.`,
+                            'gif/fire.gif',
+                            'reboot'
+                        );
+                    else if (this.lastState !== vendor)
+                        this.lastState = vendor;
+                } catch (e) {
+                    Log.error('Graphics Mode DBus getting vendor failed!', e);
+                }
             }
         }
     }
 
     pollerGpuPower() {
-        if(this.connected){
+        if(this.isRunning() && this.pollerDelayTicks <= 0){
             try {
-                let gpuPowerLocal = this.getGpuPower();
-
-                if (gpuPowerLocal !== this.lastStatePower){
-                    this.updatePanelPower(gpuPowerLocal);
-                }
-            } catch (e){
+                this.updatePanelPower(this.getGpuPower());
+            } catch (e) {
                 Log.error(`Graphics Mode DBus power mode poller init failed!`, e);
             } finally {
-                return this.connected ? GLib.SOURCE_CONTINUE : GLib.SOURCE_REMOVE;
+                return this.isRunning() ? GLib.SOURCE_CONTINUE : GLib.SOURCE_REMOVE;
             }
+        } else if (this.isRunning() && this.pollerDelayTicks > 0) {
+            this.pollerDelayTicks--;
+            return GLib.SOURCE_CONTINUE;
         } else {
             return GLib.SOURCE_REMOVE;
         }
@@ -173,13 +179,12 @@ export class GfxMode implements IStoppableModule {
                             msg = `You must switch to Integrated mode before switching to Compute or VFIO.`;
                             newMode = this.lastState;
                         } else if (this.userAction[value] !== 'none'){
-                            msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]} to apply the changes.`;
-                            // do state update only if not none or integrated
+                            // msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]} to apply the changes.`;
+                            msg = `Graphics Mode changed. Please save your work and ${this.userAction[value]} to apply the changes.`;
                             if (newMode !== this.lastState) this.lastState = newMode;
                         }
 
                         Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
-
                         Panel.Actions.notify(
                             Panel.Title,
                             msg,

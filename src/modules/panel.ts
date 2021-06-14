@@ -130,19 +130,25 @@ export class Actions {
         source.showNotification(notification);
     }
 
-    public static updateMode(selector:string, vendor:string) {
+    public static updateMode(selector:string, payload:string) {
+        // TODO: this should be a method in gfx_mode_dbus (!)
         let warningIntegrated = (ext.gfxMode.connector.lastStatePower == 0 && ext.gfxMode.connector.lastState == 1);
+        try {
+            let vid = parseInt(ext.gfxMode.connector.asusLinuxProxy.VendorSync());
+            warningIntegrated = (ext.gfxMode.connector.isRunning() && vid == 1 && warningIntegrated)
+            if (vid !== ext.gfxMode.connector.lastState)
+                ext.gfxMode.connector.lastState = vid;
+        } catch {
+            warningIntegrated = false;
+        }
 
         // update panel class
         ext.panelButton.indicator.style_class = `${ext.panelButton.indicator._defaultClasses} ${ext.profile.connector.lastState} ${ext.gfxMode.connector.gfxLabels[ext.gfxMode.connector.lastState]} ${ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.lastStatePower]} ${ext.gfxMode.igpu}`;
 
         // update profile icon panel
         let profileIconName = ext.profile.connector.lastState;
-        if (ext.profile.connector.lastState !== 'normal' &&
-            ext.profile.connector.lastState !== 'silent' &&
-            ext.profile.connector.lastState !== 'boost'){
+        if (!['normal', 'silent', 'boost'].includes(profileIconName))
             profileIconName = 'boost';
-        }
 
         ext.panelButton.indicator._iconProfile = new St.Icon({
             gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-${profileIconName}.svg`),
@@ -159,24 +165,36 @@ export class Actions {
 
         // update menu items
         let menuItems = Main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
-        menuItems.forEach((mi: { label: any; style_class: string; }) => {
-            if (mi.style_class.includes(selector)){
+        menuItems.forEach((mi: { label: any; style_class: string; sensitive: boolean; active: boolean }) => {
+            if (mi.style_class.includes(selector)) {
                 if (selector == 'gpupower'){
-                    mi.style_class = `${selector} ${vendor}`;
+                    mi.style_class = `${selector} ${payload}`;
                     if (warningIntegrated){
-                        mi.label.set_text(`integrated mode, dGPU ${vendor}, please reboot`);
+                        mi.label.set_text(`integrated mode, dGPU ${payload}, please reboot`);
                     } else {
-                        mi.label.set_text(`dedicated GPU: ${vendor}`);
+                        mi.label.set_text(`dedicated GPU: ${payload}`);
                     }
                 } else {
-                    if (mi.style_class.includes(vendor) && mi.style_class.includes('active')){
+                    if (mi.style_class.includes(payload) && mi.style_class.includes('active')) {
                         // ignore, don't change the text
-                    } else if (mi.style_class.includes(vendor) && !mi.style_class.includes('active')){
+                    } else if (mi.style_class.includes(payload) && !mi.style_class.includes('active')) {
                         mi.style_class = `${mi.style_class} active`;
                         mi.label.set_text(`${mi.label.text}  ✔`);
                     } else if (mi.style_class.includes('active')){
                         mi.style_class = mi.style_class.split('active').join(' ');
                         mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
+                    }
+
+                    // ACL
+                    if (selector === 'gfx-mode') {
+                        let curItem = ext.gfxMode.connector.gfxLabels.indexOf(
+                            mi.style_class.split(' ').filter(el => ext.gfxMode.connector.gfxLabels.includes(el)).join().trim()
+                        );
+                        if (curItem != -1) {
+                            let acl = ext.gfxMode.getAcl(ext.gfxMode.connector.lastState, curItem);
+                            mi.sensitive = acl;
+                            mi.active = acl;
+                        }
                     }
                 }
             }
