@@ -128,11 +128,12 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
                     // check and set acl (true == access granted)
                     tMenuItem.sensitive = acl;
                     tMenuItem.active = acl;
-                    if (acl) {
-                        tMenuItem.connect('activate', () => {
-                            this.connector.setGfxMode(idx);
-                        });
-                    }
+                    tMenuItem.connect('activate', () => {
+                        // delay poller, only on integrated(1) and swithing to vfio(3)
+                        if (this.connector.lastState == 1 && idx == 3)
+                            this.connector.pollerDelayTicks = 5;
+                        this.connector.setGfxMode(idx);
+                    });
                 });
             }
         });
