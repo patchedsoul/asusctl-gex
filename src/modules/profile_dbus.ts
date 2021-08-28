@@ -98,7 +98,7 @@ export class Profile implements IStoppableModule {
         Log.info(`Starting Profile DBus client...`);
 
         // GS prior 41, checking for power profiles daemon
-        if (parseInt(Config.PACKAGE_VERSION) >= 40){
+        if (parseInt(Config.PACKAGE_VERSION) >= 41){
             try {
                 // creating the proxy
                 let xml = Resources.File.DBus('net.hadess.PowerProfiles');
