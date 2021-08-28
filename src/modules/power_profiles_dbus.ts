@@ -14,6 +14,7 @@ export class PowerProfiles implements IStoppableModule {
     connected: boolean = false;
     lastState: string = '';
     xml: string | null = null;
+    profileDesc: [] = [];
 
     constructor() {
       this.xml = Resources.File.DBus('net.hadess.PowerProfiles');
@@ -21,6 +22,25 @@ export class PowerProfiles implements IStoppableModule {
 
     isRunning(): boolean {
       return this.connected;
+    }
+
+    public getProfileNames() {
+      if (this.isRunning()) {
+          try {
+              // no clue at the moment how to parse the profiles of type aa{sv}
+              this.profileDesc = this.powerProfilesProxy.Profiles;
+              if (this.profileDesc.length > 0){
+                for (const [_key, value] of Object.entries(this.profileDesc)) {
+                  Log.info(_key.toString());
+                  Log.info(JSON.stringify(value));
+                }
+              }
+              
+          } catch (e) {
+              Log.error(`Power Profile DBus getting power profile names failed!`, e);
+          }
+      }
+      return this.profileDesc;
     }
 
     start() {
@@ -35,6 +55,8 @@ export class PowerProfiles implements IStoppableModule {
                 '/net/hadess/PowerProfiles'
             );
             this.connected = true;
+
+            this.getProfileNames();
         } catch(e) {
             Log.error('Power Profiles DBus initialization failed!', e);
         }
