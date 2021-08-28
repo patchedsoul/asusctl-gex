@@ -24,6 +24,11 @@
     </method>
     <!--
       Property
+      Profiles (string)
+    -->
+    <property name="Profiles" type="aa{sv}" access="read"/>
+    <!--
+      Property
       ActiveProfile (string)
     -->
     <property name="ActiveProfile" type="s" access="readwrite"/>
