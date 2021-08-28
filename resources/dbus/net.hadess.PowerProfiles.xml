@@ -24,7 +24,7 @@
     </method>
     <!--
       Property
-      Profiles (string)
+      Profiles (aa{sv})
     -->
     <property name="Profiles" type="aa{sv}" access="read"/>
     <!--
