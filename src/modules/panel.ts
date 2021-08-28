@@ -149,7 +149,7 @@ export class Actions {
     }
 
     public static updateMode(selector:string, payload:string) {
-        if (ext.panelButton.init == false) return false;
+        if (ext.panelButton.indicator == null) return false;
 
         // update panel class
         let profileRunningClass: string = ext.profile.isRunning() ? 'with-profiles' : 'without-profiles';
