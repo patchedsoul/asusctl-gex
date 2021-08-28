@@ -17,7 +17,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
     constructor() {        
         try {
-            this.connector = new DBus.Profile("org-asuslinux-profile-3.5.3");
+            this.connector = new DBus.Profile();
         } catch(e) {
             Log.error(`Profile client initialization failed!`, e);
         }
