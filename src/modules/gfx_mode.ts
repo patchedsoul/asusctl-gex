@@ -55,7 +55,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         return (this.connected && this.connector && this.connector.isRunning());
     }
 
-    start(initMenu: boolean = false) {
+    start() {
         Log.info(`Starting GfxMode client...`);
 
         try {
@@ -64,9 +64,6 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         } catch(e) {
             Log.error(`GfxMode client start failed!`, e);
         }
-
-        if (initMenu)
-            this.populatePopup();
     }
 
     stop() {

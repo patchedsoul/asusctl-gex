@@ -28,9 +28,6 @@ export class Extension implements IEnableableModule {
     enable() {
         Log.info(`Enabling ${Me.metadata.name} version ${Me.metadata.version}`);
 
-        // create panel button (needs to be first in chain)
-        this.panelButton.create();
-
         // starting clients (dbus)
 
         // GS prior 41, checking for power profiles daemon
@@ -41,10 +38,13 @@ export class Extension implements IEnableableModule {
         // Power Profiles Client not running when not available or GS < 41
         if (!this.powerProfiles.isRunning()){
             Log.info('Power Profiles Daemon not detected or GNOME Shell prior 41, using asusctl profiles');
-            this.profile.start(true);
+            this.profile.start();
         }
 
-        this.gfxMode.start(true);
+        this.gfxMode.start();
+
+        // create panel button (needs to be first in chain)
+        this.panelButton.create();
     }
 
     disable() {
