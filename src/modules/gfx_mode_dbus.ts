@@ -13,10 +13,10 @@ const GLib = imports.gi.GLib;
 export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null; // strict-type: Gio.DBusProxy
     connected: boolean = false;
+    xml: string | null = null;
     lastState: number = 4;
     lastStatePower: number = 3;
     pollerDelayTicks: number = 0;
-    xml: string | null = null;
     timeoutPollerGpuPower: number | null = null;
 
     // no need to use Record<number, string> (as this are string arrays)
@@ -35,9 +35,8 @@ export class GfxMode implements IStoppableModule {
         [true, true, false, false, true],   // hybrid
     ];
 
-    constructor(xml: string | null = null) {
-        if (xml)
-            this.xml = Resources.File.DBus(xml);
+    constructor() {
+        // nothing for now
     }
 
     public getGfxMode(): number | null {
@@ -138,32 +137,45 @@ export class GfxMode implements IStoppableModule {
 
     start() {
         Log.info(`Starting Graphics Mode DBus client...`);
-        if (this.xml == null) {
-            Log.error('Graphics Mode DBus initialization failed, no xml given!');
-            return;
-        }
 
         try {
-            // creating the proxy
+            this.xml = Resources.File.DBus('org-supergfxctl-gfx');
             let _asusLinuxProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
             this.asusLinuxProxy = new _asusLinuxProxy(
                 Gio.DBus.system,
-                'org.asuslinux.Daemon',
-                '/org/asuslinux/Gfx'
+                'org.supergfxctl.Daemon',
+                '/org/supergfxctl/Gfx'
             );
+            this.lastState = this.asusLinuxProxy.VendorSync();
             this.connected = true;
-        } catch(e) {
-            Log.error('Graphics Mode DBus initialization failed!', e);
+            Log.info('Graphics Mode DBus initialization successful (using supergfxctl!');
+        } catch (e) {
+            Log.error('Graphics Mode DBus initialization using supergfxctl failed, trying asusctl!', e);
+        }
+
+        if (!this.connected){
+            try {
+                this.xml = Resources.File.DBus('org-asuslinux-gfx-3.0.0');
+                let _asusLinuxProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
+                this.asusLinuxProxy = new _asusLinuxProxy(
+                    Gio.DBus.system,
+                    'org.asuslinux.Daemon',
+                    '/org/asuslinux/Gfx'
+                );
+                this.lastState = this.asusLinuxProxy.VendorSync();
+                this.connected = true;
+                Log.info('Graphics Mode DBus initialization successful (using asusctl!');
+            } catch (e) {
+                Log.error('Graphics Mode DBus initialization using asusctl failed, aborting!', e);
+            }
         }
 
         if (this.connected) {
-            let vendor = parseInt(this.asusLinuxProxy.VendorSync());
             let power = parseInt(this.asusLinuxProxy.PowerSync());
             
-            Log.info(`Initial Graphics Mode is ${this.gfxLabels[vendor]}. Power State at the moment is ${this.powerLabel[power]}${(power == 0 ? " (this can change on hybrid and compute mode)" : "")}`);
+            Log.info(`Initial Graphics Mode is ${this.gfxLabels[this.lastState]}. Power State at the moment is ${this.powerLabel[power]}${(power == 0 ? " (this can change on hybrid and compute mode)" : "")}`);
 
-            Panel.Actions.updateMode('gfx-mode', this.gfxLabels[vendor]);
-            this.lastState = vendor;
+            Panel.Actions.updateMode('gfx-mode', this.gfxLabels[this.lastState]);
 
             // connect NotifyAction
             this.asusLinuxProxy.connectSignal(
@@ -200,7 +212,11 @@ export class GfxMode implements IStoppableModule {
             } catch (e) {
                 Log.error(`Graphics Mode DBus power mode Poller initialization failed!`, e);
             }
+
+            return true;
         }
+
+        return false;
     }
 
     stop() {

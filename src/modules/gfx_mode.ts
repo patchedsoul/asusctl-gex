@@ -19,12 +19,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     connected: boolean = false;
 
     constructor() {
-        try {
-            this.connector = new DBus.GfxMode("org-asuslinux-gfx-3.0.0");
-            this.getIGPU(); // also sets the value
-        } catch(e) {
-            Log.error(`GfxMode client initialization failed!`, e);
-        }
+        Log.info(`Starting GfxMode client...`);
     }
 
     public getGfxMode() {
@@ -56,14 +51,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     start(initMenu: boolean = false) {
-        Log.info(`Starting GfxMode client...`);
-
-        try {
-            this.connector.start();
-            this.connected = this.connector.isRunning();
-        } catch(e) {
-            Log.error(`GfxMode client start failed!`, e);
-        }
+        this.connected = this.connector.start();
 
         if (initMenu)
             this.populatePopup();
