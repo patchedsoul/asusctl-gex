@@ -16,6 +16,7 @@ import * as Log from './log';
 import * as DBus from './charge_dbus';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 import { IPopulatePopupModule } from '../interfaces/iPopulatePopupModule';
+import * as Panel from './panel';
 
 var ChangeChargingLimitDialog = GObject.registerClass(
 class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
@@ -45,7 +46,7 @@ class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
           action: () => {
             this.close(true);
           },
-          default: true
+          default: false
         });
 
         this.addButton({
@@ -55,6 +56,7 @@ class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
             this.connect('closed', () => {
               try {
                 ext.chargingLimit.connector.setChargingLimit(this._entry.text);
+                Panel.Actions.updateMode('asusctl-gex-charge', this._entry.text);
               } catch (e) {
                 Log.error('Not able to set the charging limit!', e);
               }
@@ -62,6 +64,12 @@ class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
           },
           default: true
         });
+    }
+
+    open() {
+        super.open();
+
+        this._entry.focus();
     }
 });
 
@@ -102,7 +110,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         }
     }
 
-    showModal(){
+    showModal(): void {
       //@ts-ignore
       let modalChargeLimit = new ChangeChargingLimitDialog(this.connector);
       modalChargeLimit.open();

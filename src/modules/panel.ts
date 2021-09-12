@@ -167,7 +167,9 @@ export class Actions {
         let menuItems = Main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
         menuItems.forEach((mi: { label: any; style_class: string; sensitive: boolean; active: boolean }) => {
             if (mi.style_class.includes(selector)) {
-                if (selector == 'gpupower'){
+                if (selector == 'asusctl-gex-charge'){
+                    mi.label.set_text(`Charging Limit: ${payload}%`);
+                } else if (selector == 'gpupower'){
                     mi.style_class = `${selector} ${payload}`;
                     if (warningIntegrated){
                         mi.label.set_text(`integrated mode, dGPU ${payload}, please reboot`);
