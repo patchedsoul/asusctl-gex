@@ -29,6 +29,9 @@ class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
         let content = new Dialog.MessageDialogContent({ title, description });
         this.contentLayout.add_actor(content);
 
+        // Just a reference how to add additional content
+        // planned: gex logo, battery logo, some layouting
+        //
         // let bodyLabel = new St.Label({
         //     text: 'This is the body text',
         //     x_align: Clutter.ActorAlign.CENTER,
@@ -39,6 +42,8 @@ class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
           style_class: 'asusctl-gex-entry'
         });
 
+        this._entry.text = ext.chargingLimit.connector.lastState;
+
         content.add_child(this._entry);
 
         this.addButton({
@@ -46,7 +51,7 @@ class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
           action: () => {
             this.close(true);
           },
-          default: false
+          default: true
         });
 
         this.addButton({
@@ -62,14 +67,16 @@ class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
               }
             });
           },
-          default: true
+          default: false
         });
     }
 
     open() {
         super.open();
 
-        this._entry.focus();
+        // TODO
+        // - focus this._entry
+        // - keyboard events to buttons and input
     }
 });
 
