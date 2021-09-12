@@ -173,7 +173,7 @@ export class Actions {
             // TODO: this should be a method in gfx_mode_dbus (!) >
             let warningIntegrated = (ext.gfxMode.connector.lastStatePower == 0 && ext.gfxMode.connector.lastState == 1);
             try {
-                let vid = parseInt(ext.gfxMode.connector.asusLinuxProxy.VendorSync());
+                let vid = parseInt(ext.gfxMode.connector.powerProfilesProxy.VendorSync());
                 warningIntegrated = (ext.gfxMode.connector.isRunning() && vid == 1 && warningIntegrated)
                 if (vid !== ext.gfxMode.connector.lastState)
                     ext.gfxMode.connector.lastState = vid;
