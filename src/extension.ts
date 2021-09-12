@@ -1,10 +1,11 @@
 declare const global: any, imports: any;
-declare var ext: any;
+declare var ext: Extension;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './modules/log';
 import * as Profile from './modules/profile';
 import * as GfxMode from './modules/gfx_mode';
+import * as Charge from './modules/charge';
 import * as Panel from './modules/panel';
 
 import {IEnableableModule} from './interfaces/iEnableableModule';
@@ -13,11 +14,13 @@ export class Extension implements IEnableableModule {
     public panelButton: Panel.Button = new Panel.Button();
     profile: Profile.Client;
     gfxMode: GfxMode.Client;
+    chargingLimit: Charge.Client;
 
     constructor() {
         Log.info(`Initializing ${Me.metadata.name} version ${Me.metadata.version}`);
         this.profile = new Profile.Client();
         this.gfxMode = new GfxMode.Client();
+        this.chargingLimit = new Charge.Client();
     }
 
     enable() {
@@ -29,12 +32,14 @@ export class Extension implements IEnableableModule {
         // starting clients (dbus)
         this.profile.start(true);
         this.gfxMode.start(true);
+        this.chargingLimit.start();
     }
 
     disable() {
         Log.info(`disabling ${Me.metadata.name} version ${Me.metadata.version}`);
         this.profile.stop();
         this.gfxMode.stop();
+        this.chargingLimit.stop();
         this.panelButton.destroy();
     }
 }
