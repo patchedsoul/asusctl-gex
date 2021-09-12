@@ -103,8 +103,10 @@ export class Profile implements IStoppableModule {
             Log.error(`Power Profile DBus initialization failed!`, e);
         }
 
+        // TO HAVE A LOOK
+        // haven't been able to react on profile switching from power profiles DBUS
+        // trying to register the signal from asusd but it does not seem to fire either
         try {
-            // creating the proxy
             let xml = Resources.File.DBus('org-asuslinux-profile-4');
             this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
                 Gio.DBus.system,
