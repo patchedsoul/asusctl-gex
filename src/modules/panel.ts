@@ -15,6 +15,7 @@ const Main = imports.ui.main;
 const MessageTray = imports.ui.messageTray;
 const PanelMenu = imports.ui.panelMenu;
 const St = imports.gi.St;
+const Config = imports.misc.config;
 
 export const Title = 'ASUS Notebook Control';
 
@@ -97,7 +98,7 @@ export class Button implements IDestroyableModule {
 
             ext.gfxMode.populatePopup();
 
-            if (ext.profile.isRunning()){
+            if (ext.profile.isRunning() && parseInt(Config.PACKAGE_VERSION) < 41){
                 ext.profile.populatePopup();
             }
         }
