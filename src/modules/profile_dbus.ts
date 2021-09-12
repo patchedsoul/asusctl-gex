@@ -50,6 +50,8 @@ export class Profile implements IStoppableModule {
         if (this.isRunning()) {
             try {
                 this.powerProfilesProxy.ActiveProfile = mode;
+
+                // when the signals work again, this has to be removed
                 this.updateProfile(mode);
 
                 return true;
@@ -97,6 +99,17 @@ export class Profile implements IStoppableModule {
             this.getProfileNames(); 
 
             this.updateProfile(await this.powerProfilesProxy.ActiveProfile);
+
+            // connecting to EP signal (and do parsing on callback)
+            this.powerProfilesProxy.connectSignal(
+                "ProfileReleased",
+                (proxy: any = null, profile: number) => {
+                    if (proxy) {
+                        Log.info('Signal NotifyProfile triggered.');
+                        Log.info(profile.toString());
+                    }
+                }
+            );
 
             Log.info(`Power Profiles Daemon client started successfully.`);
         } catch (e) {
