@@ -159,8 +159,8 @@ export class Actions {
         // update profile icon panel
         if (ext.profile.isRunning()){
             let profileIconName = ext.profile.connector.lastState;
-            if (!['normal', 'silent', 'boost'].includes(profileIconName))
-                profileIconName = 'boost';
+            if (!['balanced', 'power-saver', 'performance'].includes(profileIconName))
+                profileIconName = 'performance';
     
             ext.panelButton.indicator._iconProfile = new St.Icon({
                 gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-${profileIconName}.svg`),
