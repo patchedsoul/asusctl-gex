@@ -38,9 +38,9 @@ export class Profile implements IStoppableModule {
                     let _profileDesc = this.asusLinuxProxy.Profiles;
                     if (_profileDesc.length > 0){
                         for (const [_key, value] of Object.entries(_profileDesc)) {
-                        //@ts-ignore
-                        // .Profile and .Driver are available
-                        this.profileDesc[_key] = value.Profile.unpack();
+                            //@ts-ignore
+                            // .Profile and .Driver are available
+                            this.profileDesc[_key] = value.Profile.unpack();
                         }
                     }
                 } else {
