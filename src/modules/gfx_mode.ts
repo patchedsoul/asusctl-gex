@@ -100,7 +100,12 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
                     if (label === 'unknown') // skip this type, should not be listed
                         return;
 
-                    let tMenuItem = new PM.PopupMenuItem(label, {style_class: `${label} gfx-mode ${this.iGpuString}`});
+                    let labelMenu = label;
+                    if (labelMenu == 'vfio' || labelMenu == 'compute'){
+                        labelMenu = '↳ '+labelMenu;
+                    }
+
+                    let tMenuItem = new PM.PopupMenuItem(labelMenu, {style_class: `${label} gfx-mode ${this.iGpuString}`});
                     let idx = this.connector.gfxLabels.indexOf(label);
                     let acl = this.getAcl(vendor, idx);
 
