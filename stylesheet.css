@@ -15,7 +15,8 @@
 
 .gfx-mode,
 .fan-mode,
-.gpupower {
+.gpupower,
+.asusctl-gex-charge {
     background-size: contain;
     background-repeat: no-repeat;
     padding-left: 35px;
@@ -65,4 +66,10 @@
 .gpupower.suspended,
 .gpupower.unknown{
     background-image: url("icons/scalable/dgpu-off.svg");
+}
+
+.asusctl-gex-charge{
+    background-image: url("icons/scalable/battery.svg");
+    background-size: 23px;
+    background-position: 27px 7px;
 }

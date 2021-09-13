@@ -43,23 +43,21 @@ export class Button implements IDestroyableModule {
             });
 
             // Profile indicator ->
-            if (ext.profile.isRunning()){
-                this._binProfile = new St.Bin({ 
-                    style_class: 'panel-bin-profile',
-                    reactive: true,
-                    can_focus: true,
-                    track_hover: true
-                });
+            this._binProfile = new St.Bin({ 
+                style_class: 'panel-bin-profile',
+                reactive: true,
+                can_focus: true,
+                track_hover: true
+            });
 
-                this._iconProfile = new St.Icon({
-                    gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-boost.svg`),
-                    style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-profile'
-                });
+            this._iconProfile = new St.Icon({
+                gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-boost.svg`),
+                style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-profile'
+            });
 
-                this._binProfile.add_actor(this._iconProfile);
+            this._binProfile.add_actor(this._iconProfile);
 
-                this._indicatorLayout.add_child(this._binProfile);
-            }
+            this._indicatorLayout.add_child(this._binProfile);
             // <- Profile indicator
 
             // GPU indicator ->
@@ -170,6 +168,7 @@ export class Actions {
         }
 
         // update gpu icon panel
+        let warningIntegrated = false;
         if (ext.gfxMode.isRunning()){
             // TODO: this should be a method in gfx_mode_dbus (!) >
             let warningIntegrated = (ext.gfxMode.connector.lastStatePower == 0 && ext.gfxMode.connector.lastState == 1);
@@ -188,43 +187,45 @@ export class Actions {
                 style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-gpu'
             });
             ext.panelButton.indicator._binGpu.add_actor(ext.panelButton.indicator._iconGpu);
-    
-            // update menu items
-            let menuItems = Main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
-            menuItems.forEach((mi: { label: any; style_class: string; sensitive: boolean; active: boolean }) => {
-                if (mi.style_class.includes(selector)) {
-                    if (selector == 'gpupower'){
-                        mi.style_class = `${selector} ${payload}`;
-                        if (warningIntegrated){
-                            mi.label.set_text(`integrated mode, dGPU ${payload}, please reboot`);
-                        } else {
-                            mi.label.set_text(`dedicated GPU: ${payload}`);
-                        }
+        }
+
+        // update menu items
+        let menuItems = Main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
+        menuItems.forEach((mi: { label: any; style_class: string; sensitive: boolean; active: boolean }) => {
+            if (mi.style_class.includes(selector)) {
+                if (selector == 'asusctl-gex-charge'){
+                    mi.label.set_text(`Charging Limit: ${payload}%`);
+                } else if (selector == 'gpupower'){
+                    mi.style_class = `${selector} ${payload}`;
+                    if (warningIntegrated){
+                        mi.label.set_text(`integrated mode, dGPU ${payload}, please reboot`);
                     } else {
-                        if (mi.style_class.includes(payload) && mi.style_class.includes('active')) {
-                            // ignore, don't change the text
-                        } else if (mi.style_class.includes(payload) && !mi.style_class.includes('active')) {
-                            mi.style_class = `${mi.style_class} active`;
-                            mi.label.set_text(`${mi.label.text}  ✔`);
-                        } else if (mi.style_class.includes('active')){
-                            mi.style_class = mi.style_class.split('active').join(' ');
-                            mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
-                        }
-    
-                        // ACL
-                        if (selector === 'gfx-mode') {
-                            let curItem = ext.gfxMode.connector.gfxLabels.indexOf(
-                                mi.style_class.split(' ').filter(el => ext.gfxMode.connector.gfxLabels.includes(el)).join().trim()
-                            );
-                            if (curItem != -1) {
-                                let acl = ext.gfxMode.getAcl(ext.gfxMode.connector.lastState, curItem);
-                                mi.sensitive = acl;
-                                mi.active = acl;
-                            }
+                        mi.label.set_text(`dedicated GPU: ${payload}`);
+                    }
+                } else {
+                    if (mi.style_class.includes(payload) && mi.style_class.includes('active')) {
+                        // ignore, don't change the text
+                    } else if (mi.style_class.includes(payload) && !mi.style_class.includes('active')) {
+                        mi.style_class = `${mi.style_class} active`;
+                        mi.label.set_text(`${mi.label.text}  ✔`);
+                    } else if (mi.style_class.includes('active')){
+                        mi.style_class = mi.style_class.split('active').join(' ');
+                        mi.label.set_text(mi.label.text.substr(0, mi.label.text.length-3));
+                    }
+
+                    // ACL
+                    if (selector === 'gfx-mode') {
+                        let curItem = ext.gfxMode.connector.gfxLabels.indexOf(
+                            mi.style_class.split(' ').filter(el => ext.gfxMode.connector.gfxLabels.includes(el)).join().trim()
+                        );
+                        if (curItem != -1) {
+                            let acl = ext.gfxMode.getAcl(ext.gfxMode.connector.lastState, curItem);
+                            mi.sensitive = acl;
+                            mi.active = acl;
                         }
                     }
                 }
-            });
-        }
+            }
+        });
     }
 }

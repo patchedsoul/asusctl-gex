@@ -33,6 +33,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         try {
             this.connector.start();
             this.connected = this.connector.isRunning();
+            this.populatePopup();
         } catch (e) {
             Log.error(`Profile start failed!`, e);
         }
