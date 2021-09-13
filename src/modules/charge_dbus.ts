@@ -37,9 +37,6 @@ export class ChargingLimit implements IStoppableModule {
         if (this.isRunning()) {
             try {
                 if (limit > 0 && this.lastState !== limit) {
-                    ext.chargingLimit.chargingLimitSlider.value = limit/100;
-                    ext.chargingLimit.chargeLimitLabel.set_text(`${limit}%`);
-        
                     // update state
                     this.lastState = limit;
                 }
@@ -83,15 +80,17 @@ export class ChargingLimit implements IStoppableModule {
             this.getChargingLimit();            
 
             // connecting to EP signal (and do parsing on callback)
-            this.asusLinuxProxy.connectSignal(
-                "NotifyCharge",
-                (proxy: any = null, name: string, data: string) => {
-                    if (proxy) {
-                        Log.info(`Charging Limit has changed to ${data}% (${name}).`);
-                        this.updateChargingLimit(parseInt(data));
-                    }
-                }
-            );
+            // TODO reimplement later again and fix infinite loop with slider
+            // (set value, update, sets slider, sets value...)
+            // this.asusLinuxProxy.connectSignal(
+            //     "NotifyCharge",
+            //     (proxy: any = null, name: string, data: string) => {
+            //         if (proxy) {
+            //             Log.info(`Charging Limit has changed to ${data}% (${name}).`);
+            //             this.updateChargingLimit(parseInt(data));
+            //         }
+            //     }
+            // );
         } catch (e) {
             Log.error(`Charging Limit DBus initialization failed!`, e);
         }
