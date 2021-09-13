@@ -45,14 +45,14 @@
     background-size: 24px;
     background-position: 24px 5px;
 }
-.fan-mode.silent {
-    background-image: url("icons/scalable/profile-silent.svg");
+.fan-mode.power-saver {
+    background-image: url("icons/scalable/profile-power-saver.svg");
 }
-.fan-mode.normal {
-    background-image: url("icons/scalable/profile-normal.svg");
+.fan-mode.balanced {
+    background-image: url("icons/scalable/profile-balanced.svg");
 }
-.fan-mode.boost {
-    background-image: url("icons/scalable/profile-boost.svg");
+.fan-mode.performance {
+    background-image: url("icons/scalable/profile-performance.svg");
 }
 
 .gpupower{

@@ -1,0 +1,44 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<!--
+  This is just an example with not all methods and properties
+-->
+<node>
+  <interface name="net.hadess.PowerProfiles">
+    <!--
+      Method
+      HoldProfile
+      (String profile, String reason, String application_id) ↦ (UInt32 cookie)
+    -->
+    <method name="HoldProfile">
+      <arg name="profile" type="s" direction="in"/>
+      <arg name="reason" type="s" direction="in"/>
+      <arg name="application_id" type="s" direction="in"/>
+    </method>
+    <!--
+      Method
+      ReleaseProfile
+      (UInt32 cookie) ↦ ()
+    -->
+    <method name="ReleaseProfile">
+      <arg name="cookie" type="u" direction="in"/>
+    </method>
+    <!--
+      Property
+      Profiles (aa{sv})
+    -->
+    <property name="Profiles" type="aa{sv}" access="read"/>
+    <!--
+      Property
+      ActiveProfile (string)
+    -->
+    <property name="ActiveProfile" type="s" access="readwrite"/>
+    <!--
+      Signal
+      ProfileReleased
+      (UInt32 cookie) ↦ ()
+    -->
+    <signal name="ProfileReleased">
+      <arg name="profile" type="u"/>
+    </signal>
+  </interface>
+</node>

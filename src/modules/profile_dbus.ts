@@ -9,44 +9,52 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const Gio = imports.gi.Gio;
 
-// this type should be used as ProfileData (strictly typed)
-export type ProfileData = {
-    name: string | null,        // String
-    min: number,                // u8
-    max: number,                // u8
-    turbo: boolean,             // bool
-    fan: number,                // FanLevel
-    curve: string | null        // String
-};
-
 export class Profile implements IStoppableModule {
     asusLinuxProxy: any = null; // type: Gio.DbusProxy (donno how to add)
-    connected: boolean = false;
+    powerProfilesProxy: any = null; // type: Gio.DbusProxy (donno how to add)
+    connectedPPD: boolean = false;
+    connectedASUSD: boolean = false;
     lastState: string | null = null;
-    xml: string | null = null;
-    profileDesc: string[] = [];
+    profiles: any[number] = [];
 
-    constructor(xml: string | null = null) {
-        if (xml)
-            this.xml = Resources.File.DBus(xml);
+    constructor() {
+        // nothing for now
     }
 
     public getProfileNames() {
         if (this.isRunning()) {
             try {
-                this.profileDesc = this.asusLinuxProxy.ProfileNamesSync().toString().trim().split(',');
-                Log.info(`Profile DBus got power profiles: ${this.profileDesc.join(', ')}`);
+                let _profiles = this.powerProfilesProxy.Profiles;
+                if (_profiles.length > 0){
+                    for (const [_key, value] of Object.entries(_profiles)) {
+                        this.profiles[parseInt(_key)] = {
+                            //@ts-ignore
+                            'Profile': value.Profile.unpack(),
+                            //@ts-ignore
+                            'Driver':  value.Driver.unpack()
+                        }
+
+                        //@ts-ignore
+                        Log.info(`Fetched Power Profile: ${value.Profile.unpack()}`);
+                    }
+                }
             } catch (e) {
-                Log.error(`Profile DBus getting power profile names failed!`, e);
+                Log.error(`Power Profiles: failed to fetch profile names!`, e);
             }
         }
-        return this.profileDesc;
+
+        return this.profiles;
     }
 
     public setProfile(mode: string) {
         if (this.isRunning()) {
             try {
-                return this.asusLinuxProxy.SetProfileSync(mode);
+                this.powerProfilesProxy.ActiveProfile = mode;
+
+                // when the signals work again, this has to be removed
+                this.updateProfile(mode);
+
+                return true;
             } catch (e) {
                 Log.error(`Profile DBus set power profile failed!`, e);
             }
@@ -74,66 +82,68 @@ export class Profile implements IStoppableModule {
     }
 
     isRunning(): boolean {
-        return this.connected;
+        return this.connectedPPD;
     }
 
     async start() {
-        Log.info(`Starting Profile DBus client...`);
-        if (this.xml == null) {
-            Log.error('Starting Profile DBus initialization failed, no xml given!');
-            return;
-        }
-
         try {
             // creating the proxy
-            this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(this.xml)(
+            let xml = Resources.File.DBus('net.hadess.PowerProfiles');
+            this.powerProfilesProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
+                Gio.DBus.system,
+                'net.hadess.PowerProfiles',
+                '/net/hadess/PowerProfiles'
+            );
+
+            this.connectedPPD = true;
+            this.getProfileNames(); 
+
+            this.updateProfile(await this.powerProfilesProxy.ActiveProfile);
+
+            // connecting to EP signal (and do parsing on callback)
+            this.powerProfilesProxy.connectSignal(
+                "ProfileReleased",
+                (proxy: any = null, profile: number) => {
+                    if (proxy) {
+                        Log.info('Signal NotifyProfile triggered.');
+                        Log.info(profile.toString());
+                    }
+                }
+            );
+
+            Log.info(`Power Profiles Daemon client started successfully.`);
+        } catch (e) {
+            Log.error(`Power Profile DBus initialization failed!`, e);
+        }
+
+        // TO HAVE A LOOK
+        // haven't been able to react on profile switching from power profiles DBUS
+        // trying to register the signal from asusd but it does not seem to fire either
+        try {
+            let xml = Resources.File.DBus('org-asuslinux-profile-4');
+            this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
                 Gio.DBus.system,
                 'org.asuslinux.Daemon',
                 '/org/asuslinux/Profile'
             );
 
-            this.connected = true;
-            this.getProfileNames();            
+            this.connectedASUSD = true;
 
             // connecting to EP signal (and do parsing on callback)
             this.asusLinuxProxy.connectSignal(
                 "NotifyProfile",
                 (proxy: any = null, name: string, data: object) => {
                     if (proxy) {
-                        let profile: ProfileData = { name: null, min: 0, max: 100, turbo: true, fan: 1, curve: null };
-                        
-                        for (const [_key, value] of Object.entries(data)) {
-                            value.forEach((element:any, index:number) => {
-                                switch(index) {
-                                    case 0: // name
-                                        profile.name = element.toString().trim(); break;
-                                    case 1: // min
-                                        profile.min = parseInt(element); break;
-                                    case 2: // max
-                                        profile.max = parseInt(element); break;
-                                    case 3: // turbo
-                                        profile.turbo = (/true/i).test(element.toString().toLowerCase().trim()); break;
-                                    case 4: // fan
-                                        profile.fan = parseInt(element); break;
-                                    case 5: // curve
-                                        profile.curve = element.toString().trim(); break;
-                                }
-                            });
-                        }
-                        
-                        // TODO: check if that is correct, might need comparsion to last profilename
-                        if (profile.name && profile.name !== '') {
-                            this.updateProfile(profile.name);
-                            Log.info(`[dbus${name}]: The profile has changed to ${profile.name}`);
-                        } else {
-                            Log.error(`[dbus${name}]: The profile has not been changed: no profile name given.`);
-                        }
+                        Log.info('Signal NotifyProfile triggered.');
+                        Log.info(name.toString());
+                        Log.info(data.toString());
                     }
                 }
             );
-            this.updateProfile(await this.asusLinuxProxy.ActiveNameSync().toString().trim());
+
+            Log.info(`asusctl Profiles Daemon client started successfully.`);
         } catch (e) {
-            Log.error(`Profile DBus initialization failed!`, e);
+            Log.error(`asusctl Profile DBus initialization failed!`, e);
         }
     }
 
@@ -141,7 +151,9 @@ export class Profile implements IStoppableModule {
         Log.info(`Stopping Profile DBus client...`);
 
         if (this.isRunning()) {
-            this.connected = false;
+            this.connectedPPD = false;
+            this.connectedASUSD = false;
+            this.powerProfilesProxy = null;
             this.asusLinuxProxy = null;
             this.lastState = null;
         }

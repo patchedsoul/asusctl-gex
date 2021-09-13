@@ -17,7 +17,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
     constructor() {        
         try {
-            this.connector = new DBus.Profile("org-asuslinux-profile-3.5.3");
+            this.connector = new DBus.Profile();
         } catch(e) {
             Log.error(`Profile client initialization failed!`, e);
         }
@@ -27,7 +27,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         return (this.connected && this.connector && this.connector.isRunning());
     }
 
-    start(initMenu: boolean = false) {
+    start() {
         Log.info(`Starting Profile client...`);
 
         try {
@@ -36,9 +36,6 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         } catch (e) {
             Log.error(`Profile start failed!`, e);
         }
-
-        if (initMenu)
-            this.populatePopup();
     }
 
     stop() {
@@ -62,14 +59,14 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
             if (mi.style_class.includes('fan-mode') && mi.style_class.includes('none'))
             {         
                 mi.destroy();
-                this.connector.profileDesc.forEach((label: string) => {
-                    let tMenuItem = new PM.PopupMenuItem(label, {style_class: `${label} callmode-${label} fan-mode`});
+                this.connector.profiles.forEach((profile: {'Profile': '', 'Driver': ''}) => {
+                    let tMenuItem = new PM.PopupMenuItem(profile.Profile, {style_class: `${profile.Profile} callmode-${profile.Profile} fan-mode`});
                     menu.addMenuItem(tMenuItem);
                     tMenuItem.connect('activate', () => {
-                        this.connector.setProfile(label) 
+                        this.connector.setProfile(profile.Profile) 
                     });
                 });
-                Log.info(`Added Power Profiles to UI: ${this.connector.profileDesc.join(', ')}`);
+                Log.info(`Added Power Profiles to UI.`);
             }
         });
     }

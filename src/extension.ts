@@ -1,5 +1,6 @@
 declare const global: any, imports: any;
 declare var ext: any;
+const Config = imports.misc.config;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './modules/log';
@@ -15,7 +16,8 @@ export class Extension implements IEnableableModule {
     gfxMode: GfxMode.Client;
 
     constructor() {
-        Log.info(`Initializing ${Me.metadata.name} version ${Me.metadata.version}`);
+        Log.info(`Initializing ${Me.metadata.name} version ${Me.metadata.version} on GNOME Shell ${Config.PACKAGE_VERSION}`);
+
         this.profile = new Profile.Client();
         this.gfxMode = new GfxMode.Client();
     }
@@ -23,12 +25,12 @@ export class Extension implements IEnableableModule {
     enable() {
         Log.info(`Enabling ${Me.metadata.name} version ${Me.metadata.version}`);
 
+        // starting clients (dbus)
+        this.profile.start();
+        this.gfxMode.start();
+
         // create panel button (needs to be first in chain)
         this.panelButton.create();
-
-        // starting clients (dbus)
-        this.profile.start(true);
-        this.gfxMode.start(true);
     }
 
     disable() {
