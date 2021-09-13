@@ -80,7 +80,7 @@ export class Button implements IDestroyableModule {
 		    this.add_child(this._indicatorLayout);
 
             // populating panelMenu (extend)
-            this.popupMenu = new Popup.Menu(this.menu);
+            this.popupMenu = new Popup.Menu();
 
             this.menu.connect('open-state-changed', Lang.bind(this._indicatorLayout, () => {
                 if (this._indicatorLayout.style_class.includes('active')){

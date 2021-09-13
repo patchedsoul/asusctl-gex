@@ -49,26 +49,40 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
     
     populatePopup(): void {
-        if (!this.isRunning())
-            return;
-
         // get menu and its items
         let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
-        let menuItems = menu._getMenuItems();
 
-        menuItems.forEach((mi: any) => {
-            if (mi.style_class.includes('fan-mode') && mi.style_class.includes('none'))
-            {         
-                mi.destroy();
-                this.connector.profiles.forEach((profile: {'Profile': '', 'Driver': ''}) => {
-                    let tMenuItem = new PM.PopupMenuItem(profile.Profile, {style_class: `${profile.Profile} callmode-${profile.Profile} fan-mode`});
-                    menu.addMenuItem(tMenuItem);
-                    tMenuItem.connect('activate', () => {
-                        this.connector.setProfile(profile.Profile) 
-                    });
+        menu.addMenuItem(
+            new PM.PopupMenuItem(
+                'Power Profile',
+                {
+                    hover: false,
+                    can_focus: false,
+                    style_class: 'headline headline-label fan'
+                }
+            )
+        );
+
+        if (this.connector.profiles.length > 0 && this.isRunning()){
+            this.connector.profiles.forEach((profile: {'Profile': '', 'Driver': ''}) => {
+                let tMenuItem = new PM.PopupMenuItem(profile.Profile, {style_class: `${profile.Profile} callmode-${profile.Profile} fan-mode`});
+                menu.addMenuItem(tMenuItem);
+                tMenuItem.connect('activate', () => {
+                    this.connector.setProfile(profile.Profile) 
                 });
-                Log.info(`Added Power Profiles to UI.`);
-            }
-        });
+            });
+            Log.info(`Added Power Profiles to UI.`);
+        } else {
+            menu.addMenuItem(
+                new PM.PopupMenuItem(
+                    'Profiles not initialized',
+                    {
+                        hover: false,
+                        can_focus: false,
+                        style_class: 'none fan-mode'
+                    }
+                )
+            );
+        }
     }
 }
