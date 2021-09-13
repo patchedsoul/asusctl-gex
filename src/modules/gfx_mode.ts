@@ -1,4 +1,5 @@
 declare const global: any, imports: any;
+declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -69,6 +70,9 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     populatePopup(): void {
         if (!this.isRunning())
             return;
+
+        // add the GPU icon to the panel icon bin
+        ext.panelButton.indicator._indicatorLayout.add_child(ext.panelButton.indicator._binGpu);
 
         let vendor = this.getGfxMode() ?? 5;
         let gpuPower = this.getGpuPower();

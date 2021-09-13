@@ -74,8 +74,6 @@ export class Button implements IDestroyableModule {
             });
 
             this._binGpu.add_actor(this._iconGpu);
-
-            this._indicatorLayout.add_child(this._binGpu);
             // <- GPU indicator
 
             // add indicators to panel icon
