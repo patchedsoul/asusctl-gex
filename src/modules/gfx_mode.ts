@@ -77,62 +77,58 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         let vendor = this.getGfxMode() ?? 5;
         let gpuPower = this.getGpuPower();
 
-        // get menu and its items
         let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
-        let menuItems = menu._getMenuItems();
 
         let menuIdx = 1;
-        menuItems.forEach((mi: any) => {
-            if (mi.style_class.includes('gfx-mode') && mi.style_class.includes('none'))
-            {
-                mi.destroy();
-                Log.info(`Current Graphics Mode is ${this.connector.gfxLabels[vendor]}`);
-                
-                if (typeof gpuPower !== 'undefined') {
-                    let gpuPowerItem = new PM.PopupMenuItem(`dedicated GPU: ${this.connector.powerLabel[gpuPower]}`, {
-                        hover: false,
-                        can_focus: false,
-                        style_class: `gpupower ${this.connector.powerLabel[gpuPower]}`
-                    });
-                    menu.addMenuItem(gpuPowerItem, menuIdx++);
-                }
+        menu.addMenuItem(new PM.PopupMenuItem('Graphics Mode', {hover: false, can_focus: false, style_class: 'headline gfx headline-label'}), 0);
 
-                // seperator
-                menu.addMenuItem(new PM.PopupSeparatorMenuItem(), menuIdx++)
+        Log.info(`Current Graphics Mode is ${this.connector.gfxLabels[vendor]}`);
+        
+        if (typeof gpuPower !== 'undefined') {
+            let gpuPowerItem = new PM.PopupMenuItem(`dedicated GPU: ${this.connector.powerLabel[gpuPower]}`, {
+                hover: false,
+                can_focus: false,
+                style_class: `gpupower ${this.connector.powerLabel[gpuPower]}`
+            });
+            menu.addMenuItem(gpuPowerItem, menuIdx++);
 
-                this.connector.gfxLabels.forEach((label: string) => {
-                    if (label === 'unknown') // skip this type, should not be listed
-                        return;
+            // seperator
+            menu.addMenuItem(new PM.PopupSeparatorMenuItem(), menuIdx++);
+        }
 
-                    let labelMenu = label;
-                    if (labelMenu == 'vfio' || labelMenu == 'compute'){
-                        labelMenu = '↳ '+labelMenu;
-                    }
+        this.connector.gfxLabels.forEach((label: string) => {
+            if (label === 'unknown') // skip this type, should not be listed
+                return;
 
-                    let tMenuItem = new PM.PopupMenuItem(labelMenu, {style_class: `${label} gfx-mode ${this.iGpuString}`});
-                    let idx = this.connector.gfxLabels.indexOf(label);
-                    let acl = this.getAcl(vendor, idx);
-
-                    // set active item
-                    if (idx === vendor) {
-                        tMenuItem.style_class = `${tMenuItem.style_class} active`;
-                        tMenuItem.label.set_text(`${tMenuItem.label.text}  ✔`);
-                    }
-
-                    // add to menu
-                    menu.addMenuItem(tMenuItem, menuIdx++);                    
-
-                    // check and set acl (true == access granted)
-                    tMenuItem.sensitive = acl;
-                    tMenuItem.active = acl;
-                    tMenuItem.connect('activate', () => {
-                        // delay poller, only on integrated(1) and swithing to vfio(3)
-                        if (this.connector.lastState == 1 && idx == 3)
-                            this.connector.pollerDelayTicks = 5;
-                        this.connector.setGfxMode(idx);
-                    });
-                });
+            let labelMenu = label;
+            if (labelMenu == 'vfio' || labelMenu == 'compute'){
+                labelMenu = '↳ '+labelMenu;
             }
+
+            let tMenuItem = new PM.PopupMenuItem(labelMenu, {style_class: `${label} gfx-mode ${this.iGpuString}`});
+            let idx = this.connector.gfxLabels.indexOf(label);
+            let acl = this.getAcl(vendor, idx);
+
+            // set active item
+            if (idx === vendor) {
+                tMenuItem.style_class = `${tMenuItem.style_class} active`;
+                tMenuItem.label.set_text(`${tMenuItem.label.text}  ✔`);
+            }
+
+            // add to menu
+            menu.addMenuItem(tMenuItem, menuIdx++);
+
+            // check and set acl (true == access granted)
+            tMenuItem.sensitive = acl;
+            tMenuItem.active = acl;
+            tMenuItem.connect('activate', () => {
+                // delay poller, only on integrated(1) and swithing to vfio(3)
+                if (this.connector.lastState == 1 && idx == 3)
+                    this.connector.pollerDelayTicks = 5;
+                this.connector.setGfxMode(idx);
+            });
         });
+
+        menu.addMenuItem(new PM.PopupSeparatorMenuItem(), menuIdx++);
     }
 }

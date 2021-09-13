@@ -60,7 +60,7 @@ export class Button implements IDestroyableModule {
             this._indicatorLayout.add_child(this._binProfile);
             // <- Profile indicator
 
-            // GPU indicator ->
+            // GPU indicator (gets added to the bin by gfx_mode) ->
             this._binGpu = new St.Bin({ 
                 style_class: 'panel-bin-gpu',
                 reactive: true,
