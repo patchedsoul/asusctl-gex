@@ -30,7 +30,7 @@ export class Extension implements IEnableableModule {
 
         // create panel button (needs to be first in chain)
         this.panelButton.create();
-        
+
         // starting clients (dbus)
         this.profile.start();
         this.gfxMode.start(true);
