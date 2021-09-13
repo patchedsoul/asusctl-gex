@@ -43,23 +43,21 @@ export class Button implements IDestroyableModule {
             });
 
             // Profile indicator ->
-            if (ext.profile.isRunning()){
-                this._binProfile = new St.Bin({ 
-                    style_class: 'panel-bin-profile',
-                    reactive: true,
-                    can_focus: true,
-                    track_hover: true
-                });
+            this._binProfile = new St.Bin({ 
+                style_class: 'panel-bin-profile',
+                reactive: true,
+                can_focus: true,
+                track_hover: true
+            });
 
-                this._iconProfile = new St.Icon({
-                    gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-boost.svg`),
-                    style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-profile'
-                });
+            this._iconProfile = new St.Icon({
+                gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-boost.svg`),
+                style_class: 'asusctl-gex-panel-icon asusctl-gex-panel-icon-profile'
+            });
 
-                this._binProfile.add_actor(this._iconProfile);
+            this._binProfile.add_actor(this._iconProfile);
 
-                this._indicatorLayout.add_child(this._binProfile);
-            }
+            this._indicatorLayout.add_child(this._binProfile);
             // <- Profile indicator
 
             // GPU indicator ->
