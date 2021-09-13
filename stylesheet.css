@@ -1,4 +1,4 @@
-/* PopupMenu */
+/* PanelButton */
 .asusctl-gex-panel-button .asusctl-gex-panel-layout{
     padding: 0 5px;
 }
@@ -12,6 +12,7 @@
     width: 38px;
 }
 
+/* PopupMenu */
 .asusctl-gex-menu-item.headline {
     margin-bottom: 10px;
 }
@@ -22,8 +23,16 @@
 .asusctl-gex-menu-item .popup-menu-icon{
     padding-right: 5px;
 }
-.asusctl-gex-menu-item.fan-mode .popup-menu-icon svg{
-    height: 40px;
-    width: 40px;
-    background-size: 40px 40px;
+
+.asusctl-gex-battery-item .popup-menu-icon{
+    padding-right: 8px;
 }
+.asusctl-gex-battery-item .asusctl-gex-battery-slider-label{
+    padding-left: 10px;
+}
+
+/* 
+  not sure how to style the icons of
+  .popup-menu-icons from PopupImageMenuItem
+  the Profile Icons coult be a bit bigger in the menu
+*/

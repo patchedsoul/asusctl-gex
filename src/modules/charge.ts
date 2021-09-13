@@ -3,80 +3,21 @@ declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const {main, popupMenu, modalDialog, dialog} = imports.ui;
-const {GObject, St} = imports.gi;
+const {main, popupMenu, slider} = imports.ui;
+const {St} = imports.gi;
 
 import * as Log from './log';
 import * as DBus from './charge_dbus';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 import { IPopulatePopupModule } from '../interfaces/iPopulatePopupModule';
-import * as Panel from './panel';
-
-var ChangeChargingLimitDialog = GObject.registerClass(
-class ChangeChargingLimitDialog extends modalDialog.ModalDialog {
-    _init() {
-        super._init({ styleClass: 'access-dialog' });
-
-        let title = 'Battery Charge Limit';
-        let description = 'Please enter a valid value from 1 to 100:';
-        
-        let content = new dialog.MessageDialogContent({ title, description });
-        this.contentLayout.add_actor(content);
-
-        // Just a reference how to add additional content
-        // planned: gex logo, battery logo, some layouting
-        //
-        // let bodyLabel = new St.Label({
-        //     text: 'This is the body text',
-        //     x_align: Clutter.ActorAlign.CENTER,
-        // });
-        // content.add_child(bodyLabel);
-
-        this._entry = new St.Entry({
-          style_class: 'asusctl-gex-entry'
-        });
-
-        this._entry.text = ext.chargingLimit.connector.lastState;
-
-        content.add_child(this._entry);
-
-        this.addButton({
-          label: 'Discard and close',
-          action: () => {
-            this.close(true);
-          },
-          default: true
-        });
-
-        this.addButton({
-          label: 'Apply charging limit',
-          action: () => {
-            this.close(true);
-            this.connect('closed', () => {
-              try {
-                ext.chargingLimit.connector.setChargingLimit(this._entry.text);
-                Panel.Actions.updateMode('asusctl-gex-charge', this._entry.text);
-              } catch (e) {
-                Log.error('Not able to set the charging limit!', e);
-              }
-            });
-          },
-          default: false
-        });
-    }
-
-    open() {
-        super.open();
-
-        // TODO
-        // - focus this._entry
-        // - keyboard events to buttons and input
-    }
-});
 
 export class Client implements IStoppableModule, IPopulatePopupModule {
     connector: DBus.ChargingLimit = new DBus.ChargingLimit();
     connected: boolean = false;
+    _sliderDragging: boolean = false;
+    chargeLimitLabel: any;
+    chargingLimitSlider: any;
+    menuItemChargeLimit: any;
 
     constructor() {        
         try {
@@ -124,26 +65,57 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
       // get menu
       let menu = main.panel.statusArea['asusctl-gex.panel'].menu;
 
+      // menuItemParent
+      this.menuItemChargeLimit = new popupMenu.PopupBaseMenuItem({ activate: false, style_class: 'asusctl-gex-menu-item asusctl-gex-battery-item' });
+
+      // headline
       const chargingLimitItemHeadline = new popupMenu.PopupMenuItem('Battery Charge Limit', {hover: false, can_focus: false, style_class: 'headline headline-label asusctl-gex-menu-item'});
 
-      let chargingLimitItem = new popupMenu.PopupImageMenuItem(
-        `Charging Limit: ${this.connector.lastState}%`,
-        'battery-symbolic',
+      // icon
+      let iconCharge = new St.Icon({ style_class: 'popup-menu-icon' });
+      iconCharge.icon_name = 'battery-symbolic';
+      this.menuItemChargeLimit.add(iconCharge);
+
+      // slider
+      let valueInit = parseInt(ext.chargingLimit.connector.getChargingLimit())/100;
+      this.chargingLimitSlider = new slider.Slider(0);
+
+      this.chargingLimitSlider.connect('drag-begin', () => (this._sliderDragging = true));
+
+      this.chargingLimitSlider.value = valueInit;
+
+      this.chargingLimitSlider.connect('notify::value', () => {
+        let sliderValue = Math.round(this.chargingLimitSlider.value*100);
+        ext.chargingLimit.connector.setChargingLimit(sliderValue);
+        this.chargeLimitLabel.set_text(`${sliderValue}%`);
+      });
+
+      this.chargingLimitSlider.connect('drag-end', () => {
+        this._sliderDragging = false;
+        let sliderValue = Math.round(this.chargingLimitSlider.value*100);
+        ext.chargingLimit.connector.setChargingLimit(sliderValue);
+        this.chargeLimitLabel.set_text(`${sliderValue}%`);
+      });
+
+      //@ts-ignore
+      this.menuItemChargeLimit.connect('scroll-event', (actor:any, event:any) => {
+        return this.chargingLimitSlider.emit('scroll-event', event);
+      });
+
+      // label
+      this.chargeLimitLabel = new St.Label(
         {
-          style_class: `asusctl-gex-charge asusctl-gex-menu-item`
+          text: `${valueInit*100}%`,
+          style_class: 'asusctl-gex-battery-slider-label'
         }
       );
 
-      chargingLimitItem.connect('activate', () => {
-        try {
-          this.showModal();
-        } catch (e:any) {
-          Log.error(e.toString());
-        }
-      });
+      this.menuItemChargeLimit.add(iconCharge);
+      this.menuItemChargeLimit.add_child(this.chargingLimitSlider);
+      this.menuItemChargeLimit.add(this.chargeLimitLabel);
 
       menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
       menu.addMenuItem(chargingLimitItemHeadline);
-      menu.addMenuItem(chargingLimitItem);
+      menu.addMenuItem(this.menuItemChargeLimit);
   }
 }

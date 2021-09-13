@@ -1,9 +1,9 @@
 declare const global: any, imports: any;
+declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
-import * as Panel from './panel';
 import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
@@ -12,7 +12,7 @@ const Gio = imports.gi.Gio;
 export class ChargingLimit implements IStoppableModule {
     asusLinuxProxy: any = null; // type: Gio.DbusProxy (donno how to add)
     connected: boolean = false;
-    lastState: string | null = null;
+    lastState: number = 100;
     xml: string | null = null;
 
     constructor(xml: string | null = null) {
@@ -36,6 +36,13 @@ export class ChargingLimit implements IStoppableModule {
     public setChargingLimit(limit: number) {
         if (this.isRunning()) {
             try {
+                if (limit > 0 && this.lastState !== limit) {
+                    ext.chargingLimit.chargingLimitSlider.value = limit/100;
+                    ext.chargingLimit.chargeLimitLabel.set_text(`${limit}%`);
+        
+                    // update state
+                    this.lastState = limit;
+                }
                 return this.asusLinuxProxy.SetLimitSync(limit);
             } catch (e) {
                 Log.error(`Profile DBus set power profile failed!`, e);
@@ -43,17 +50,10 @@ export class ChargingLimit implements IStoppableModule {
         }
     }
 
-    updateChargingLimit(curState: string | null = null) {
-        if (curState && curState !== '' && this.lastState !== curState) {
-            let message = `Charging Limit has changed to ${curState}%`;
-
-            if (this.lastState !== null) {
-                Panel.Actions.notify(
-                    Panel.Title,
-                    message,
-                    `scalable/notification-performance.svg`
-                );
-            }
+    updateChargingLimit(curState: number) {
+        if (curState > 0 && this.lastState !== curState) {
+            ext.chargingLimit.chargingLimitSlider.value = curState/100;
+            ext.chargingLimit.chargeLimitLabel.set_text(`${curState}%`);
 
             // update state
             this.lastState = curState;
@@ -88,7 +88,7 @@ export class ChargingLimit implements IStoppableModule {
                 (proxy: any = null, name: string, data: string) => {
                     if (proxy) {
                         Log.info(`Charging Limit has changed to ${data}% (${name}).`);
-                        this.updateChargingLimit(data);
+                        this.updateChargingLimit(parseInt(data));
                     }
                 }
             );
@@ -103,7 +103,7 @@ export class ChargingLimit implements IStoppableModule {
         if (this.isRunning()) {
             this.connected = false;
             this.asusLinuxProxy = null;
-            this.lastState = null;
+            this.lastState = 100;
         }
     }
 }
