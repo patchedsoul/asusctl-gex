@@ -86,21 +86,31 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
       this.chargingLimitSlider.connect('notify::value', () => {
         let sliderValue = Math.round(this.chargingLimitSlider.value*100);
-        ext.chargingLimit.connector.setChargingLimit(sliderValue);
+        if (sliderValue !== this.connector.lastState){
+          this.connector.lastState = sliderValue;
+          ext.chargingLimit.connector.setChargingLimit(sliderValue);
+        } 
         this.chargeLimitLabel.set_text(`${sliderValue}%`);
+      });
+
+      this.chargingLimitSlider.connect('scroll-event', () => {
+        return false;
       });
 
       this.chargingLimitSlider.connect('drag-end', () => {
         this._sliderDragging = false;
         let sliderValue = Math.round(this.chargingLimitSlider.value*100);
-        ext.chargingLimit.connector.setChargingLimit(sliderValue);
+        if (sliderValue !== this.connector.lastState){
+          this.connector.lastState = sliderValue;
+          ext.chargingLimit.connector.setChargingLimit(sliderValue);
+        } 
         this.chargeLimitLabel.set_text(`${sliderValue}%`);
       });
 
       //@ts-ignore
-      this.menuItemChargeLimit.connect('scroll-event', (actor:any, event:any) => {
-        return this.chargingLimitSlider.emit('scroll-event', event);
-      });
+      // this.menuItemChargeLimit.connect('scroll-event', (actor:any, event:any) => {
+      //   return this.chargingLimitSlider.emit('scroll-event', event);
+      // });
 
       // label
       this.chargeLimitLabel = new St.Label(
