@@ -57,7 +57,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
                 {
                     hover: false,
                     can_focus: false,
-                    style_class: 'headline headline-label fan'
+                    style_class: 'asusctl-gex-menu-item headline headline-label fan'
                 }
             )
         );
