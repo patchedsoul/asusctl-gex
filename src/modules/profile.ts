@@ -65,13 +65,17 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
         if (this.connector.profiles.length > 0 && this.isRunning()){
             this.connector.profiles.forEach((profile: {'Profile': '', 'Driver': ''}) => {
-                let tMenuItem = new PM.PopupMenuItem(profile.Profile, {style_class: `${profile.Profile} callmode-${profile.Profile} fan-mode`});
+                let tMenuItem = new PM.PopupMenuItem(
+                    profile.Profile,
+                    {
+                        style_class: `${profile.Profile} callmode-${profile.Profile} fan-mode`
+                    }
+                );
                 menu.addMenuItem(tMenuItem);
                 tMenuItem.connect('activate', () => {
                     this.connector.setProfile(profile.Profile) 
                 });
             });
-            Log.info(`Added Power Profiles to UI.`);
         } else {
             menu.addMenuItem(
                 new PM.PopupMenuItem(
