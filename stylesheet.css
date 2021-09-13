@@ -1,75 +1,29 @@
 /* PopupMenu */
-.asusctl-gex-panel-icon{
-    width: 30px;
-    height: 30px;
+.asusctl-gex-panel-button .asusctl-gex-panel-layout{
     padding: 0 5px;
 }
+.asusctl-gex-panel-button .asusctl-gex-panel-icon{
+    width: 20px;
+    height: 20px;
+    padding: 0 5px;
+}
+.asusctl-gex-panel-button .panel-bin-profile{
+    height: 28px;
+    width: 38px;
+}
 
-.headline {
+.asusctl-gex-menu-item.headline {
     margin-bottom: 10px;
 }
-.headline-label {
+.asusctl-gex-menu-item.headline-label {
     font-weight: bold;
-    text-align: center;
 }
 
-.gfx-mode,
-.fan-mode,
-.gpupower,
-.asusctl-gex-charge {
-    background-size: contain;
-    background-repeat: no-repeat;
-    padding-left: 35px;
-    padding-right: 25px;
+.asusctl-gex-menu-item .popup-menu-icon{
+    padding-right: 5px;
 }
-.gfx-mode{
-    background-size: 33px;
-    background-position: 20px 0px;
-}
-.gfx-mode.hybrid{
-    background-image: url("icons/scalable/gpu-hybrid.svg");
-}
-.gfx-mode.compute{
-    background-image: url("icons/scalable/gpu-compute.svg");
-}
-.gfx-mode.vfio{
-    background-image: url("icons/scalable/gpu-vfio.svg");
-}
-.gfx-mode.integrated{
-    background-image: url("icons/scalable/gpu-integrated.svg");
-}
-.gfx-mode.nvidia{
-    background-image: url("icons/scalable/gpu-nvidia.svg");
-}
-
-.fan-mode{
-    background-size: 24px;
-    background-position: 24px 5px;
-}
-.fan-mode.power-saver {
-    background-image: url("icons/scalable/profile-power-saver.svg");
-}
-.fan-mode.balanced {
-    background-image: url("icons/scalable/profile-balanced.svg");
-}
-.fan-mode.performance {
-    background-image: url("icons/scalable/profile-performance.svg");
-}
-
-.gpupower{
-    background-position: 23px 0px;
-}
-.gpupower.active{
-    background-image: url("icons/scalable/dgpu-on.svg");
-}
-.gpupower.off,
-.gpupower.suspended,
-.gpupower.unknown{
-    background-image: url("icons/scalable/dgpu-off.svg");
-}
-
-.asusctl-gex-charge{
-    background-image: url("icons/scalable/battery.svg");
-    background-size: 23px;
-    background-position: 27px 7px;
+.asusctl-gex-menu-item.fan-mode .popup-menu-icon svg{
+    height: 40px;
+    width: 40px;
+    background-size: 40px 40px;
 }

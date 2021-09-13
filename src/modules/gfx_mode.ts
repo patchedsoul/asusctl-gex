@@ -3,16 +3,13 @@ declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
+const {main, popupMenu} = imports.ui;
+const {Gio, GLib} = imports.gi;
+
 import * as Log from './log';
 import * as DBus from './gfx_mode_dbus';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 import { IPopulatePopupModule } from '../interfaces/iPopulatePopupModule';
-
-const GLib = imports.gi.GLib;
-
-// needed for menu manipulations
-const Main = imports.ui.main;
-const PM = imports.ui.popupMenu;
 
 export class Client implements IStoppableModule, IPopulatePopupModule {
     iGpuString: string = 'unknown';
@@ -29,8 +26,9 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     public getGpuPower() {
-        if (this.isRunning())
+        if (this.isRunning()){
             return this.connector.getGpuPower();
+        }
     }
 
     public getIGPU(){
@@ -77,23 +75,28 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         let vendor = this.getGfxMode() ?? 5;
         let gpuPower = this.getGpuPower();
 
-        let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
+        let menu = main.panel.statusArea['asusctl-gex.panel'].menu;
 
         let menuIdx = 1;
-        menu.addMenuItem(new PM.PopupMenuItem('Graphics Mode', {hover: false, can_focus: false, style_class: 'headline gfx headline-label'}), 0);
+        menu.addMenuItem(new popupMenu.PopupMenuItem('Graphics Mode', {hover: false, can_focus: false, style_class: 'headline gfx headline-label asusctl-gex-menu-item'}), 0);
 
         Log.info(`Current Graphics Mode is ${this.connector.gfxLabels[vendor]}`);
         
         if (typeof gpuPower !== 'undefined') {
-            let gpuPowerItem = new PM.PopupMenuItem(`dedicated GPU: ${this.connector.powerLabel[gpuPower]}`, {
+            let gpuPowerItem = new popupMenu.PopupImageMenuItem(
+                `dedicated GPU: ${this.connector.powerLabel[gpuPower]}`,
+                Gio.icon_new_for_string(`${Me.path}/icons/scalable/dgpu-${this.connector.powerLabel[gpuPower]}.svg`),
+              {
                 hover: false,
                 can_focus: false,
-                style_class: `gpupower ${this.connector.powerLabel[gpuPower]}`
-            });
+                style_class: `gpupower ${this.connector.powerLabel[gpuPower]} asusctl-gex-menu-item`
+              }
+            );
+
             menu.addMenuItem(gpuPowerItem, menuIdx++);
 
             // seperator
-            menu.addMenuItem(new PM.PopupSeparatorMenuItem(), menuIdx++);
+            menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem(), menuIdx++);
         }
 
         this.connector.gfxLabels.forEach((label: string) => {
@@ -105,23 +108,28 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
                 labelMenu = '↳ '+labelMenu;
             }
 
-            let tMenuItem = new PM.PopupMenuItem(labelMenu, {style_class: `${label} gfx-mode ${this.iGpuString}`});
+            let menuItem = new popupMenu.PopupImageMenuItem(
+                labelMenu,
+                Gio.icon_new_for_string(`${Me.path}/icons/scalable/gpu-${label}.svg`),
+              {style_class: `${label} gfx-mode ${this.iGpuString} asusctl-gex-menu-item`}
+            );
+
             let idx = this.connector.gfxLabels.indexOf(label);
             let acl = this.getAcl(vendor, idx);
 
             // set active item
             if (idx === vendor) {
-                tMenuItem.style_class = `${tMenuItem.style_class} active`;
-                tMenuItem.label.set_text(`${tMenuItem.label.text}  ✔`);
+                menuItem.style_class = `${menuItem.style_class} active asusctl-gex-menu-item`;
+                menuItem.label.set_text(`${menuItem.label.text}  ✔`);
             }
 
             // add to menu
-            menu.addMenuItem(tMenuItem, menuIdx++);
+            menu.addMenuItem(menuItem, menuIdx++);
 
             // check and set acl (true == access granted)
-            tMenuItem.sensitive = acl;
-            tMenuItem.active = acl;
-            tMenuItem.connect('activate', () => {
+            menuItem.sensitive = acl;
+            menuItem.active = acl;
+            menuItem.connect('activate', () => {
                 // delay poller, only on integrated(1) and swithing to vfio(3)
                 if (this.connector.lastState == 1 && idx == 3)
                     this.connector.pollerDelayTicks = 5;
@@ -129,6 +137,6 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
             });
         });
 
-        menu.addMenuItem(new PM.PopupSeparatorMenuItem(), menuIdx++);
+        menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem(), menuIdx++);
     }
 }

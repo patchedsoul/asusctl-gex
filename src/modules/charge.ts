@@ -3,14 +3,8 @@ declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-// needed for menu manipulations
-const Main = imports.ui.main;
-const PM = imports.ui.popupMenu;
-const ModalDialog = imports.ui.modalDialog;
-const Dialog = imports.ui.dialog;
-const St = imports.gi.St;
-// const Clutter = imports.gi.Clutter;
-const GObject = imports.gi.GObject;
+const {main, popupMenu, modalDialog, dialog} = imports.ui;
+const {GObject, St} = imports.gi;
 
 import * as Log from './log';
 import * as DBus from './charge_dbus';
@@ -19,14 +13,14 @@ import { IPopulatePopupModule } from '../interfaces/iPopulatePopupModule';
 import * as Panel from './panel';
 
 var ChangeChargingLimitDialog = GObject.registerClass(
-class ChangeChargingLimitDialog extends ModalDialog.ModalDialog {
+class ChangeChargingLimitDialog extends modalDialog.ModalDialog {
     _init() {
         super._init({ styleClass: 'access-dialog' });
 
         let title = 'Battery Charge Limit';
         let description = 'Please enter a valid value from 1 to 100:';
         
-        let content = new Dialog.MessageDialogContent({ title, description });
+        let content = new dialog.MessageDialogContent({ title, description });
         this.contentLayout.add_actor(content);
 
         // Just a reference how to add additional content
@@ -127,14 +121,18 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
       if (!this.isRunning())
         return;
 
-      // get menu and its items
-      let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
+      // get menu
+      let menu = main.panel.statusArea['asusctl-gex.panel'].menu;
 
-      const chargingLimitItemHeadline = new PM.PopupMenuItem('Battery Charge Limit', {hover: false, can_focus: false, style_class: 'headline-label'});
+      const chargingLimitItemHeadline = new popupMenu.PopupMenuItem('Battery Charge Limit', {hover: false, can_focus: false, style_class: 'headline headline-label asusctl-gex-menu-item'});
 
-      let chargingLimitItem = new PM.PopupMenuItem(`Charging Limit: ${this.connector.lastState}%`, {
-        style_class: `asusctl-gex-charge`
-      });
+      let chargingLimitItem = new popupMenu.PopupImageMenuItem(
+        `Charging Limit: ${this.connector.lastState}%`,
+        'battery-symbolic',
+        {
+          style_class: `asusctl-gex-charge asusctl-gex-menu-item`
+        }
+      );
 
       chargingLimitItem.connect('activate', () => {
         try {
@@ -144,7 +142,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         }
       });
 
-      menu.addMenuItem(new PM.PopupSeparatorMenuItem());
+      menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
       menu.addMenuItem(chargingLimitItemHeadline);
       menu.addMenuItem(chargingLimitItem);
   }

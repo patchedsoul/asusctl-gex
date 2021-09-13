@@ -3,19 +3,14 @@ declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
+const {main, panelMenu, messageTray} = imports.ui;
+const {Gio, GLib, St} = imports.gi;
+const Lang = imports.lang;
+const Config = imports.misc.config;
+
 import * as Log from './log';
 import * as Popup from './popup';
 import {IDestroyableModule} from '../interfaces/iDestroyableModule';
-
-
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
-const Lang = imports.lang;
-const Main = imports.ui.main;
-const MessageTray = imports.ui.messageTray;
-const PanelMenu = imports.ui.panelMenu;
-const St = imports.gi.St;
-const Config = imports.misc.config;
 
 export const Title = 'ASUS Notebook Control';
 
@@ -25,7 +20,7 @@ export class Button implements IDestroyableModule {
 
     AsusNb_Indicator = new Lang.Class({
         Name: 'asusctl-gex-indicator',
-        Extends: PanelMenu.Button,
+        Extends: panelMenu.Button,
 
         _init: function(){
             this.parent(null, 'AsusNbPanel');
@@ -90,7 +85,7 @@ export class Button implements IDestroyableModule {
                 }
             }));
 
-            Main.panel.addToStatusArea('asusctl-gex.panel', this);
+            main.panel.addToStatusArea('asusctl-gex.panel', this);
 
             ext.gfxMode.populatePopup();
 
@@ -126,10 +121,10 @@ export class Actions {
     public static notify(msg:string = Title, details:string, icon: string, action: string = "") {
         let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/${icon}`);
         let params = { gicon: gIcon};
-        let source = new MessageTray.Source(msg, icon, params);
-        let notification = new MessageTray.Notification(source, msg, details, params);
+        let source = new messageTray.Source(msg, icon, params);
+        let notification = new messageTray.Notification(source, msg, details, params);
         
-        Main.messageTray.add(source);
+        main.messageTray.add(source);
         notification.setTransient(true);
 
         if (action == 'reboot'){
@@ -188,18 +183,16 @@ export class Actions {
         }
 
         // update menu items
-        let menuItems = Main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
+        let menuItems = main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();
         menuItems.forEach((mi: { label: any; style_class: string; sensitive: boolean; active: boolean }) => {
             if (mi.style_class.includes(selector)) {
                 if (selector == 'asusctl-gex-charge'){
                     mi.label.set_text(`Charging Limit: ${payload}%`);
                 } else if (selector == 'gpupower'){
-                    mi.style_class = `${selector} ${payload}`;
-                    if (warningIntegrated){
-                        mi.label.set_text(`integrated mode, dGPU ${payload}, please reboot`);
-                    } else {
-                        mi.label.set_text(`dedicated GPU: ${payload}`);
-                    }
+                    let gpuPowerLabel = warningIntegrated ? `integrated mode, dGPU ${payload}, please reboot` : `dedicated GPU: ${payload}`;
+                    mi.label.set_text(gpuPowerLabel);
+                    //@ts-ignore
+                    mi.setIcon(Gio.icon_new_for_string(`${Me.path}/icons/scalable/dgpu-${ext.gfxMode.connector.powerLabel[ext.gfxMode.connector.getGpuPower()]}.svg`));
                 } else {
                     if (mi.style_class.includes(payload) && mi.style_class.includes('active')) {
                         // ignore, don't change the text

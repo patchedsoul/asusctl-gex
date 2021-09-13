@@ -2,9 +2,8 @@ declare const global: any, imports: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-// needed for menu manipulations
-const Main = imports.ui.main;
-const PM = imports.ui.popupMenu;
+const {main, popupMenu} = imports.ui;
+const {Gio} = imports.gi;
 
 import * as Log from './log';
 import * as DBus from './profile_dbus';
@@ -50,10 +49,10 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     
     populatePopup(): void {
         // get menu and its items
-        let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
+        let menu = main.panel.statusArea['asusctl-gex.panel'].menu;
 
         menu.addMenuItem(
-            new PM.PopupMenuItem(
+            new popupMenu.PopupMenuItem(
                 'Power Profile',
                 {
                     hover: false,
@@ -65,25 +64,27 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
         if (this.connector.profiles.length > 0 && this.isRunning()){
             this.connector.profiles.forEach((profile: {'Profile': '', 'Driver': ''}) => {
-                let tMenuItem = new PM.PopupMenuItem(
+                let menuItem = new popupMenu.PopupImageMenuItem(
                     profile.Profile,
-                    {
-                        style_class: `${profile.Profile} callmode-${profile.Profile} fan-mode`
-                    }
+                  Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-${profile.Profile}.svg`),
+                  {
+                    style_class: `${profile.Profile} callmode-${profile.Profile} fan-mode asusctl-gex-menu-item`
+                  }
                 );
-                menu.addMenuItem(tMenuItem);
-                tMenuItem.connect('activate', () => {
+                
+                menu.addMenuItem(menuItem);
+                menuItem.connect('activate', () => {
                     this.connector.setProfile(profile.Profile) 
                 });
             });
         } else {
             menu.addMenuItem(
-                new PM.PopupMenuItem(
+                new popupMenu.PopupMenuItem(
                     'Profiles not initialized',
                     {
                         hover: false,
                         can_focus: false,
-                        style_class: 'none fan-mode'
+                        style_class: 'none fan-mode asusctl-gex-menu-item'
                     }
                 )
             );
