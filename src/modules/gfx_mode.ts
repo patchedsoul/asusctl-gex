@@ -1,17 +1,15 @@
 declare const global: any, imports: any;
+declare var ext: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+
+const {main, popupMenu} = imports.ui;
+const {Gio, GLib} = imports.gi;
 
 import * as Log from './log';
 import * as DBus from './gfx_mode_dbus';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 import { IPopulatePopupModule } from '../interfaces/iPopulatePopupModule';
-
-const GLib = imports.gi.GLib;
-
-// needed for menu manipulations
-const Main = imports.ui.main;
-const PM = imports.ui.popupMenu;
 
 export class Client implements IStoppableModule, IPopulatePopupModule {
     iGpuString: string = 'unknown';
@@ -28,8 +26,9 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     public getGpuPower() {
-        if (this.isRunning())
+        if (this.isRunning()){
             return this.connector.getGpuPower();
+        }
     }
 
     public getIGPU(){
@@ -70,60 +69,74 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         if (!this.isRunning())
             return;
 
+        // add the GPU icon to the panel icon bin
+        ext.panelButton.indicator._indicatorLayout.add_child(ext.panelButton.indicator._binGpu);
+
         let vendor = this.getGfxMode() ?? 5;
         let gpuPower = this.getGpuPower();
 
-        // get menu and its items
-        let menu = Main.panel.statusArea['asusctl-gex.panel'].menu;
-        let menuItems = menu._getMenuItems();
+        let menu = main.panel.statusArea['asusctl-gex.panel'].menu;
 
         let menuIdx = 1;
-        menuItems.forEach((mi: any) => {
-            if (mi.style_class.includes('gfx-mode') && mi.style_class.includes('none'))
-            {
-                mi.destroy();
-                Log.info(`Current Graphics Mode is ${this.connector.gfxLabels[vendor]}`);
-                
-                if (typeof gpuPower !== 'undefined') {
-                    let gpuPowerItem = new PM.PopupMenuItem(`dedicated GPU: ${this.connector.powerLabel[gpuPower]}`, {
-                        hover: false,
-                        can_focus: false,
-                        style_class: `gpupower ${this.connector.powerLabel[gpuPower]}`
-                    });
-                    menu.addMenuItem(gpuPowerItem, menuIdx++);
-                }
+        menu.addMenuItem(new popupMenu.PopupMenuItem('Graphics Mode', {hover: false, can_focus: false, style_class: 'headline gfx headline-label asusctl-gex-menu-item'}), 0);
 
-                // seperator
-                menu.addMenuItem(new PM.PopupSeparatorMenuItem(), menuIdx++)
+        Log.info(`Current Graphics Mode is ${this.connector.gfxLabels[vendor]}`);
+        
+        if (typeof gpuPower !== 'undefined') {
+            let gpuPowerItem = new popupMenu.PopupImageMenuItem(
+                `dedicated GPU: ${this.connector.powerLabel[gpuPower]}`,
+                Gio.icon_new_for_string(`${Me.path}/icons/scalable/dgpu-${this.connector.powerLabel[gpuPower]}.svg`),
+              {
+                hover: false,
+                can_focus: false,
+                style_class: `gpupower ${this.connector.powerLabel[gpuPower]} asusctl-gex-menu-item`
+              }
+            );
 
-                this.connector.gfxLabels.forEach((label: string) => {
-                    if (label === 'unknown') // skip this type, should not be listed
-                        return;
+            menu.addMenuItem(gpuPowerItem, menuIdx++);
 
-                    let tMenuItem = new PM.PopupMenuItem(label, {style_class: `${label} gfx-mode ${this.iGpuString}`});
-                    let idx = this.connector.gfxLabels.indexOf(label);
-                    let acl = this.getAcl(vendor, idx);
+            // seperator
+            menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem(), menuIdx++);
+        }
 
-                    // set active item
-                    if (idx === vendor) {
-                        tMenuItem.style_class = `${tMenuItem.style_class} active`;
-                        tMenuItem.label.set_text(`${tMenuItem.label.text}  ✔`);
-                    }
+        this.connector.gfxLabels.forEach((label: string) => {
+            if (label === 'unknown') // skip this type, should not be listed
+                return;
 
-                    // add to menu
-                    menu.addMenuItem(tMenuItem, menuIdx++);                    
-
-                    // check and set acl (true == access granted)
-                    tMenuItem.sensitive = acl;
-                    tMenuItem.active = acl;
-                    tMenuItem.connect('activate', () => {
-                        // delay poller, only on integrated(1) and swithing to vfio(3)
-                        if (this.connector.lastState == 1 && idx == 3)
-                            this.connector.pollerDelayTicks = 5;
-                        this.connector.setGfxMode(idx);
-                    });
-                });
+            let labelMenu = label;
+            if (labelMenu == 'vfio' || labelMenu == 'compute'){
+                labelMenu = '↳ '+labelMenu;
             }
+
+            let menuItem = new popupMenu.PopupImageMenuItem(
+                labelMenu,
+                Gio.icon_new_for_string(`${Me.path}/icons/scalable/gpu-${label}.svg`),
+              {style_class: `${label} gfx-mode ${this.iGpuString} asusctl-gex-menu-item`}
+            );
+
+            let idx = this.connector.gfxLabels.indexOf(label);
+            let acl = this.getAcl(vendor, idx);
+
+            // set active item
+            if (idx === vendor) {
+                menuItem.style_class = `${menuItem.style_class} active asusctl-gex-menu-item`;
+                menuItem.label.set_text(`${menuItem.label.text}  ✔`);
+            }
+
+            // add to menu
+            menu.addMenuItem(menuItem, menuIdx++);
+
+            // check and set acl (true == access granted)
+            menuItem.sensitive = acl;
+            menuItem.active = acl;
+            menuItem.connect('activate', () => {
+                // delay poller, only on integrated(1) and swithing to vfio(3)
+                if (this.connector.lastState == 1 && idx == 3)
+                    this.connector.pollerDelayTicks = 5;
+                this.connector.setGfxMode(idx);
+            });
         });
+
+        menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem(), menuIdx++);
     }
 }
