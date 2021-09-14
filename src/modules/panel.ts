@@ -6,7 +6,6 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 const {main, panelMenu, messageTray} = imports.ui;
 const {Gio, GLib, St} = imports.gi;
 const Lang = imports.lang;
-const Config = imports.misc.config;
 
 import * as Log from './log';
 import * as Popup from './popup';
@@ -55,7 +54,7 @@ export class Button implements IDestroyableModule {
             this._indicatorLayout.add_child(this._binProfile);
             // <- Profile indicator
 
-            // GPU indicator (gets added to the bin by gfx_mode) ->
+            // Graphics indicator (not attached, yet) ->
             this._binGpu = new St.Bin({ 
                 style_class: 'panel-bin-gpu',
                 reactive: true,
@@ -69,9 +68,9 @@ export class Button implements IDestroyableModule {
             });
 
             this._binGpu.add_actor(this._iconGpu);
-            // <- GPU indicator
+            // <- Graphics indicator
 
-            // add indicators to panel icon
+            // add indicator to panel icon
 		    this.add_child(this._indicatorLayout);
 
             // populating panelMenu (extend)
@@ -86,12 +85,6 @@ export class Button implements IDestroyableModule {
             }));
 
             main.panel.addToStatusArea('asusctl-gex.panel', this);
-
-            ext.gfxMode.populatePopup();
-
-            if (ext.profile.isRunning() && parseInt(Config.PACKAGE_VERSION) < 41){
-                ext.profile.populatePopup();
-            }
         }
     });
 

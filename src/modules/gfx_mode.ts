@@ -49,10 +49,10 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         return (this.connected && this.connector && this.connector.isRunning());
     }
 
-    start(initMenu: boolean = false) {
+    start() {
         this.connected = this.connector.start();
 
-        if (initMenu)
+        if (this.connected)
             this.populatePopup();
     }
 

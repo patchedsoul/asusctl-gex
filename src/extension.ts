@@ -1,6 +1,6 @@
 declare const global: any, imports: any;
-const Config = imports.misc.config;
 declare var ext: Extension;
+const Config = imports.misc.config;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './modules/log';
@@ -33,12 +33,12 @@ export class Extension implements IEnableableModule {
 
         // starting clients (dbus)
         this.profile.start();
-        this.gfxMode.start(true);
+        this.gfxMode.start();
         this.chargingLimit.start();
     }
 
     disable() {
-        Log.info(`disabling ${Me.metadata.name} version ${Me.metadata.version}`);
+        Log.info(`Disabling ${Me.metadata.name} version ${Me.metadata.version}`);
         this.profile.stop();
         this.gfxMode.stop();
         this.chargingLimit.stop();
