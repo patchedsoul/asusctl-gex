@@ -88,7 +88,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         // don't update all the time while dragging but just on drag-end
         if (!this._sliderDragging && sliderValue !== this.connector.lastState){
           this.connector.lastState = sliderValue;
-          ext.chargingLimit.connector.setChargingLimit(sliderValue);
+          this.connector.setChargingLimit(sliderValue);
         }
       });
 
@@ -103,7 +103,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         let sliderValue = Math.round(this.chargingLimitSlider.value*100);
         if (sliderValue !== this.connector.lastState){
           this.connector.lastState = sliderValue;
-          ext.chargingLimit.connector.setChargingLimit(sliderValue);
+          this.connector.setChargingLimit(sliderValue);
         } 
         this.chargeLimitLabel.set_text(`${sliderValue}%`);
       });

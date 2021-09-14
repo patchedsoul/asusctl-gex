@@ -31,6 +31,29 @@
     padding-left: 10px;
 }
 
+.asusctl-gex-switch-button{
+    border: 1px solid rgb(211,211,211);
+    border-radius: 20px;
+    width: 30px;
+    height: 30px;
+}
+.asusctl-gex-switch-button-icon{
+    width: 20px;
+    height: 20px;
+    padding: 5px;
+}
+.asusctl-gex-switch-button-icon:hover{
+    background-color: rgb(155, 155, 155);
+}
+
+.asusctl-gex-anime-item .asusctl-gex-switch-button{
+    margin-left: 15px;
+}
+
+.asusctl-gex-anime-item .popup-menu-icon{
+    padding-right: 8px;
+}
+
 /* 
   not sure how to style the icons of
   .popup-menu-icons from PopupImageMenuItem

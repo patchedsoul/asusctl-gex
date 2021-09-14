@@ -3,10 +3,13 @@ declare var ext: Extension;
 const Config = imports.misc.config;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
+const {Gio} = imports.gi;
+
 import * as Log from './modules/log';
 import * as Profile from './modules/profile';
 import * as GfxMode from './modules/gfx_mode';
 import * as Charge from './modules/charge';
+import * as Anime from './modules/anime';
 import * as Panel from './modules/panel';
 
 import {IEnableableModule} from './interfaces/iEnableableModule';
@@ -16,13 +19,18 @@ export class Extension implements IEnableableModule {
     profile: Profile.Client;
     gfxMode: GfxMode.Client;
     chargingLimit: Charge.Client;
+    anime: Anime.Client;
+    settings: any | null = null; // not sure how to define this
 
     constructor() {
         Log.info(`Initializing ${Me.metadata.name} version ${Me.metadata.version} on GNOME Shell ${Config.PACKAGE_VERSION}`);
 
+        this.getSettings();
+
         this.profile = new Profile.Client();
         this.gfxMode = new GfxMode.Client();
         this.chargingLimit = new Charge.Client();
+        this.anime = new Anime.Client();
     }
 
     enable() {
@@ -35,6 +43,7 @@ export class Extension implements IEnableableModule {
         this.profile.start();
         this.gfxMode.start();
         this.chargingLimit.start();
+        this.anime.start();
     }
 
     disable() {
@@ -43,6 +52,19 @@ export class Extension implements IEnableableModule {
         this.gfxMode.stop();
         this.chargingLimit.stop();
         this.panelButton.destroy();
+    }
+
+    getSettings(){
+        // preperation for reading saved settings
+        // like turning notifications on / off
+        // not used, yet
+        try {
+            this.settings = new Gio.Settings({
+                schema_id: 'org.asus-linux.gex',
+            });
+        } catch (error) {
+            Log.error('Error getting settings, creating initials...', error);
+        }
     }
 }
 
