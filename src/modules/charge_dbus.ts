@@ -4,27 +4,29 @@ declare var ext: any;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
+import * as Panel from './panel';
 import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
-const Gio = imports.gi.Gio;
+const {Gio, GLib} = imports.gi;
 
 export class ChargingLimit implements IStoppableModule {
     asusLinuxProxy: any = null; // type: Gio.DbusProxy (donno how to add)
     connected: boolean = false;
     lastState: number = 100;
-    xml: string | null = null;
+    pollerDelayTicks: number = 0;
+    timeoutChargePoller: number | null = null;
 
-    constructor(xml: string | null = null) {
-        if (xml)
-            this.xml = Resources.File.DBus(xml);
+    constructor() {
+        // nothing for now
     }
 
     public getChargingLimit() {
         if (this.isRunning()) {
             try {
-                this.lastState = this.asusLinuxProxy.LimitSync().toString().trim();
-                Log.info(`New Charging Limit: ${this.lastState} %`);
+                let currentState = this.asusLinuxProxy.LimitSync().toString().trim();
+
+                return currentState;
             } catch (e) {
                 Log.error(`Failed to fetch Charging Limit!`, e);
             }
@@ -48,12 +50,44 @@ export class ChargingLimit implements IStoppableModule {
     }
 
     updateChargingLimit(curState: number) {
+        // return false;
         if (curState > 0 && this.lastState !== curState) {
+            // disable the signal handler so we don't run in an infinite loop
+            // of notifying, setting, notifying, setting...
+            ext.chargingLimit.chargingLimitSlider.block_signal_handler(ext.chargingLimit._sliderChangedId);
             ext.chargingLimit.chargingLimitSlider.value = curState/100;
+            ext.chargingLimit.chargingLimitSlider.unblock_signal_handler(ext.chargingLimit._sliderChangedId);
+
             ext.chargingLimit.chargeLimitLabel.set_text(`${curState}%`);
 
             // update state
             this.lastState = curState;
+        }
+    }
+
+    pollerChargingLimit() {
+        if(this.isRunning() && this.pollerDelayTicks <= 0){
+            try {
+                let currentLimit = this.getChargingLimit();
+                if (currentLimit !== this.lastState){
+                    this.updateChargingLimit(currentLimit);
+    
+                    Panel.Actions.notify(
+                        'ASUS Notebook Control',
+                        `Charging Limit changed to ${currentLimit}%`,
+                        'scalable/battery-symbolic.svg'
+                    );
+                }
+            } catch (e) {
+                Log.error(`Charging Limit poller init failed!`, e);
+            } finally {
+                return this.isRunning() ? GLib.SOURCE_CONTINUE : GLib.SOURCE_REMOVE;
+            }
+        } else if (this.isRunning() && this.pollerDelayTicks > 0) {
+            this.pollerDelayTicks--;
+            return GLib.SOURCE_CONTINUE;
+        } else {
+            return GLib.SOURCE_REMOVE;
         }
     }
 
@@ -63,34 +97,34 @@ export class ChargingLimit implements IStoppableModule {
 
     async start() {
         Log.info(`Starting Charging Limit DBus client...`);
-        if (this.xml == null) {
-            Log.error('Starting Charging Limit DBus initialization failed, no xml given!');
-            return;
-        }
 
         try {
             // creating the proxy
-            this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(this.xml)(
+            let xml = Resources.File.DBus('org-asuslinux-charge-4')
+            this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
                 Gio.DBus.system,
                 'org.asuslinux.Daemon',
                 '/org/asuslinux/Charge'
             );
 
             this.connected = true;
-            this.getChargingLimit();            
+            this.lastState = this.getChargingLimit();            
 
-            // connecting to EP signal (and do parsing on callback)
-            // TODO reimplement later again and fix infinite loop with slider
-            // (set value, update, sets slider, sets value...)
-            // this.asusLinuxProxy.connectSignal(
-            //     "NotifyCharge",
-            //     (proxy: any = null, name: string, data: string) => {
-            //         if (proxy) {
-            //             Log.info(`Charging Limit has changed to ${data}% (${name}).`);
-            //             this.updateChargingLimit(parseInt(data));
-            //         }
-            //     }
-            // );
+            this.asusLinuxProxy.connectSignal(
+                "NotifyCharge",
+                (proxy: any = null, name: string, data: string) => {
+                    if (proxy) {
+                        Log.info(`Charging Limit has changed to ${data}% (${name}).`);
+                        this.updateChargingLimit(parseInt(data));
+                    }
+                }
+            );
+
+            try {
+                this.timeoutChargePoller = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 5, this.pollerChargingLimit.bind(this));
+            } catch (e) {
+                Log.error(`Charging Limit DBus Poller initialization failed!`, e);
+            }
         } catch (e) {
             Log.error(`Charging Limit DBus initialization failed!`, e);
         }
@@ -103,6 +137,7 @@ export class ChargingLimit implements IStoppableModule {
             this.connected = false;
             this.asusLinuxProxy = null;
             this.lastState = 100;
+            this.timeoutChargePoller = null;
         }
     }
 }

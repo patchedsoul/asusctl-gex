@@ -88,7 +88,7 @@ export class Profile implements IStoppableModule {
     async start() {
         try {
             // creating the proxy
-            let xml = Resources.File.DBus('net.hadess.PowerProfiles');
+            let xml = Resources.File.DBus('net.hadess.PowerProfiles-0.9.0');
             this.powerProfilesProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
                 Gio.DBus.system,
                 'net.hadess.PowerProfiles',

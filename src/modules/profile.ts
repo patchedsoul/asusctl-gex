@@ -4,6 +4,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const {main, popupMenu} = imports.ui;
 const {Gio} = imports.gi;
+const Config = imports.misc.config;
 
 import * as Log from './log';
 import * as DBus from './profile_dbus';
@@ -32,7 +33,9 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         try {
             this.connector.start();
             this.connected = this.connector.isRunning();
-            this.populatePopup();
+
+            if (this.connected && parseInt(Config.PACKAGE_VERSION) < 41)
+                this.populatePopup();
         } catch (e) {
             Log.error(`Profile start failed!`, e);
         }

@@ -16,18 +16,26 @@ Done:
 
 * Panel Icon
   * changes dynamically on:
-    * profile changes
     * dedicated GPU power status changes
     * graphics mode changes
-* Notification with profile icons
+    * power profile changes
+    * battery charging limit changes
+* Notifications:
+  * Power Profiles
+  * Battery Charge Limit
+  * Graphics Modes
 * Reboot / Logout information with icon and interactive confirmation
 * Popup Menu with the possibilities to:
   * view the power status of the dedicated GPU
   * change the power profile
   * change the graphics mode
+  * change the battery charging limit
 
 Waiting for implementation:
 
+* AniMe Matrix
+  * display on / off
+  * change brightness
 * Configuration interface (prefs)
   * bind ROG-Button to open prefs (if not `asusctl-control-center` is used)
   * create canvas based fan-curve editing
@@ -66,11 +74,11 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 ### Views (screenshots)
 
-**CPU change notifications:**
+**Power Profile change notifications:**
 
 ![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/cpu-change-silent.png)
 
-**GFX change notification:**
+**Graphics Mode change notification:**
 
 ![gfx-change-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/gfx-change-hybrid.png)
 
@@ -86,7 +94,8 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 ## Dependencies
 
-* [asusctl](https://gitlab.com/asus-linux/asusctl) >= 3.7.0
+* [asusctl](https://gitlab.com/asus-linux/asusctl) >= 4.0
+* [Power Profiles Daemon](https://gitlab.freedesktop.org/hadess/power-profiles-daemon) >= 0.9
 * gnome >= 3.36.0
 
 ### Development dependencies
