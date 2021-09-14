@@ -74,11 +74,11 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 ### Views (screenshots)
 
-**CPU change notifications:**
+**Power Profile change notifications:**
 
 ![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/cpu-change-silent.png)
 
-**GFX change notification:**
+**Graphics Mode change notification:**
 
 ![gfx-change-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/gfx-change-hybrid.png)
 
@@ -95,6 +95,7 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 ## Dependencies
 
 * [asusctl](https://gitlab.com/asus-linux/asusctl) >= 4.0
+* [Power Profiles Daemon](https://gitlab.freedesktop.org/hadess/power-profiles-daemon) >= 0.9
 * gnome >= 3.36.0
 
 ### Development dependencies
