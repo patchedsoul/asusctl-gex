@@ -15,16 +15,13 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     connector: DBus.ChargingLimit = new DBus.ChargingLimit();
     connected: boolean = false;
     _sliderDragging: boolean = false;
+    _sliderChangedId: number = 0;
     chargeLimitLabel: any;
     chargingLimitSlider: any;
     menuItemChargeLimit: any;
 
-    constructor() {        
-        try {
-            this.connector = new DBus.ChargingLimit("org-asuslinux-charge-2.0.5");
-        } catch(e) {
-            Log.error(`Charge-Limit client initialization failed!`, e);
-        }
+    constructor() {
+      // nothing for now
     }
 
     isRunning(): boolean {
@@ -84,17 +81,21 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
       this.chargingLimitSlider.value = valueInit;
 
-      this.chargingLimitSlider.connect('notify::value', () => {
+      this._sliderChangedId = this.chargingLimitSlider.connect('notify::value', () => {
         let sliderValue = Math.round(this.chargingLimitSlider.value*100);
-        if (sliderValue !== this.connector.lastState){
+        this.chargeLimitLabel.set_text(`${sliderValue}%`);
+
+        // don't update all the time while dragging but just on drag-end
+        if (!this._sliderDragging && sliderValue !== this.connector.lastState){
           this.connector.lastState = sliderValue;
           ext.chargingLimit.connector.setChargingLimit(sliderValue);
-        } 
-        this.chargeLimitLabel.set_text(`${sliderValue}%`);
+        }
       });
 
-      this.chargingLimitSlider.connect('scroll-event', () => {
-        return false;
+      // react on scroll over the whole menu item parent, not just the slider itself
+      //@ts-ignore
+      this.menuItemChargeLimit.connect('scroll-event', (actor, event) => {
+        return this.chargingLimitSlider.emit('scroll-event', event);
       });
 
       this.chargingLimitSlider.connect('drag-end', () => {
@@ -106,11 +107,6 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         } 
         this.chargeLimitLabel.set_text(`${sliderValue}%`);
       });
-
-      //@ts-ignore
-      // this.menuItemChargeLimit.connect('scroll-event', (actor:any, event:any) => {
-      //   return this.chargingLimitSlider.emit('scroll-event', event);
-      // });
 
       // label
       this.chargeLimitLabel = new St.Label(

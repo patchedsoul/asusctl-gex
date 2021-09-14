@@ -7,8 +7,7 @@ import * as Panel from './panel';
 import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
-const Gio = imports.gi.Gio;
-const GLib = imports.gi.GLib;
+const {Gio, GLib} = imports.gi;
 
 export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null; // strict-type: Gio.DBusProxy
@@ -150,24 +149,7 @@ export class GfxMode implements IStoppableModule {
             this.connected = true;
             Log.info('Graphics Mode DBus initialization successful (using supergfxctl!');
         } catch (e) {
-            Log.error('Graphics Mode DBus initialization using supergfxctl failed, trying asusctl!', e);
-        }
-
-        if (!this.connected){
-            try {
-                this.xml = Resources.File.DBus('org-asuslinux-gfx-3.0.0');
-                let _asusLinuxProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
-                this.asusLinuxProxy = new _asusLinuxProxy(
-                    Gio.DBus.system,
-                    'org.asuslinux.Daemon',
-                    '/org/asuslinux/Gfx'
-                );
-                this.lastState = this.asusLinuxProxy.VendorSync();
-                this.connected = true;
-                Log.info('Graphics Mode DBus initialization successful (using asusctl!');
-            } catch (e) {
-                Log.error('Graphics Mode DBus initialization using asusctl failed, aborting!', e);
-            }
+            Log.error('Graphics Mode DBus initialization using supergfxctl failed!', e);
         }
 
         if (this.connected) {
