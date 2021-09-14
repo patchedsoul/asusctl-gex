@@ -96,6 +96,7 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 * [asusctl](https://gitlab.com/asus-linux/asusctl) >= 4.0
 * [Power Profiles Daemon](https://gitlab.freedesktop.org/hadess/power-profiles-daemon) >= 0.9
+* [supergfxctl](https://gitlab.com/asus-linux/supergfxctl) (optional)
 * gnome >= 3.36.0
 
 ### Development dependencies
