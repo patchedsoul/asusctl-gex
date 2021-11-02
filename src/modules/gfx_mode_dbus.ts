@@ -13,13 +13,13 @@ export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null; // strict-type: Gio.DBusProxy
     connected: boolean = false;
     xml: string | null = null;
-    lastState: number = 4;
+    lastState: number = 5;
     lastStatePower: number = 3;
     pollerDelayTicks: number = 0;
     timeoutPollerGpuPower: number | null = null;
 
     // no need to use Record<number, string> (as this are string arrays)
-    public gfxLabels: string[]  = ['nvidia', 'integrated', 'compute', 'vfio', 'hybrid', 'unknown'];
+    public gfxLabels: string[]  = ['nvidia', 'integrated', 'compute', 'vfio', 'egpu', 'hybrid', 'unknown'];
     public powerLabel: string[] = ['active', 'suspended', 'off', 'unknown'];
     public userAction: string[] = ['logout', 'reboot', 'integrated', 'none'];
 
@@ -27,11 +27,12 @@ export class GfxMode implements IStoppableModule {
     public acls: boolean[][] = [
         // access branches:
         // [nvidia, integrated, compute, vfio, hybrid]
-        [true, true, false, false, true],   // nvidia
-        [true, true, true, true, true],     // integrated
-        [false, true, true, true, false],   // compute
-        [false, true, true, true, false],   // vfio
-        [true, true, false, false, true],   // hybrid
+        [true, true, false, false, true, true],   // nvidia
+        [true, true, true, true, true, true],     // integrated
+        [false, true, true, true, true, false],   // compute
+        [false, true, true, true, true, false],   // vfio
+        [true, true, true, true, true, true],   // egpu
+        [true, true, false, false, true, true],   // hybrid
     ];
 
     constructor() {
