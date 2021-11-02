@@ -68,7 +68,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         if (this.connector.profiles.length > 0 && this.isRunning()){
             this.connector.profiles.forEach((profile: {'Profile': '', 'Driver': ''}) => {
                 let menuItem = new popupMenu.PopupImageMenuItem(
-                    profile.Profile,
+                    profile.Profile.split('-').map(string => string.charAt(0).toUpperCase() + string.slice(1)).join(' '),
                   Gio.icon_new_for_string(`${Me.path}/icons/scalable/profile-${profile.Profile}.svg`),
                   {
                     style_class: `${profile.Profile} callmode-${profile.Profile} fan-mode asusctl-gex-menu-item`
