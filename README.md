@@ -108,7 +108,7 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 ## Installation
 
-There are diffrent ways of installing asusctl-gex, please choose on of the following.
+There are diffrent ways of installing asusctl-gex, please choose one of the following:
 
 ### From source
 
