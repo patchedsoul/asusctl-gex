@@ -29,7 +29,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     start() {
-        Log.info(`Starting Charging Limit client...`);
+        Log.debug(`Starting Charging Limit client...`);
 
         try {
             this.connector.start();
@@ -41,7 +41,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     stop() {
-        Log.info(`Stopping Charge Limit client...`);
+        Log.debug(`Stopping Charge Limit client...`);
 
         if (this.isRunning()) {
             this.connected = false;

@@ -1,6 +1,6 @@
 {
   "name": "asusctl-gex",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "This extension allows you to visualize most of the asusd settings and status",
   "main": "_build/extension.js",
   "dependencies": {
@@ -12,7 +12,7 @@
     "build:clean": "rm -rf _build schemas/gschemas.compiled target",
     "build:compile": "scripts/compile",
     "build:convert": "scripts/convert",
-    "build:schemas": "touch schemas/gschemas.compiled && glib-compile-schemas schemas",
+    "build:schemas": "glib-compile-schemas schemas",
     "build:transpile": "npx tsc",
     "build": "run-p build:clean && run-p build:transpile && run-p build:schemas && run-p build:convert && run-p build:compile",
     "debug:journal_term": "scripts/journal_term",

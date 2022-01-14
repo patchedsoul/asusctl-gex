@@ -28,7 +28,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     start() {
-        Log.info(`Starting Profile client...`);
+        Log.debug(`Starting Profile client...`);
 
         try {
             this.connector.start();
@@ -42,7 +42,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     stop() {
-        Log.info(`Stopping Profile client...`);
+        Log.debug(`Stopping Profile client...`);
 
         if (this.isRunning()) {
             this.connected = false;

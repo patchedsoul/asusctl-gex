@@ -17,7 +17,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     connected: boolean = false;
 
     constructor() {
-        Log.info(`Starting GfxMode client...`);
+        Log.debug(`Starting GfxMode client...`);
     }
 
     public getGfxMode() {
@@ -37,7 +37,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         } catch (e) {
             this.iGpuString = 'intel';
         }
-        Log.info(`Detected integrated GPU: ${this.iGpuString}`);
+        Log.debug(`Detected integrated GPU: ${this.iGpuString}`);
         return this.iGpuString;
     }
 
@@ -57,7 +57,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     stop() {
-        Log.info(`Stopping GfxMode client...`);
+        Log.debug(`Stopping GfxMode client...`);
 
         if (this.isRunning()) {
             this.connected = false;
@@ -80,7 +80,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         let menuIdx = 1;
         menu.addMenuItem(new popupMenu.PopupMenuItem('Graphics Mode', {hover: false, can_focus: false, style_class: 'headline gfx headline-label asusctl-gex-menu-item'}), 0);
 
-        Log.info(`Current Graphics Mode is ${this.connector.gfxLabels[vendor]}`);
+        Log.debug(`Current Graphics Mode is ${this.connector.gfxLabels[vendor]}`);
         
         if (typeof gpuPower !== 'undefined') {
             let gpuPowerItem = new popupMenu.PopupImageMenuItem(

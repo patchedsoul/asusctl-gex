@@ -96,7 +96,7 @@ export class ChargingLimit implements IStoppableModule {
     }
 
     async start() {
-        Log.info(`Starting Charging Limit DBus client...`);
+        Log.debug(`Starting Charging Limit DBus client...`);
 
         try {
             // creating the proxy
@@ -114,7 +114,7 @@ export class ChargingLimit implements IStoppableModule {
                 "NotifyCharge",
                 (proxy: any = null, name: string, data: string) => {
                     if (proxy) {
-                        Log.info(`Charging Limit has changed to ${data}% (${name}).`);
+                        Log.debug(`Charging Limit has changed to ${data}% (${name}).`);
                         this.updateChargingLimit(parseInt(data));
                     }
                 }
@@ -131,7 +131,7 @@ export class ChargingLimit implements IStoppableModule {
     }
 
     stop() {
-        Log.info(`Stopping Charging Limit DBus client...`);
+        Log.debug(`Stopping Charging Limit DBus client...`);
 
         if (this.isRunning()) {
             this.connected = false;

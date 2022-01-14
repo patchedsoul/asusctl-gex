@@ -29,7 +29,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     start() {
-        Log.info(`Starting AniMe client...`);
+        Log.debug(`Starting AniMe client...`);
 
         try {
             this.connector.start();
@@ -41,7 +41,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     stop() {
-        Log.info(`Stopping AniMe client...`);
+        Log.debug(`Stopping AniMe client...`);
 
         if (this.isRunning()) {
             this.connected = false;
@@ -130,16 +130,8 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         }
       });
 
-      let placeholderLabel = new St.Label(
-        {
-          text: `Brightness Ctrl w.i.p.`,
-          style_class: 'asusctl-gex-anime-slider-label'
-        }
-      );
-
       this.itemAnimeParent.add(iconAnime);
-      this.itemAnimeParent.add_child(placeholderLabel);
-      // this.itemAnimeParent.add_child(this.animeBrightnessSlider);
+      this.itemAnimeParent.add_child(this.animeBrightnessSlider);
       this.itemAnimeParent.add_child(this.itemAnimeSwitcher);
 
       menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
