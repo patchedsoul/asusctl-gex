@@ -47,7 +47,12 @@ export class Extension implements IEnableableModule {
     }
 
     enable() {
-        this.panelButton = new Panel.Button();
+        try {
+            this.panelButton = new Panel.Button();
+        } catch(e){
+            Log.debug('Creating panel button failed (if already registered before, this is not a problem and expected.', e);
+        }
+
         this.isDebug = false;
 
         this.getGexSettings();

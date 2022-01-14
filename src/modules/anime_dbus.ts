@@ -106,7 +106,7 @@ export class AnimeDbus implements IStoppableModule {
     }
 
     stop() {
-        Log.info(`Stopping AniMe DBus client...`);
+        Log.debug(`Stopping AniMe DBus client...`);
 
         if (this.isRunning()) {
             this.connected = false;
