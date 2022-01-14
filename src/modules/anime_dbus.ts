@@ -46,7 +46,7 @@ export class AnimeDbus implements IStoppableModule {
                 if (this.state !== state) {
                     this.state = state;
                 }
-                Log.info(`Setting AniMe Power to ${state}`);
+                Log.debug(`Setting AniMe Power to ${state}`);
                 return this.asusLinuxProxy.SetOnOffSync(state);
             } catch (e) {
                 Log.error(`AniMe DBus set power failed!`, e);
@@ -60,7 +60,7 @@ export class AnimeDbus implements IStoppableModule {
               if (this.brightness !== brightness) {
                   this.brightness = brightness;
               }
-              Log.info(`Setting AniMe Brightness to ${brightness}`);
+              Log.debug(`Setting AniMe Brightness to ${brightness}`);
               return this.asusLinuxProxy.SetBrightnessSync(brightness);
               // Panel.Actions.spawnCommandLine(`asusctl anime leds -b ${brightness}`);
           } catch (e) {
@@ -74,7 +74,7 @@ export class AnimeDbus implements IStoppableModule {
     }
 
     async start() {
-        Log.info(`Starting AniMe DBus client...`);
+        Log.debug(`Starting AniMe DBus client...`);
 
         try {
             // creating the proxy

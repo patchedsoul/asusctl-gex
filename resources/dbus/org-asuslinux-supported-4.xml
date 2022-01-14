@@ -1,0 +1,9 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/org/asuslinux/Supported">
+  <interface name="org.asuslinux.Daemon">
+    <method name="SupportedFunctions">
+      <arg type="b(b)(bb)(baubb)(bb)" direction="out"/>
+    </method>
+  </interface>
+</node>

@@ -10,57 +10,54 @@ Extension for visualizing [asusctl](https://gitlab.com/asus-linux/asusctl)(`asus
 
 ---
 
-## Current project status
+## Extension Features
 
-Done:
-
-* Panel Icon
-  * changes dynamically on:
-    * dedicated GPU power status changes
-    * graphics mode changes
-    * power profile changes
-    * battery charging limit changes
+* Panel icon to display:
+    * current power profile (from power-profiles-daemon)
+    * current graphics mode
+    * current power status of dedicated GPU
 * Notifications:
   * Power Profiles
   * Battery Charge Limit
   * Graphics Modes
-* Reboot / Logout information with icon and interactive confirmation
-* Popup Menu with the possibilities to:
-  * view the power status of the dedicated GPU
-  * change the power profile
+    * When graphics mode requires logout/reboot, notificatioin displays interactive button to perform logout/reboot
+* Popup Menu with options to:
+  * view power status of the dedicated GPU
   * change the graphics mode
-  * change the battery charging limit
+  * if supported by laptop model:
+    * change the battery charging limit
+    * change AniMe Matrix brightness
+    * enable / disable AniMe Matrix
+* Extension Settings:
+  * Enable / disable notifications
+  * Enable debug message logging
 
-Waiting for implementation:
+### Waiting for implementation:
 
-* AniMe Matrix
-  * display on / off
-  * change brightness
 * Configuration interface (prefs)
   * bind ROG-Button to open prefs (if not `asusctl-control-center` is used)
   * create canvas based fan-curve editing
-  * make notifications "silent"
   * custom gfx poll-interval (with capped values)
 
 ---
 
 ## Icons/Screenshots
 
-_The screenshots are just examples and might not represent the current used icons._
+_The screenshots below are just examples and might not represent the current used icons._
 
-### CPU profile icons
+### Power Profile Daemon icons
 
-|Icon|Description (status)|
+|Icon|Profile|
 |-|-|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-silent.svg" height="30" alt="Power Profile Silent">|silent|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-normal.svg" height="30" alt="Power Profile Normal">|normal|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-boost.svg" height="30" alt="Power Profile Boost">|boost|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-silent.svg" height="30" alt="Power Profile Silent">|Power Saver|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-normal.svg" height="30" alt="Power Profile Normal">|Balanced|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-boost.svg" height="30" alt="Power Profile Boost">|Performance|
 
-### GFX profile icons
+### GPU mode icons
 
 |Icon|Description|
 |-|-|
-|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-nvidia.svg" height="30" alt="Graphics Profile Nvidia">|Nvidia (discrete)|
+|<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-dedicated.svg" height="30" alt="Graphics Profile Dedicated">|Dedicated, discrete graphics|
 |<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-integrated.svg" height="30" alt="Graphics Profile Integrated GPU">|Integrated|
 |<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-integrated-active.svg" height="30" alt="Graphics Profile Integrated GPU, dedicated GPU active">|Integrated, dedicated GPU active*|
 |<img src="https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-compute.svg" height="30" alt="Graphics Profile Compute">|Compute|
@@ -72,9 +69,9 @@ _The screenshots are just examples and might not represent the current used icon
 
 _\* on integrated the dedicated GPU should never be active. If this is the case it is possible that another application woke it up by rescanning the PCI bus. It's also possible that the NVIDIA drivers or asusctl is not configured properly._
 
-### Views (screenshots)
+### Screenshots
 
-**Power Profile change notifications:**
+**Power Profile Daemon change notifications:**
 
 ![cpu-change-silent.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/cpu-change-silent.png)
 
@@ -82,47 +79,47 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 
 ![gfx-change-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/gfx-change-hybrid.png)
 
-**Panel (normal & hybrid):**
+**Panel (example):**
 
-![panel-normal-hybrid.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-normal-hybrid.png)
+![panel-normal-compute.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-normal-compute.png)
 
-![panel-normal-hybrid-hover.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-normal-hybrid-hover.png)
+![panel-normal-compute-hover.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-normal-compute-hover.png)
 
-![panel-normal-hybrid-open.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-normal-hybrid-open.png)
+![panel-normal-compute-open.png](https://gitlab.com/asus-linux/asusctl-gex/-/raw/main/screenshots/panel-normal-compute-open.png)
 
 ---
 
-## Dependencies
+## Requirements
 
+* gnome >= 3.36.0
 * [asusctl](https://gitlab.com/asus-linux/asusctl) >= 4.0
 * [Power Profiles Daemon](https://gitlab.freedesktop.org/hadess/power-profiles-daemon) >= 0.9
-* [supergfxctl](https://gitlab.com/asus-linux/supergfxctl) (optional)
-* gnome >= 3.36.0
+* [supergfxctl](https://gitlab.com/asus-linux/supergfxctl) >= 3.0.0 (optional, required for graphics mode features)
 
-### Development dependencies
+---
+
+## Build Instructions
+
+### Dependencies
 
 * nodejs >= 14.0.0
 * npm >= 6.14.0
 
----
+### Building
 
-## Installation
-
-There are diffrent ways of installing asusctl-gex, please choose one of the following:
-
-### From source
-
-In a gnome-terminal(user) enter the following commands:
+In a terminal enter the following commands as a user (**do NOT run as root or sudo**):
 
 ```bash
-git clone git@gitlab.com:asus-linux/asusctl-gex.git /tmp/asusctl-gex && cd /tmp/asusctl-gex
+git clone https://gitlab.com/asus-linux/asusctl-gex.git /tmp/asusctl-gex && cd /tmp/asusctl-gex
 npm install
 npm run build && npm run install-user
 ```
 
-_HINT: Reload the gnome-shell afterwards. (`Alt + F2` -> `r`)_
+_HINT: You will need to reload the GNOME Shell afterwards. (`Alt + F2` -> `r` on X11, `logout` on Wayland)_
 
 ### Source debugging
+
+`cd` into the directory where you've downloaded the `asusctl-gex` source code and enter the following commands:
 
 ```bash
 npm install

@@ -10,10 +10,9 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 const Gio = imports.gi.Gio;
 
 export class Profile implements IStoppableModule {
-    asusLinuxProxy: any = null; // type: Gio.DbusProxy (donno how to add)
     powerProfilesProxy: any = null; // type: Gio.DbusProxy (donno how to add)
+    powerProfilesSignalProxy: any = null; // type: Gio.DbusProxy (donno how to add)
     connectedPPD: boolean = false;
-    connectedASUSD: boolean = false;
     lastState: string | null = null;
     profiles: any[number] = [];
 
@@ -35,7 +34,7 @@ export class Profile implements IStoppableModule {
                         }
 
                         //@ts-ignore
-                        Log.info(`Fetched Power Profile: ${value.Profile.unpack()}`);
+                        Log.debug(`Fetched Power Profile: ${value.Profile.unpack()}`);
                     }
                 }
             } catch (e) {
@@ -57,11 +56,46 @@ export class Profile implements IStoppableModule {
                 return true;
             } catch (e) {
                 Log.error(`Profile DBus set power profile failed!`, e);
+
+                return false;
+            }
+        }
+    }
+
+    //@ts-ignore
+    public setProfileFromSignal(name: string = '', variant: any, profile: String[] = []){
+        if (this.isRunning()) {
+            try {
+                if (profile.length > 0){
+                    for (const [_key, value] of Object.entries(profile)) {
+                        if (typeof value == 'object'){
+                            for (const [_keyInner, valueInner] of Object.entries(value)) {
+                                if (_keyInner == 'ActiveProfile'){
+                                    // Glib.variant here, see https://gjs.guide/guides/glib/gvariant.html#basic-usage
+                                    //@ts-ignore
+                                    let currentProfile = valueInner.print(true);
+                                    currentProfile = currentProfile.replaceAll("'", '');
+                                    
+                                    this.updateProfile(currentProfile);
+
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                Log.error(`Power Profiles: failed to fetch profile names!`, e);
+
+                return false;
             }
         }
     }
 
     updateProfile(curState: string | null = null) {
+        //@ts-ignore
+        Log.debug(curState);
+
         if (curState && curState !== '' && this.lastState !== curState) {
             let message = `Power profile has changed to ${curState}`;
 
@@ -88,73 +122,50 @@ export class Profile implements IStoppableModule {
     async start() {
         try {
             // creating the proxy
-            let xml = Resources.File.DBus('net.hadess.PowerProfiles-0.9.0');
-            this.powerProfilesProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
+            let xmlProfiles = Resources.File.DBus('net.hadess.PowerProfiles-0.10.1');
+            this.powerProfilesProxy = new Gio.DBusProxy.makeProxyWrapper(xmlProfiles)(
                 Gio.DBus.system,
                 'net.hadess.PowerProfiles',
                 '/net/hadess/PowerProfiles'
             );
 
-            this.connectedPPD = true;
+            let xmlSignals = Resources.File.DBus('net.hadess.PowerProfilesSignals-0.10.1');
+            this.powerProfilesSignalProxy = new Gio.DBusProxy.makeProxyWrapper(xmlSignals)(
+                Gio.DBus.system,
+                'org.freedesktop.DBus.Properties',
+                '/net/hadess/PowerProfiles'
+            );
+
+            this.connectedPPD = true;   
+
             this.getProfileNames(); 
 
             this.updateProfile(await this.powerProfilesProxy.ActiveProfile);
 
             // connecting to EP signal (and do parsing on callback)
-            this.powerProfilesProxy.connectSignal(
-                "ProfileReleased",
-                (proxy: any = null, profile: number) => {
-                    if (proxy) {
-                        Log.info('Signal NotifyProfile triggered.');
-                        Log.info(profile.toString());
-                    }
+            this.powerProfilesSignalProxy.connectSignal(
+                "PropertiesChanged",
+                (name: string = '', variant: any, profile: String[]) => {
+                    // if (proxy) {
+                    //     this.setProfileFromSignal(name, variant, profile);
+                    // }
+                    this.setProfileFromSignal(name, variant, profile);
                 }
             );
 
-            Log.info(`Power Profiles Daemon client started successfully.`);
+            Log.debug(`Power Profiles Daemon client started successfully.`);
         } catch (e) {
             Log.error(`Power Profile DBus initialization failed!`, e);
-        }
-
-        // TO HAVE A LOOK
-        // haven't been able to react on profile switching from power profiles DBUS
-        // trying to register the signal from asusd but it does not seem to fire either
-        try {
-            let xml = Resources.File.DBus('org-asuslinux-profile-4');
-            this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
-                Gio.DBus.system,
-                'org.asuslinux.Daemon',
-                '/org/asuslinux/Profile'
-            );
-
-            this.connectedASUSD = true;
-
-            // connecting to EP signal (and do parsing on callback)
-            this.asusLinuxProxy.connectSignal(
-                "NotifyProfile",
-                (proxy: any = null, name: string, data: object) => {
-                    if (proxy) {
-                        Log.info('Signal NotifyProfile triggered.');
-                        Log.info(name.toString());
-                        Log.info(data.toString());
-                    }
-                }
-            );
-
-            Log.info(`asusctl Profiles Daemon client started successfully.`);
-        } catch (e) {
-            Log.error(`asusctl Profile DBus initialization failed!`, e);
         }
     }
 
     stop() {
-        Log.info(`Stopping Profile DBus client...`);
+        Log.debug(`Stopping Profile DBus client...`);
 
         if (this.isRunning()) {
             this.connectedPPD = false;
-            this.connectedASUSD = false;
             this.powerProfilesProxy = null;
-            this.asusLinuxProxy = null;
+            this.powerProfilesSignalProxy = null;
             this.lastState = null;
         }
     }

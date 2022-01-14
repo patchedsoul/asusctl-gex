@@ -12,27 +12,26 @@ const {Gio, GLib} = imports.gi;
 export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null; // strict-type: Gio.DBusProxy
     connected: boolean = false;
-    xml: string | null = null;
     lastState: number = 5;
     lastStatePower: number = 3;
     pollerDelayTicks: number = 0;
     timeoutPollerGpuPower: number | null = null;
 
     // no need to use Record<number, string> (as this are string arrays)
-    public gfxLabels: string[]  = ['nvidia', 'integrated', 'compute', 'vfio', 'egpu', 'hybrid', 'unknown'];
+    public gfxLabels: string[]  = ['hybrid', 'dedicated', 'integrated', 'compute', 'vfio', 'egpu', 'unknown'];
     public powerLabel: string[] = ['active', 'suspended', 'off', 'unknown'];
     public userAction: string[] = ['logout', 'reboot', 'integrated', 'none'];
 
     // new feature of "access" lists.. (everytuple represents the accesslevel to a gfxLabel based on it's index)
     public acls: boolean[][] = [
         // access branches:
-        // [nvidia, integrated, compute, vfio, hybrid]
-        [true, true, false, false, true, true],   // nvidia
+        // [hybrid, dedicated, integrated, compute, vfio, egpu]
+        [true, true, true, false, false, true],   // hybrid
+        [true, true, true, false, false, true],   // dedicated
         [true, true, true, true, true, true],     // integrated
-        [false, true, true, true, true, false],   // compute
-        [false, true, true, true, true, false],   // vfio
+        [true, false, true, true, true, false],   // compute
+        [true, false, true, true, true, false],   // vfio
         [true, true, true, true, true, true],   // egpu
-        [true, true, false, false, true, true],   // hybrid
     ];
 
     constructor() {
@@ -89,7 +88,7 @@ export class GfxMode implements IStoppableModule {
     updatePanelPower(gpuPowerLocal: number) {
         if (gpuPowerLocal !== this.lastStatePower) {
             this.lastStatePower = gpuPowerLocal;
-            Log.info(`Graphics Mode DBus power mode changed: ${this.powerLabel[gpuPowerLocal]}/${gpuPowerLocal}`);
+            Log.debug(`Graphics Mode DBus power mode changed: ${this.powerLabel[gpuPowerLocal]}/${gpuPowerLocal}`);
 
             Panel.Actions.updateMode('gpupower', this.powerLabel[gpuPowerLocal]);
 
@@ -136,19 +135,18 @@ export class GfxMode implements IStoppableModule {
     }
 
     start() {
-        Log.info(`Starting Graphics Mode DBus client...`);
+        Log.debug(`Starting Graphics Mode DBus client...`);
 
         try {
-            this.xml = Resources.File.DBus('org-supergfxctl-gfx');
-            let _asusLinuxProxy = Gio.DBusProxy.makeProxyWrapper(this.xml);
-            this.asusLinuxProxy = new _asusLinuxProxy(
+            let xml = Resources.File.DBus('org-supergfxctl-gfx');
+            this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
                 Gio.DBus.system,
                 'org.supergfxctl.Daemon',
                 '/org/supergfxctl/Gfx'
             );
             this.lastState = this.asusLinuxProxy.VendorSync();
             this.connected = true;
-            Log.info('Graphics Mode DBus initialization successful (using supergfxctl!');
+            Log.debug('Graphics Mode DBus initialization successful (using supergfxctl!');
         } catch (e) {
             Log.error('Graphics Mode DBus initialization using supergfxctl failed!', e);
         }
@@ -156,7 +154,7 @@ export class GfxMode implements IStoppableModule {
         if (this.connected) {
             let power = parseInt(this.asusLinuxProxy.PowerSync());
             
-            Log.info(`Initial Graphics Mode is ${this.gfxLabels[this.lastState]}. Power State at the moment is ${this.powerLabel[power]}${(power == 0 ? " (this can change on hybrid and compute mode)" : "")}`);
+            Log.debug(`Initial Graphics Mode is ${this.gfxLabels[this.lastState]}. Power State at the moment is ${this.powerLabel[power]}${(power == 0 ? " (this can change on hybrid and compute mode)" : "")}`);
 
             Panel.Actions.updateMode('gfx-mode', this.gfxLabels[this.lastState]);
 
@@ -168,16 +166,21 @@ export class GfxMode implements IStoppableModule {
                         Log.info(`[dbus${name}]: Graphics Mode has changed.`);
 
                         let newMode = parseInt(this.asusLinuxProxy.VendorSync());
+
                         let msg = `Graphics Mode has changed.`;
 
                         if (this.userAction[value] === 'integrated'){
                             msg = `You must switch to Integrated mode before switching to Compute or VFIO.`;
                             newMode = this.lastState;
                         } else if (this.userAction[value] !== 'none'){
-                            // msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}. Please save your work and ${this.userAction[value]} to apply the changes.`;
                             msg = `Graphics Mode changed. Please save your work and ${this.userAction[value]} to apply the changes.`;
                             if (newMode !== this.lastState) this.lastState = newMode;
-                        }
+                        } else {
+                            if (newMode !== this.lastState){
+                                msg = `Graphics Mode changed to ${this.gfxLabels[newMode]}`;
+                                this.lastState = newMode;
+                            }
+                        } 
 
                         Panel.Actions.updateMode('gfx-mode', this.gfxLabels[newMode]);
                         Panel.Actions.notify(
@@ -203,7 +206,7 @@ export class GfxMode implements IStoppableModule {
     }
 
     stop() {
-        Log.info(`Stopping GfxMode DBus client...`);
+        Log.debug(`Stopping GfxMode DBus client...`);
 
         if (this.connected) {
             this.connected = false;

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="asusctl-gex@asus-linux.org">
+  <template class="asusctl-gex-preferences" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkScrolledWindow">
+        <property name="has-frame">1</property>
+        <property name="hscrollbar-policy">never</property>
+        <property name="min-content-height">200</property>
+        <property name="hexpand">0</property>
+        <property name="vexpand">1</property>
+        <child>
+          <object class="GtkListBox">
+            <property name="vexpand">1</property>
+            <property name="selection-mode">none</property>
+            <property name="show-separators">1</property>
+            <style>
+              <class name="rich-list"/>
+            </style>
+            <child>
+              <object class="GtkListBoxRow">
+                <child>
+                  <object class="GtkBox">
+                    <child>
+                      <object class="GtkSwitch" id="notifications_enabled">
+                        <property name="halign">true</property>
+                        <property name="valign">false</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Show Notifications</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">1</property>
+                        <style>
+                          <class name="heading"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkListBoxRow">
+                <child>
+                  <object class="GtkBox">
+                    <child>
+                      <object class="GtkSwitch" id="debug_enabled">
+                        <property name="halign">true</property>
+                        <property name="valign">false</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Enable Debug Messages (gex has to get reenabled afterwards)</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">1</property>
+                        <style>
+                          <class name="heading"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

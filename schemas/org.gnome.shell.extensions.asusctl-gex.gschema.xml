@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist>
-<schema id="org.gnome.shell.extensions.asusctl-gex" path="/org/gnome/shell/extensions/asusctl-gex/" >
-  <key type="i" name="test-integer">
-    <default>100</default>
-    <summary>test integer</summary>
-    <description>test integer description</description>
-  </key>
-  <key type="s" name="asusctl-gex-ttp">
-    <default>"/sys/devices/platform/asus-nb-wmi/throttle_thermal_policy"</default>
-    <summary>thermal throttle policy</summary>
-    <description>file(sys-device) location of thermal throttle policy</description>
-  </key>
-</schema>
+  <schema id="org.gnome.shell.extensions.asusctl-gex" path="/org/gnome/shell/extensions/asusctl-gex/" >
+    <key type="b" name="notifications-enabled">
+      <default>true</default>
+      <summary>enable / disable notifications</summary>
+      <description>If enabled, notifications will show up on in various scenarios (when the GPU mode, power profile or charging limit is changed. Those notifications are not only triggered by the extension itself but react on DBUS signals from asusd, supergfxd and power-profiles-daemon.</description>
+    </key>
+    <key type="b" name="debug-enabled">
+      <default>false</default>
+      <summary>enable / disable debug messages</summary>
+      <description>If enabled, various events of the extension will get logged and are available via journalctl.</description>
+    </key>
+  </schema>
 </schemalist>
