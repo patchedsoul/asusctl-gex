@@ -137,6 +137,7 @@ export class ChargingLimit implements IStoppableModule {
             this.connected = false;
             this.asusLinuxProxy = null;
             this.lastState = 100;
+            GLib.Source.remove(this.timeoutChargePoller);
             this.timeoutChargePoller = null;
         }
     }

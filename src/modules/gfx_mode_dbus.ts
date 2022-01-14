@@ -211,6 +211,7 @@ export class GfxMode implements IStoppableModule {
         if (this.connected) {
             this.connected = false;
             this.asusLinuxProxy = null;
+            GLib.Source.remove(this.timeoutPollerGpuPower);
             this.timeoutPollerGpuPower = null;
         }
     }

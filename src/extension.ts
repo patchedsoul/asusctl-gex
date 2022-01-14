@@ -17,11 +17,15 @@ import * as Panel from './modules/panel';
 import {IEnableableModule} from './interfaces/iEnableableModule';
 
 export class Extension implements IEnableableModule {
-    public panelButton: Panel.Button = new Panel.Button();
+    // no itialisation so they don't appear in constructor()
+    // @ts-ignore
+    public panelButton: Panel.Button;
 
+    // no itialisation so they don't appear in constructor()
     // settings of type GIName:Gio.Settings -> how to declare?
     public settings: any;
-    public isDebug = false;
+    // @ts-ignore
+    public isDebug: boolean;
 
     // extensions.gnome.org wants everything in enable()
     // so TS marks the following as errors when not initialised
@@ -43,6 +47,9 @@ export class Extension implements IEnableableModule {
     }
 
     enable() {
+        this.panelButton = new Panel.Button();
+        this.isDebug = false;
+
         this.getGexSettings();
 
         Log.info(`Initializing ${Me.metadata.name} version ${Me.metadata.version} on GNOME Shell ${Config.PACKAGE_VERSION}`);
