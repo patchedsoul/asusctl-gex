@@ -95,7 +95,6 @@ export class Button implements IDestroyableModule {
     }
 
     public destroy(): void {
-        Log.debug(this.indicator);
         if (this.indicator !== null) {
             Log.debug('Destroying indicator');
             this.indicator.destroy();

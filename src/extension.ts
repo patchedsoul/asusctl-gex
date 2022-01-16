@@ -47,6 +47,14 @@ export class Extension implements IEnableableModule {
     }
 
     enable() {
+        // since the rewrite of the init process panel button was not
+        // completely destroyed on disable
+        // at first I worked around it to try{} to create a new button
+        // then I nulled it after destroy() in the hope this de-initialisies it
+        // so we have to keep an eye on this one
+        // I haven't tested if the button now is sucessfully destroyed on disable
+        // and I kept this try{} still in to be sure
+        // I just wanted to get the new version on extensions.gnome.org asap
         try {
             this.panelButton = new Panel.Button();
         } catch(e){
@@ -70,6 +78,7 @@ export class Extension implements IEnableableModule {
 
         if (this.supported.connector.supportedAttributes.anime)
             this.anime = new Anime.Client();
+
 
         Log.info(`Enabling ${Me.metadata.name} version ${Me.metadata.version}`);
 
@@ -103,6 +112,8 @@ export class Extension implements IEnableableModule {
             this.anime.stop();
 
         this.panelButton.destroy();
+        //@ts-ignore
+        this.panelButton = null;
     }
 
     getGexSettings(){
