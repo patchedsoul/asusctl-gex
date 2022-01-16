@@ -55,11 +55,7 @@ export class Extension implements IEnableableModule {
         // I haven't tested if the button now is sucessfully destroyed on disable
         // and I kept this try{} still in to be sure
         // I just wanted to get the new version on extensions.gnome.org asap
-        try {
-            this.panelButton = new Panel.Button();
-        } catch(e){
-            Log.debug('Creating panel button failed (if already registered before, this is not a problem and expected.', e);
-        }
+        // this.panelButton = new Panel.Button();
 
         this.isDebug = false;
 
@@ -83,7 +79,8 @@ export class Extension implements IEnableableModule {
         Log.info(`Enabling ${Me.metadata.name} version ${Me.metadata.version}`);
 
         // create panel button (needs to be first in chain)
-        this.panelButton.create();
+        // this.panelButton.create();
+        this.panelButton = new Panel.AsusNb_Indicator();
 
         // starting clients (dbus)
         this.profile.start();

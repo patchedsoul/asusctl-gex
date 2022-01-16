@@ -70,7 +70,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
             return;
 
         // add the GPU icon to the panel icon bin
-        ext.panelButton.indicator._indicatorLayout.add_child(ext.panelButton.indicator._binGpu);
+        ext.panelButton._indicatorLayout.add_child(ext.panelButton._binGpu);
 
         let vendor = this.getGfxMode() ?? 5;
         let gpuPower = this.getGpuPower();
