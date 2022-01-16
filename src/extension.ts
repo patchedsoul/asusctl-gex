@@ -47,16 +47,6 @@ export class Extension implements IEnableableModule {
     }
 
     enable() {
-        // since the rewrite of the init process panel button was not
-        // completely destroyed on disable
-        // at first I worked around it to try{} to create a new button
-        // then I nulled it after destroy() in the hope this de-initialisies it
-        // so we have to keep an eye on this one
-        // I haven't tested if the button now is sucessfully destroyed on disable
-        // and I kept this try{} still in to be sure
-        // I just wanted to get the new version on extensions.gnome.org asap
-        // this.panelButton = new Panel.Button();
-
         this.isDebug = false;
 
         this.getGexSettings();
