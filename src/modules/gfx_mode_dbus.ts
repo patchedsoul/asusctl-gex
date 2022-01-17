@@ -97,7 +97,7 @@ export class GfxMode implements IStoppableModule {
                 // let's check the vendor
                 try {
                     let vendor = parseInt(this.asusLinuxProxy.VendorSync());
-                    if(vendor == 1)
+                    if(this.gfxLabels[vendor] == 'integrated')
                         Panel.Actions.notify(
                             Panel.Title,
                             `Your dedicated GPU turned on while you are on the integrated mode. This should not happen. It could be that another application rescanned your PCI bus. Rebooting is advised.`,
