@@ -1,7 +1,24 @@
 #!/bin/sh
+isdev=false
+for arg in "$@"; do
+  if [ "$arg" = "dev" ]; then
+    isdev=true
+  fi;
+done
+
 INSTALLBASE=~/.local/share/gnome-shell/extensions
-UUID=`grep -E '^[ ]*"uuid":' metadata.json | sed 's@^[ ]*"uuid":[ ]*"\(.\+\)",[ ]*@\1@'`
+UUID=`grep -E '^[ ]*"uuid":' _build/metadata.json | sed 's@^[ ]*"uuid":[ ]*"\(.\+\)",[ ]*@\1@'`
+UUIDDEV=`grep -E '^[ ]*"uuid-dev":' _build/metadata.json | sed 's@^[ ]*"uuid-dev":[ ]*"\(.\+\)",[ ]*@\1@'`
 GV=`gnome-shell --version | awk '{print $3}'`
+
+if $isdev
+then
+    sed -i "s/${UUID}/${UUIDDEV}/g" _build/metadata.json
+    rm -fr "${INSTALLBASE}/${UUID}"
+    UUID=$UUIDDEV
+else
+    rm -fr "${INSTALLBASE}/${UUIDDEV}"
+fi
 
 if [ -d "${INSTALLBASE}/${UUID}" ]; then
   rm -rf "${INSTALLBASE}/${UUID}/*"

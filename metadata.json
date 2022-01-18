@@ -1,9 +1,10 @@
 {
   "name": "asusctl-gex",
-  "description": "This extension allows you to visualize most of the asusd settings and status",
+  "description": "asusctl-gex is a frontend for some functionalities of asusctl and supergfxctl that were born inside the asus-linux.org community.\n\nasusctl is not required\nsupergfxctl is required if you have a dual GPU laptop and want to switch between various GPU modes. It is tested on a variaty of laptops including Intel / Nvidia, AMD / Nvidia, Intel / AMD and AMD / AMD GPU combinations.\n\nTo learn more about it, please have a look at:\nhttps://gitlab.com/asus-linux/asusctl\nhttps://gitlab.com/asus-linux/supergfxctl\nhttps://gitlab.com/asus-linux/asusctl-gex\n\nhttps://asus-linux.org/",
   "uuid": "asusctl-gex@asus-linux.org",
+  "uuid-dev": "asusctl-gex-dev@asus-linux.org",
   "settings-schema": "org.gnome.shell.extensions.asusctl-gex",
-  "version": "4.0.3",
+  "version": "4.1.0",
   "shell-version": [
     "40",
     "41",
