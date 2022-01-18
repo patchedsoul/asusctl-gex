@@ -105,7 +105,7 @@ _\* on integrated the dedicated GPU should never be active. If this is the case 
 * nodejs >= 14.0.0
 * npm >= 6.14.0
 
-### Building
+### Building (production)
 
 In a terminal enter the following commands as a user (**do NOT run as root or sudo**):
 
@@ -116,6 +116,17 @@ npm run build && npm run install-user
 ```
 
 _HINT: You will need to reload the GNOME Shell afterwards. (`Alt + F2` -> `r` on X11, `logout` on Wayland)_
+
+### Building (development)
+
+Instead of the
+`npm run build && npm run install-user`
+above, use this line instead:
+`npm run build && npm run install-dev`
+
+This will remove any production versions and installs the development version instead.
+
+_HINT: You will need to reload the GNOME Shell afterwards. (`Alt + F2` -> `r` on X11, `logout` on Wayland)_ and probably manually enable the extension again.
 
 ### Source debugging
 

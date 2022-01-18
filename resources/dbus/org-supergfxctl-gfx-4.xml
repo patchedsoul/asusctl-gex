@@ -1,0 +1,80 @@
+
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/org/supergfxctl/Gfx">
+  <interface name="org.supergfxctl.Daemon">
+    <!--
+     Get supergfxd version
+     -->
+    <method name="Version">
+      <arg type="s" direction="out"/>
+    </method>
+    <!--
+     Get the current graphics mode:
+     enum {
+         Hybrid,
+         Dedicated,
+         Integrated,
+         Compute,
+         Vfio,
+         Egpu,
+     }
+     -->
+    <method name="Mode">
+      <arg type="u" direction="out"/>
+    </method>
+    <!--
+     Get list of supported modes
+     -->
+    <method name="Supported">
+      <arg type="au" direction="out"/>
+    </method>
+    <!--
+     Get the vendor nae of the dGPU
+     -->
+    <method name="Vendor">
+      <arg type="s" direction="out"/>
+    </method>
+    <!--
+     Get the current power status:
+     enum {
+         Active,
+         Suspended,
+         Off,
+         Unknown,
+     }
+     -->
+    <method name="Power">
+      <arg type="u" direction="out"/>
+    </method>
+    <!--
+     Set the graphics mode:
+     enum {
+         Hybrid,
+         Dedicated,
+         Integrated,
+         Compute,
+         Vfio,
+         Egpu,
+     }
+
+     Returns action required:
+     enum {
+         Logout,
+         Reboot,
+         Integrated,
+         None,
+     }
+     -->
+    <method name="SetMode">
+      <arg name="mode" type="u" direction="in"/>
+      <arg type="u" direction="out"/>
+    </method>
+    <signal name="NotifyGfx">
+      <arg name="vendor" type="u"/>
+    </signal>
+    <signal name="NotifyAction">
+      <arg name="action" type="u"/>
+    </signal>
+  </interface>
+</node>

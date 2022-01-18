@@ -12,10 +12,18 @@ const {Gio, GLib} = imports.gi;
 export class GfxMode implements IStoppableModule {
     asusLinuxProxy: any = null; // strict-type: Gio.DBusProxy
     connected: boolean = false;
-    lastState: number = 5;
+    lastVendor: string = '';
+
+    // 6 == unknown
+    lastState: number = 6;
+
+    // 3 == unknown
     lastStatePower: number = 3;
+
     pollerDelayTicks: number = 0;
     timeoutPollerGpuPower: number | null = null;
+
+    public supported: number[] = [];
 
     // no need to use Record<number, string> (as this are string arrays)
     public gfxLabels: string[]  = ['hybrid', 'dedicated', 'integrated', 'compute', 'vfio', 'egpu', 'unknown'];
@@ -38,16 +46,53 @@ export class GfxMode implements IStoppableModule {
         // nothing for now
     }
 
-    public getGfxMode(): number | null {
+    public getSupported(): boolean {
         if (this.isRunning()) {
             try {
-                this.lastState = parseInt(this.asusLinuxProxy.VendorSync());
+                let _supported = this.asusLinuxProxy.SupportedSync();
+                for (const [_key, _value] of Object.entries(_supported)) {
+                    if (typeof _value == 'object'){
+                        //@ts-ignore
+                        for (const [_keyInner, _valueInner] of Object.entries(_value)) {
+                            //@ts-ignore
+                            this.supported[parseInt(_keyInner)] = parseInt(_valueInner);
+                        }
+                    }
+                }
+
+                return true;
+            } catch(e) {
+                Log.error('Graphics Mode DBus: get current mode failed!', e);
+            }
+        }
+
+        return false;
+    }
+
+    public getVendor(): string {
+        if (this.isRunning()) {
+            try {
+                this.lastVendor = this.asusLinuxProxy.VendorSync();
+                return this.lastVendor;
+            } catch(e) {
+                Log.error('Graphics Mode DBus: get current vendor failed!', e);
+            }
+        }
+        return '';
+    }
+
+    public getGfxMode(): number {
+        if (this.isRunning()) {
+            try {
+                this.lastState = parseInt(this.asusLinuxProxy.ModeSync());
                 return this.lastState;
             } catch(e) {
                 Log.error('Graphics Mode DBus: get current mode failed!', e);
             }
         }
-        return null;
+
+        // 6 = unknown
+        return 6;
     }
 
     public setGfxMode(mode: number) {
@@ -55,31 +100,33 @@ export class GfxMode implements IStoppableModule {
             try {
                 // the proxy will return the required user action. Since it is also
                 // given in the notification we can ignore it here
-                this.asusLinuxProxy.SetVendorSync(mode);
+                this.asusLinuxProxy.SetModeSync(mode);
+                return true;
             } catch(e) {
                 Log.error('Graphics Mode DBus switching failed!', e);
                 // TODO: match on 'Can not switch to vfio mode if disabled in config file'
                 //  and show a warning notification
             }
         }
+
+        return false;
     }
 
     public getGpuPower(){
-        let modePower = 9;
         if (this.connected){
             try {
-                modePower = parseInt(this.asusLinuxProxy.PowerSync().toString().trim());
+                return parseInt(this.asusLinuxProxy.PowerSync().toString().trim());
             } catch(e) {
                 Log.error('Graphics Mode DBus getting power mode failed!', e);
             }
         }
 
-        return modePower;
+        return 3;
     }
 
     public getAcl(ven: number, idx: number) {
         try {
-            return this.acls[ven][idx]; // current acl (vendor:index)
+            return this.acls[ven][idx]; // current acl (mode:index)
         } catch {
             return false;
         }
@@ -94,20 +141,20 @@ export class GfxMode implements IStoppableModule {
 
             // if integrated and active show notification
             if (gpuPowerLocal == 0 && this.lastState == 1) {
-                // let's check the vendor
+                // let's check the mode
                 try {
-                    let vendor = parseInt(this.asusLinuxProxy.VendorSync());
-                    if(this.gfxLabels[vendor] == 'integrated')
+                    let mode = parseInt(this.asusLinuxProxy.ModeSync());
+                    if(this.gfxLabels[mode] == 'integrated')
                         Panel.Actions.notify(
                             Panel.Title,
                             `Your dedicated GPU turned on while you are on the integrated mode. This should not happen. It could be that another application rescanned your PCI bus. Rebooting is advised.`,
                             'gif/fire.gif',
                             'reboot'
                         );
-                    else if (this.lastState !== vendor)
-                        this.lastState = vendor;
+                    else if (this.lastState !== mode)
+                        this.lastState = mode;
                 } catch (e) {
-                    Log.error('Graphics Mode DBus getting vendor failed!', e);
+                    Log.error('Graphics Mode DBus getting mode failed!', e);
                 }
             }
         }
@@ -138,15 +185,17 @@ export class GfxMode implements IStoppableModule {
         Log.debug(`Starting Graphics Mode DBus client...`);
 
         try {
-            let xml = Resources.File.DBus('org-supergfxctl-gfx');
+            let xml = Resources.File.DBus('org-supergfxctl-gfx-4');
             this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
                 Gio.DBus.system,
                 'org.supergfxctl.Daemon',
                 '/org/supergfxctl/Gfx'
             );
-            this.lastState = this.asusLinuxProxy.VendorSync();
             this.connected = true;
-            Log.debug('Graphics Mode DBus initialization successful (using supergfxctl!');
+            this.getSupported();
+            this.getVendor();
+            this.getGfxMode();
+            Log.debug('Graphics Mode DBus initialization successful.');
         } catch (e) {
             Log.error('Graphics Mode DBus initialization using supergfxctl failed!', e);
         }
@@ -165,7 +214,7 @@ export class GfxMode implements IStoppableModule {
                     if (proxy) {
                         Log.info(`[dbus${name}]: Graphics Mode has changed.`);
 
-                        let newMode = parseInt(this.asusLinuxProxy.VendorSync());
+                        let newMode = parseInt(this.asusLinuxProxy.ModeSync());
 
                         let msg = `Graphics Mode has changed.`;
 
