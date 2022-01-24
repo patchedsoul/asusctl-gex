@@ -25,6 +25,9 @@ export class GfxMode implements IStoppableModule {
 
     public supported: number[] = [];
 
+    public supergfxSupportedVer = '4.0.0';
+    public supergfxVer: string = '';
+
     // no need to use Record<number, string> (as this are string arrays)
     public gfxLabels: string[]  = ['hybrid', 'dedicated', 'integrated', 'compute', 'vfio', 'egpu', 'unknown'];
     public powerLabel: string[] = ['active', 'suspended', 'off', 'unknown'];
@@ -46,6 +49,18 @@ export class GfxMode implements IStoppableModule {
         // nothing for now
     }
 
+    public getVersion(): string {
+        if (this.isRunning()) {
+            try {
+                this.supergfxVer = this.asusLinuxProxy.VersionSync();
+                return this.supergfxVer;
+            } catch(e) {
+                Log.error('Graphics Mode DBus: get supergfxctl version failed!', e);
+            }
+        }
+        return ''
+    }
+    
     public getSupported(): boolean {
         if (this.isRunning()) {
             try {
@@ -201,6 +216,7 @@ export class GfxMode implements IStoppableModule {
         }
 
         if (this.connected) {
+
             let power = parseInt(this.asusLinuxProxy.PowerSync());
             
             Log.debug(`Initial Graphics Mode is ${this.gfxLabels[this.lastState]}. Power State at the moment is ${this.powerLabel[power]}${(power == 0 ? " (this can change on hybrid and compute mode)" : "")}`);
