@@ -60,7 +60,7 @@ export class GfxMode implements IStoppableModule {
         }
         return ''
     }
-    
+
     public getSupported(): boolean {
         if (this.isRunning()) {
             try {
@@ -207,6 +207,7 @@ export class GfxMode implements IStoppableModule {
                 '/org/supergfxctl/Gfx'
             );
             this.connected = true;
+            this.getVersion();
             this.getSupported();
             this.getVendor();
             this.getGfxMode();
@@ -216,6 +217,16 @@ export class GfxMode implements IStoppableModule {
         }
 
         if (this.connected) {
+            // check if version matches supported version and display
+            // a warning notification if unsupported version
+            // TODO: Use a minimum version instead of a single version
+            if (this.getVersion() != this.supergfxSupportedVer) {
+                Panel.Actions.notify(
+                    Panel.Title,
+                    'Current supergfxctl version: ' + this.getVersion() + '\nRequired supergfxctl version: ' + this.supergfxSupportedVer + '\n\nPlease update to version ' +  this.supergfxSupportedVer + ' to enable graphics support.',
+                    'gif/fire.gif',
+                );
+            }
 
             let power = parseInt(this.asusLinuxProxy.PowerSync());
             
