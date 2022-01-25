@@ -25,7 +25,7 @@ export class GfxMode implements IStoppableModule {
 
     public supported: number[] = [];
 
-    public supergfxSupportedVer = '4.0.0';
+    public supergfxSupportedVer = '4.0.2';
     public supergfxVer: string = '';
 
     // no need to use Record<number, string> (as this are string arrays)
