@@ -23,6 +23,9 @@
 .asusctl-gex-menu-item .popup-menu-icon{
     padding-right: 5px;
 }
+.asusctl-gex-menu-item .popup-menu-icon-orange{
+    color: #ffaa00;
+}
 
 .asusctl-gex-battery-item .popup-menu-icon{
     padding-right: 8px;
