@@ -92,8 +92,13 @@ export class Actions {
     }
 
     public static notify(msg:string = Title, details:string, icon: string, action: string = "") {
-        if (ext.getGexSetting('notifications-enabled') == false) return false;
-
+        if (ext.getGexSetting('notifications-enabled') == false) {
+            // Ensure that we always show unsupported version warnings, 
+            // even if the user preference is not show notifications
+            if (action !== 'unsupported_supergfx') {
+                return false;
+            }
+        }
         let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/${icon}`);
         let params = { gicon: gIcon};
         let source = new messageTray.Source(msg, icon, params);

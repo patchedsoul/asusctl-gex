@@ -225,6 +225,7 @@ export class GfxMode implements IStoppableModule {
                     Panel.Title,
                     'Current supergfxctl version: ' + this.getVersion() + '\nRequired supergfxctl version: ' + this.supergfxSupportedVer + '\n\nPlease update to version ' +  this.supergfxSupportedVer + ' to enable graphics support.',
                     'gif/fire.gif',
+                    'unsupported_supergfx'
                 );
             }
 

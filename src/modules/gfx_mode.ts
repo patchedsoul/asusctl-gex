@@ -65,12 +65,13 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
             let menuIdx = 1;
 
-            menu.addMenuItem(new popupMenu.PopupMenuItem('Graphics Mode', {hover: false, can_focus: false, style_class: 'headline gfx headline-label asusctl-gex-menu-item'}), 0);
-
             // Graphics switching options and the indicator icon in the panel
             // should only be shown if the install version of supergfxctl is 
             // supported by asusctl-gex
             if (this. connector.getVersion() == this.connector.supergfxSupportedVer) {
+                
+                // add Graphics Mode header
+                menu.addMenuItem(new popupMenu.PopupMenuItem('Graphics Mode', {hover: false, can_focus: false, style_class: 'headline gfx headline-label asusctl-gex-menu-item'}), 0);
                 
                 // add the GPU icon to the panel icon bin
                 ext.panelButton._indicatorLayout.add_child(ext.panelButton._binGpu);
@@ -146,7 +147,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
                 // graphics menu options. Instead, show a warning to upgrade.
                 
                 // Parent Menu item
-                this.updateGfxItem = new popupMenu.PopupBaseMenuItem({style_class: 'asusctl-gex-menu-item'});
+                this.updateGfxItem = new popupMenu.PopupBaseMenuItem({hover: false, can_focus: false, style_class: 'asusctl-gex-menu-item'});
 
                 // Create icon and label for the warning. We use this longer method so 
                 // that we can make only the white icon orange for greater visibility :)
