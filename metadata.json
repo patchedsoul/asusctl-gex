@@ -4,10 +4,11 @@
   "uuid": "asusctl-gex@asus-linux.org",
   "uuid-dev": "asusctl-gex-dev@asus-linux.org",
   "settings-schema": "org.gnome.shell.extensions.asusctl-gex",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "shell-version": [
     "40",
     "41",
-    "42"
+    "42",
+    "43"
   ]
 }

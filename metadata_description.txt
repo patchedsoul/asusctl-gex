@@ -1,0 +1,11 @@
+asusctl-gex is a frontend for some functionalities of asusctl and supergfxctl that were born inside the asus-linux.org community.
+
+asusctl is not required
+supergfxctl is required if you have a dual GPU laptop and want to switch between various GPU modes. It is tested on a variaty of laptops including Intel / Nvidia, AMD / Nvidia, Intel / AMD and AMD / AMD GPU combinations.
+
+To learn more about it, please have a look at:
+https://gitlab.com/asus-linux/asusctl
+https://gitlab.com/asus-linux/supergfxctl
+https://gitlab.com/asus-linux/asusctl-gex
+
+https://asus-linux.org/

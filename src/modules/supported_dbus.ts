@@ -25,7 +25,8 @@ export class Supported implements IStoppableModule {
       led_multizone: false,
       led_perKey: false,
       bios_toggleSound: false,
-      bios_toggleDGPU: false
+      bios_toggleDGPU: false,
+      bios_overdrive: false
     };
 
     constructor() {
@@ -72,6 +73,7 @@ export class Supported implements IStoppableModule {
                           let biosArray = valueString.split(',');
                           this.supportedAttributes.bios_toggleSound = (biosArray[0] == 'true' ? true : false);
                           this.supportedAttributes.bios_toggleDGPU = (biosArray[1] == 'true' ? true : false);
+                          this.supportedAttributes.bios_overdrive = (biosArray[2] == 'true' ? true : false);
                           break;
                       
                         default:
