@@ -1,0 +1,25 @@
+
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+ "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.asuslinux.Daemon">
+    <method name="SetPostBootSound">
+      <arg name="on" type="b" direction="in"/>
+    </method>
+    <method name="PostBootSound">
+      <arg type="n" direction="out"/>
+    </method>
+    <signal name="NotifyPostBootSound">
+      <arg name="on" type="b"/>
+    </signal>
+    <method name="SetPanelOverdrive">
+      <arg name="overdrive" type="b" direction="in"/>
+    </method>
+    <method name="PanelOverdrive">
+      <arg type="n" direction="out"/>
+    </method>
+    <signal name="NotifyPanelOverdrive">
+      <arg name="overdrive" type="b"/>
+    </signal>
+  </interface>
+</node>
