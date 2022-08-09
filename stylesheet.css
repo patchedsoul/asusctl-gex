@@ -2,19 +2,20 @@
 .asusctl-gex-panel-button .asusctl-gex-panel-layout{
     padding: 0 5px;
 }
-.asusctl-gex-panel-button .asusctl-gex-panel-icon{
-    width: 20px;
-    height: 20px;
+
+.asusctl-gex-panel-button .asusctl-gex-panel-icon.asusctl-gex-panel-icon-profile{
+    width: 24px;
     padding: 0 5px;
 }
-.asusctl-gex-panel-button .panel-bin-profile{
-    height: 28px;
-    width: 38px;
+
+.asusctl-gex-panel-button .asusctl-gex-panel-icon.asusctl-gex-panel-icon-gpu{
+    width: 17px;
+    padding: 0 5px;
 }
 
 /* PopupMenu */
 .asusctl-gex-menu-item.headline {
-    margin-bottom: 10px;
+    margin-bottom: 0.5em;
 }
 .asusctl-gex-menu-item.headline-label {
     font-weight: bold;
@@ -22,6 +23,7 @@
 
 .asusctl-gex-menu-item .popup-menu-icon{
     padding-right: 5px;
+    height: 17px;
 }
 
 .asusctl-gex-battery-item .popup-menu-icon{

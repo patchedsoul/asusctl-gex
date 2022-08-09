@@ -69,7 +69,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         if (ext.supported.connector.supportedAttributes.bios_overdrive) {
             // switch
             this.overdriveSwitch = new popupMenu.PopupSwitchMenuItem(
-                'Panel Overdrive', 
+                'Panel Overdrive',
                 this.connector.lastStateOverdrive
             );
 
@@ -79,14 +79,14 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
                     this.connector.setOverdrive(item.state);
                 }
             );
-            
+
             menu.addMenuItem(this.overdriveSwitch);
         }
         
         if (ext.supported.connector.supportedAttributes.bios_toggleSound) {
             // switch
             this.switchPostBootSound = new popupMenu.PopupSwitchMenuItem(
-                'Post Boot Sound', 
+                'Post Boot Sound',
                 this.connector.lastStatePostBootSound
             );
             

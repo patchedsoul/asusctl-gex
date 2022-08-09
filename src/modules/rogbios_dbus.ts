@@ -24,7 +24,7 @@ export class RogBios implements IStoppableModule {
             try {
                 let currentState = this.asusLinuxProxy.PostBootSoundSync();
                 
-                return currentState;
+                return parseInt(currentState) == 1 ? true : false;
             } catch (e) {
                 Log.error(`Failed to get POST Boot Sound state!`, e);
             }
@@ -53,7 +53,7 @@ export class RogBios implements IStoppableModule {
             try {
                 let currentState = this.asusLinuxProxy.PanelOverdriveSync();
                 
-                return currentState;
+                return parseInt(currentState) == 1 ? true : false;
             } catch (e) {
                 Log.error(`Failed to get Overdrive state!`, e);
             }
@@ -82,6 +82,7 @@ export class RogBios implements IStoppableModule {
 
     async start() {
         Log.debug(`Starting RogBios DBus module...`);
+
 
         try {
             let xml = Resources.File.DBus('org-asuslinus-rogbios-4')
