@@ -83,7 +83,6 @@ export class RogBios implements IStoppableModule {
     async start() {
         Log.debug(`Starting RogBios DBus module...`);
 
-
         try {
             let xml = Resources.File.DBus('org-asuslinus-rogbios-4')
             this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
@@ -101,7 +100,7 @@ export class RogBios implements IStoppableModule {
                     (proxy: any = null, _name: string, data: boolean) => {
                         if(proxy){
                             Log.debug(`PostBootSound changed to ${data}`);
-                            ext.RogBios.switchPostBootSound.setToggleState(String(data) == 'true' ? true : false);
+                            ext.RogBios.switchPostBootSound.setToggleState(this.lastStatePostBootSound);
                         }
                     }
                 );
@@ -114,7 +113,7 @@ export class RogBios implements IStoppableModule {
                     (proxy: any = null, _name: string, data: boolean) => {
                         if (proxy) {
                             Log.debug(`Overdrive has changed to ${data}.`);
-                            ext.RogBios.overdriveSwitch.setToggleState(String(data) == 'true' ? true : false);
+                            ext.RogBios.overdriveSwitch.setToggleState(this.lastStateOverdrive);
                         }
                     }
                 );

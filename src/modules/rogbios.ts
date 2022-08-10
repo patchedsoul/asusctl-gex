@@ -14,8 +14,8 @@ import { IPopulatePopupModule } from '../interfaces/iPopulatePopupModule';
 export class Client implements IStoppableModule, IPopulatePopupModule {
     connector: DBus.RogBios = new DBus.RogBios();
     connected: boolean = false;
-    overdriveSwitch: any;
-    switchPostBootSound: any;
+    overdriveSwitch: any;  // PopupSeparatorMenuItem
+    switchPostBootSound: any;  // PopupSeparatorMenuItem
 
     constructor() {
         // nothing for now
