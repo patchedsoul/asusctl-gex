@@ -69,12 +69,11 @@ export const AsusNb_Indicator = GObject.registerClass(
         // populating panelMenu (extend)
         this.popupMenu = new Popup.Menu();
 
-        this.menu.connect('open-state-changed', Lang.bind(this._indicatorLayout, () => {
-            if (this._indicatorLayout.style_class.includes('active')){
-                this._indicatorLayout.style_class = this._indicatorLayout.style_class.split('active').join(' ');
-            } else {
-                this._indicatorLayout.style_class = `${this._indicatorLayout.style_class} active`;
-            }
+        this.menu.connect('open-state-changed', Lang.bind(this._indicatorLayout, (_: any, open: boolean) => {
+            if (open)
+                this._indicatorLayout.add_style_pseudo_class('active');
+            else
+                this._indicatorLayout.remove_style_pseudo_class('active');
         }));
 
         main.panel.addToStatusArea('asusctl-gex.panel', this);
