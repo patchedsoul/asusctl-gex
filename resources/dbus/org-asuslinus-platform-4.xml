@@ -3,6 +3,15 @@
  "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
   <interface name="org.asuslinux.Daemon">
+    <method name="SetGpuMuxMode">
+      <arg name="mode" type="u" direction="in"/>
+    </method>
+    <method name="GpuMuxMode">
+      <arg type="u" direction="out"/>
+    </method>
+    <signal name="NotifyGpuMuxMode">
+      <arg name="mode" type="u"/>
+    </signal>
     <method name="SetPostBootSound">
       <arg name="on" type="b" direction="in"/>
     </method>
@@ -16,7 +25,7 @@
       <arg name="overdrive" type="b" direction="in"/>
     </method>
     <method name="PanelOverdrive">
-      <arg type="n" direction="out"/>
+      <arg type="b" direction="out"/>
     </method>
     <signal name="NotifyPanelOverdrive">
       <arg name="overdrive" type="b"/>

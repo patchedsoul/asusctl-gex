@@ -9,7 +9,7 @@ import { IStoppableModule } from '../interfaces/iStoppableModule';
 
 const {Gio} = imports.gi;
 
-export class RogBios implements IStoppableModule {
+export class Platform implements IStoppableModule {
     asusLinuxProxy: any = null; // type: Gio.DbusProxy
     connected: boolean = false;
     lastStatePostBootSound: boolean = false;
@@ -42,7 +42,7 @@ export class RogBios implements IStoppableModule {
                 
                 return this.asusLinuxProxy.SetPostBootSoundSync(state);
             } catch (e) {
-                Log.error(`RogBios DBus set Post Boot Sound failed!`, e);
+                Log.error(`Platform DBus set Post Boot Sound failed!`, e);
             }
         }
     }
@@ -81,14 +81,14 @@ export class RogBios implements IStoppableModule {
     }
 
     async start() {
-        Log.debug(`Starting RogBios DBus module...`);
+        Log.debug(`Starting Platform DBus module...`);
 
         try {
-            let xml = Resources.File.DBus('org-asuslinus-rogbios-4')
+            let xml = Resources.File.DBus('org-asuslinus-platform-4')
             this.asusLinuxProxy = new Gio.DBusProxy.makeProxyWrapper(xml)(
                 Gio.DBus.system,
                 'org.asuslinux.Daemon',
-                '/org/asuslinux/RogBios'
+                '/org/asuslinux/Platform'
             );
 
             this.connected = true;
@@ -100,7 +100,7 @@ export class RogBios implements IStoppableModule {
                     (proxy: any = null, _name: string, data: boolean) => {
                         if(proxy){
                             Log.debug(`PostBootSound changed to ${data}`);
-                            ext.RogBios.switchPostBootSound.setToggleState(this.lastStatePostBootSound);
+                            ext.Platform.switchPostBootSound.setToggleState(this.lastStatePostBootSound);
                         }
                     }
                 );
@@ -113,7 +113,7 @@ export class RogBios implements IStoppableModule {
                     (proxy: any = null, _name: string, data: boolean) => {
                         if (proxy) {
                             Log.debug(`Overdrive has changed to ${data}.`);
-                            ext.RogBios.overdriveSwitch.setToggleState(this.lastStateOverdrive);
+                            ext.Platform.overdriveSwitch.setToggleState(this.lastStateOverdrive);
                         }
                     }
                 );
