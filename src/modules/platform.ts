@@ -7,12 +7,12 @@ const {main, popupMenu} = imports.ui;
 const {} = imports.gi;
 
 import * as Log from './log';
-import * as DBus from './rogbios_dbus';
+import * as DBus from './platform_dbus';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 import { IPopulatePopupModule } from '../interfaces/iPopulatePopupModule';
 
 export class Client implements IStoppableModule, IPopulatePopupModule {
-    connector: DBus.RogBios = new DBus.RogBios();
+    connector: DBus.Platform = new DBus.Platform();
     connected: boolean = false;
     overdriveSwitch: any;
     switchPostBootSound: any;
@@ -26,19 +26,19 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     }
 
     start() {
-        Log.debug(`Starting RogBios client...`);
+        Log.debug(`Starting Platform client...`);
 
         try {
             this.connector.start();
             this.connected = this.connector.isRunning();
             this.populatePopup();
         } catch (e) {
-            Log.error(`RogBios client start failed!`, e);
+            Log.error(`Platform client start failed!`, e);
         }
     }
 
     stop() {
-        Log.debug(`Stopping RogBios client...`);
+        Log.debug(`Stopping Platform client...`);
 
         if (this.isRunning()) {
             this.connected = false;

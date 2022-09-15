@@ -13,7 +13,7 @@ import * as GfxMode from './modules/gfx_mode';
 import * as Charge from './modules/charge';
 import * as Anime from './modules/anime';
 import * as Panel from './modules/panel';
-import * as RogBios from './modules/rogbios';
+import * as Platform from './modules/platform';
 
 import {IEnableableModule} from './interfaces/iEnableableModule';
 
@@ -43,7 +43,7 @@ export class Extension implements IEnableableModule {
     // @ts-ignore
     anime: Anime.Client;
     // @ts-ignore
-    RogBios: RogBios.Client;
+    Platform: Platform.Client;
 
     constructor() {
         // nothing
@@ -69,7 +69,7 @@ export class Extension implements IEnableableModule {
             this.anime = new Anime.Client();
 
         if (this.supported.connector.supportedAttributes.bios_overdrive || this.supported.connector.supportedAttributes.bios_toggleSound)
-            this.RogBios = new RogBios.Client();
+            this.Platform = new Platform.Client();
 
         Log.info(`Enabling ${Me.metadata.name} version ${Me.metadata.version}`);
 
@@ -88,7 +88,7 @@ export class Extension implements IEnableableModule {
             this.anime.start();
 
         if (this.supported.connector.supportedAttributes.bios_overdrive || this.supported.connector.supportedAttributes.bios_toggleSound)
-            this.RogBios.start();
+            this.Platform.start();
     }
 
     disable() {
@@ -107,7 +107,7 @@ export class Extension implements IEnableableModule {
             this.anime.stop();
 
         if (this.supported.connector.supportedAttributes.bios_overdrive || this.supported.connector.supportedAttributes.bios_toggleSound)
-            this.RogBios.stop();
+            this.Platform.stop();
 
         this.panelButton.destroy();
         //@ts-ignore
