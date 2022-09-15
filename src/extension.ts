@@ -8,8 +8,6 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './modules/log';
 import * as Supported from './modules/supported';
-import * as Profile from './modules/profile';
-import * as GfxMode from './modules/gfx_mode';
 import * as Charge from './modules/charge';
 import * as Anime from './modules/anime';
 import * as Panel from './modules/panel';
@@ -35,10 +33,6 @@ export class Extension implements IEnableableModule {
     // @ts-ignore
     supported: Supported.Client;
     // @ts-ignore
-    profile: Profile.Client;
-    // @ts-ignore
-    gfxMode: GfxMode.Client;
-    // @ts-ignore
     chargingLimit: Charge.Client;
     // @ts-ignore
     anime: Anime.Client;
@@ -59,9 +53,6 @@ export class Extension implements IEnableableModule {
         this.supported = new Supported.Client();
         this.supported.start();
 
-        this.profile = new Profile.Client();
-        this.gfxMode = new GfxMode.Client();
-
         if (this.supported.connector.supportedAttributes.charge)
             this.chargingLimit = new Charge.Client();
 
@@ -77,10 +68,6 @@ export class Extension implements IEnableableModule {
         // this.panelButton.create();
         this.panelButton = new Panel.AsusNb_Indicator();
 
-        // starting clients (dbus)
-        this.profile.start();
-        this.gfxMode.start();
-
         if (this.supported.connector.supportedAttributes.charge)
             this.chargingLimit.start();
 
@@ -95,10 +82,6 @@ export class Extension implements IEnableableModule {
         Log.info(`Disabling ${Me.metadata.name} version ${Me.metadata.version}`);
 
         this.supported.stop();
-
-        this.profile.stop();
-
-        this.gfxMode.stop();
 
         if (this.supported.connector.supportedAttributes.charge)
             this.chargingLimit.stop();
