@@ -61,6 +61,8 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
       // headline
       const animeItemHeadline = new popupMenu.PopupMenuItem('AniMe Matrix', {hover: false, can_focus: false, style_class: 'headline headline-label asusctl-gex-menu-item'});
+      animeItemHeadline.sensitive = false;
+      animeItemHeadline.active = false;
 
       // icon
       let iconAnime = new St.Icon({

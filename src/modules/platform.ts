@@ -55,15 +55,18 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
         
         // headline
         menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
+        const biosHeadline = new popupMenu.PopupMenuItem(
+            'BIOS Settings',
+            {
+                hover: false,
+                can_focus: false,
+                style_class: 'headline headline-label asusctl-gex-menu-item'
+            }
+        )
+        biosHeadline.sensitive = false;
+        biosHeadline.active = false;
         menu.addMenuItem(
-            new popupMenu.PopupMenuItem(
-                'BIOS Settings',
-                {
-                    hover: false,
-                    can_focus: false,
-                    style_class: 'headline headline-label asusctl-gex-menu-item'
-                }
-            )
+            biosHeadline
         );
 
         if (ext.supported.connector.supportedAttributes.bios_overdrive) {

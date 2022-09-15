@@ -60,6 +60,8 @@ export const AsusNb_Indicator = GObject.registerClass(
         }));
 
         const rogcontrolcenterItemHeadline = new popupMenu.PopupMenuItem('ROG Control Center', {hover: false, can_focus: false, style_class: 'headline headline-label asusctl-gex-menu-item'});
+        rogcontrolcenterItemHeadline.sensitive = false;
+        rogcontrolcenterItemHeadline.active = false;
 
         this.menu.addMenuItem(rogcontrolcenterItemHeadline);
 

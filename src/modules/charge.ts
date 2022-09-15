@@ -67,6 +67,8 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
 
       // headline
       const chargingLimitItemHeadline = new popupMenu.PopupMenuItem('Battery Charge Limit', {hover: false, can_focus: false, style_class: 'headline headline-label asusctl-gex-menu-item'});
+      chargingLimitItemHeadline.sensitive = false;
+      chargingLimitItemHeadline.active = false;
 
       // icon
       let iconCharge = new St.Icon({ style_class: 'popup-menu-icon' });
