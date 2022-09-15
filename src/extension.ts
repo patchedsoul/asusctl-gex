@@ -25,6 +25,8 @@ export class Extension implements IEnableableModule {
     public settings: any;
     // @ts-ignore
     public isDebug: boolean;
+    // @ts-ignore
+    public superNotice: boolean;
 
     // extensions.gnome.org wants everything in enable()
     // so TS marks the following as errors when not initialised
@@ -45,6 +47,7 @@ export class Extension implements IEnableableModule {
 
     enable() {
         this.isDebug = false;
+        this.superNotice = false;
 
         this.getGexSettings();
 
@@ -102,6 +105,8 @@ export class Extension implements IEnableableModule {
             this.settings = ExtensionUtils.getSettings();
 
             this.isDebug = this.getGexSetting('debug-enabled');
+            this.superNotice = this.getGexSetting('supernotice');
+            
         } catch (e) {
             Log.debug('Error getting settings.', e);
         }
@@ -110,6 +115,14 @@ export class Extension implements IEnableableModule {
     public getGexSetting(setting: string){
         try {
             return this.settings.get_boolean(setting);
+        } catch (e){
+            return false;
+        }
+    }
+
+    public setGexSetting(setting: string, value: boolean){
+        try {
+            return this.settings.set_boolean(setting, value);
         } catch (e){
             return false;
         }

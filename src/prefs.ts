@@ -14,7 +14,8 @@ const asusctlGexPreferencesWindow = GObject.registerClass({
     Template: Me.dir.get_child('prefs.ui').get_uri(),
     InternalChildren: [
         'notifications_enabled',
-        'debug_enabled'
+        'debug_enabled',
+        'supernotice'
     ],
 }, class asusctlGexPreferencesWindow extends Gtk.Box {
 

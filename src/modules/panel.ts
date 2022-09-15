@@ -77,6 +77,40 @@ export const AsusNb_Indicator = GObject.registerClass(
         );
         this.menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
 
+        // if (!ext.superNotice){
+            const hintSuper = new popupMenu.PopupMenuItem('install supergfxctl-gex', {style_class: 'asusctl-gex-menu-item'});
+            hintSuper.connect('activate', () => {
+                this.spawnCommandLine('xdg-open https://extensions.gnome.org/extension/5344/supergfxctl-gex/');
+                ext.setGexSetting('supernotice', true);
+                ext.supernotice = true;
+                Log.debug(ext.getGexSetting('supernotice').toString());
+            });
+    
+            this.menu.addMenuItem(hintSuper);
+
+            /* 
+            I wanted to show a notification once. but the set_setting does not work correctly
+            */
+
+            // let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/scalable/rog-logo.svg`);
+            // let params = { gicon: gIcon };
+            // let source = new messageTray.Source('GPU Modes moved', 'window-close-symbolic', params);
+            // let notification = new messageTray.Notification(source, 'GPU Modes moved', 'The GPU Modes have been moved to a seperate extension called supergfxctl-gex. By clicking the button below this notification will get disabled.');
+            // notification.addAction('Get supergfxctl-gex now!', () => {
+            //     this.spawnCommandLine('xdg-open https://extensions.gnome.org/extension/5344/supergfxctl-gex/');
+            //     ext.setGexSetting('supernotice', true);
+            //     ext.supernotice = true;
+            //     Log.debug(ext.getGexSetting('supernotice').toString());
+            // });
+            // notification.setTransient(true);
+            // notification.setUrgency(3);
+            
+            // main.messageTray.add(source);
+            // source.showNotification(notification);
+        // }
+
+        this.menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
+        
         main.panel.addToStatusArea('asusctl-gex.panel', this);
       }
 
