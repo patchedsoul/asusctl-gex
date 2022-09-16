@@ -14,7 +14,7 @@ export const Title = 'ASUS Notebook Control';
 
 export const AsusNb_Indicator = GObject.registerClass(
     class XRControlIndicator extends panelMenu.Button {
-      supergfxAdded:boolean = true;
+      superRemoved:boolean = false;
 
       _init() {
         super._init(0.0, "AsusNbPanel");
@@ -119,18 +119,16 @@ export const AsusNb_Indicator = GObject.registerClass(
       }
 
       removeSuperItem() {
-        Log.debug('got there');
-        Log.debug(this.supergfxAdded.toString());
-        if (this.supergfxAdded){
-            this.hintSuperHead.destroy();
+        if (!this.superRemoved){
+            this.hintSuperHead?.destroy();
             this.hintSuperHead = null;
-            this.hintSuperHeaddesc.destroy();
+            this.hintSuperHeaddesc?.destroy();
             this.hintSuperHeaddesc = null;
-            this.hintSuper.destroy();
+            this.hintSuper?.destroy();
             this.hintSuper = null;
-            this.superSeperator.destroy();
+            this.superSeperator?.destroy();
             this.superSeperator = null;
-            this.supergfxAdded = false;
+            this.superRemoved = true;
         }
       }
 
