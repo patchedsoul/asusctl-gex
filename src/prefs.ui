@@ -67,6 +67,31 @@
                 </child>
               </object>
             </child>
+            <child>
+              <object class="GtkListBoxRow">
+                <child>
+                  <object class="GtkBox">
+                    <child>
+                      <object class="GtkSwitch" id="supernotice">
+                        <property name="halign">true</property>
+                        <property name="valign">false</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label" translatable="yes">Hide the supergfxctl-gex notice</property>
+                        <property name="halign">start</property>
+                        <property name="valign">center</property>
+                        <property name="hexpand">1</property>
+                        <style>
+                          <class name="heading"/>
+                        </style>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
       </object>

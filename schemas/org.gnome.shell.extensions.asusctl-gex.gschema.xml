@@ -11,5 +11,9 @@
       <summary>enable / disable debug messages</summary>
       <description>If enabled, various events of the extension will get logged and are available via journalctl.</description>
     </key>
+    <key type="b" name="supernotice">
+      <default>false</default>
+      <summary>hide the supergfxctl-gex notice</summary>
+    </key>
   </schema>
 </schemalist>

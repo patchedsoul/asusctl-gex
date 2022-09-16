@@ -1,10 +1,10 @@
 declare const log: any;
-declare var ext: any;
+declare var asusctlGexInstance: any;
 var log_level = 4;
 
 export function raw(text: string, prefix: string, e: any = null) {
-    if (typeof ext !== 'undefined'){
-        if (ext.isDebug == true){
+    if (typeof asusctlGexInstance !== 'undefined'){
+        if (asusctlGexInstance.isDebug == true){
             log(`asusctl-gex: ${prefix} ${text}`);
             if (e) {
                 log(`asusctl-gex: ${prefix} Exception:\nasusctl-gex: ${e}`);
@@ -26,8 +26,8 @@ export function warn(text: string, e: any = null) {
 }
 
 export function debug(text: string, e: any = null) {
-    if (typeof ext !== 'undefined'){
-        if (ext.isDebug == true){
+    if (typeof asusctlGexInstance !== 'undefined'){
+        if (asusctlGexInstance.isDebug == true){
             if (log_level > 3) raw(text, '[DEBUG]', e);
         }
     }

@@ -1,5 +1,5 @@
 declare const global: any, imports: any;
-declare var ext: any;
+declare var asusctlGexInstance: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -14,6 +14,8 @@ export const Title = 'ASUS Notebook Control';
 
 export const AsusNb_Indicator = GObject.registerClass(
     class XRControlIndicator extends panelMenu.Button {
+      supergfxAdded:boolean = true;
+
       _init() {
         super._init(0.0, "AsusNbPanel");
 
@@ -68,57 +70,91 @@ export const AsusNb_Indicator = GObject.registerClass(
         const rogcontrolcenterItem = new popupMenu.PopupImageMenuItem(
             'Open ROG Control Center',
             Gio.icon_new_for_string(`${Me.path}/icons/scalable/rog-logo.svg`)
-        )
+        );
         rogcontrolcenterItem.connect('activate', () => {
-            this.spawnCommandLine('rog-control-center')
+            this.spawnCommandRog();
         });
         this.menu.addMenuItem(
             rogcontrolcenterItem
         );
         this.menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
 
-        // if (!ext.superNotice){
-            const hintSuper = new popupMenu.PopupMenuItem('install supergfxctl-gex', {style_class: 'asusctl-gex-menu-item'});
-            hintSuper.connect('activate', () => {
-                this.spawnCommandLine('xdg-open https://extensions.gnome.org/extension/5344/supergfxctl-gex/');
-                ext.setGexSetting('supernotice', true);
-                ext.supernotice = true;
-                Log.debug(ext.getGexSetting('supernotice').toString());
-            });
-    
-            this.menu.addMenuItem(hintSuper);
 
-            /* 
-            I wanted to show a notification once. but the set_setting does not work correctly
-            */
+        this.hintSuperHead = new popupMenu.PopupMenuItem('GPU Mode moved', {hover: false, can_focus: false, style_class: 'headline headline-label asusctl-gex-menu-item'});
+        this.hintSuperHead.sensitive = false;
+        this.hintSuperHead.active = false;
 
-            // let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/scalable/rog-logo.svg`);
-            // let params = { gicon: gIcon };
-            // let source = new messageTray.Source('GPU Modes moved', 'window-close-symbolic', params);
-            // let notification = new messageTray.Notification(source, 'GPU Modes moved', 'The GPU Modes have been moved to a seperate extension called supergfxctl-gex. By clicking the button below this notification will get disabled.');
-            // notification.addAction('Get supergfxctl-gex now!', () => {
-            //     this.spawnCommandLine('xdg-open https://extensions.gnome.org/extension/5344/supergfxctl-gex/');
-            //     ext.setGexSetting('supernotice', true);
-            //     ext.supernotice = true;
-            //     Log.debug(ext.getGexSetting('supernotice').toString());
-            // });
-            // notification.setTransient(true);
-            // notification.setUrgency(3);
-            
-            // main.messageTray.add(source);
-            // source.showNotification(notification);
-        // }
+        this.hintSuper = new popupMenu.PopupMenuItem('install supergfxctl-gex', {style_class: 'asusctl-gex-menu-item'});
+        this.hintSuper.connect('activate', () => {
+            this.spawnCommandLine('xdg-open https://extensions.gnome.org/extension/5344/supergfxctl-gex/');
+        });
+        this.hintSuperHeaddesc = new popupMenu.PopupMenuItem("This hint does not appear\nif you either install 'Super Graphics Control'\nor disable this hint in the extension settings", {hover: false, can_focus: false, style_class: 'asusctl-gex-menu-item'});
+        this.hintSuperHeaddesc.sensitive = false;
+        this.hintSuperHeaddesc.active = false;
 
-        this.menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
+        this.superSeperator = new popupMenu.PopupSeparatorMenuItem();
+
+        this.menu.addMenuItem(this.hintSuperHead, 0);
+        this.menu.addMenuItem(this.hintSuperHeaddesc, 1);
+        this.menu.addMenuItem(this.hintSuper, 2);
+        this.menu.addMenuItem(this.superSeperator, 3);
+
+        this.getSuper();
+        main.extensionManager.connectObject('extension-state-changed', this.getExtension.bind(this), this);
         
         main.panel.addToStatusArea('asusctl-gex.panel', this);
       }
 
-      spawnCommandLine(command: string) {
+      //@ts-ignore
+      extract({ uuid, state, type, hasPrefs, metadata: { name, url } }) {
+        return uuid;
+      }
+      //@ts-ignore
+      getExtension(mgr_, ext) {
+        const uuid = this.extract(ext);
+        Log.debug(uuid.toLowerCase());
+        if (uuid.toLowerCase() == "supergfxctl-gex@asus-linux.org" || asusctlGexInstance.getGexSetting('supernotice')) {
+            this.removeSuperItem();
+        }
+      }
+
+      removeSuperItem() {
+        Log.debug('got there');
+        Log.debug(this.supergfxAdded.toString());
+        if (this.supergfxAdded){
+            this.hintSuperHead.destroy();
+            this.hintSuperHead = null;
+            this.hintSuperHeaddesc.destroy();
+            this.hintSuperHeaddesc = null;
+            this.hintSuper.destroy();
+            this.hintSuper = null;
+            this.superSeperator.destroy();
+            this.superSeperator = null;
+            this.supergfxAdded = false;
+        }
+      }
+
+      getSuper(){
+        main.extensionManager.getUuids().forEach((uuid:string) => {
+            if (uuid == "supergfxctl-gex@asus-linux.org" || asusctlGexInstance.getGexSetting('supernotice')) {
+                this.removeSuperItem();
+            }
+        });
+        return false;
+      }
+
+      spawnCommandRog() {
         try {
-            GLib.spawn_command_line_async(command);
+            GLib.spawn_command_line_async('rog-control-center');
         } catch (e) {
-            Log.error(`Spawning command failed: ${command}`, e);
+            this.spawnCommandRogPage();
+        }
+      }
+      spawnCommandRogPage() {
+        try {
+            GLib.spawn_command_line_async('xdg-open https://gitlab.com/asus-linux/asusctl#gui');
+        } catch (e) {
+            Log.error(`Spawning command failed`, e);
         }
       }
     }
@@ -134,7 +170,7 @@ export class Actions {
     }
 
     public static notify(msg:string = Title, details:string, icon: string, action: string = "") {
-        if (ext.getGexSetting('notifications-enabled') == false) return false;
+        if (asusctlGexInstance.getGexSetting('notifications-enabled') == false) return false;
 
         let gIcon = Gio.icon_new_for_string(`${Me.path}/icons/${icon}`);
         let params = { gicon: gIcon};
@@ -158,7 +194,7 @@ export class Actions {
     }
 
     public static updateMode(selector:string, payload:string) {
-        if (ext.panelButton == null) return false;
+        if (asusctlGexInstance.panelButton == null) return false;
 
         // update menu items
         let menuItems = main.panel.statusArea['asusctl-gex.panel'].menu._getMenuItems();

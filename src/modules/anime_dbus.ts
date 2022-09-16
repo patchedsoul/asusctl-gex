@@ -1,5 +1,5 @@
 declare const global: any, imports: any;
-declare var ext: any;
+declare var asusctlGexInstance: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 

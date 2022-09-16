@@ -1,5 +1,5 @@
 declare const global: any, imports: any;
-declare var ext: Extension;
+declare var asusctlGexInstance: Extension;
 const Config = imports.misc.config;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
@@ -102,10 +102,12 @@ export class Extension implements IEnableableModule {
 
     getGexSettings(){
         try {
-            this.settings = ExtensionUtils.getSettings();
+            this.settings = ExtensionUtils.getSettings('org.gnome.shell.extensions.asusctl-gex');
 
             this.isDebug = this.getGexSetting('debug-enabled');
             this.superNotice = this.getGexSetting('supernotice');
+
+            Log.debug(this.superNotice.toString());
             
         } catch (e) {
             Log.debug('Error getting settings.', e);
@@ -131,6 +133,6 @@ export class Extension implements IEnableableModule {
 
 // @ts-ignore
 function init() {
-    ext = new Extension();
-    return ext;
+    asusctlGexInstance = new Extension();
+    return asusctlGexInstance;
 }

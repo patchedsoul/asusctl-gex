@@ -1,5 +1,5 @@
 declare const global: any, imports: any;
-declare var ext: any;
+declare var asusctlGexInstance: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -76,7 +76,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
       this.menuItemChargeLimit.add(iconCharge);
 
       // slider
-      let valueInit = parseInt(ext.chargingLimit.connector.getChargingLimit())/100;
+      let valueInit = parseInt(asusctlGexInstance.chargingLimit.connector.getChargingLimit())/100;
       this.chargingLimitSlider = new slider.Slider(0);
 
       this.chargingLimitSlider.connect('drag-begin', () => (this._sliderDragging = true));

@@ -1,5 +1,5 @@
 declare const global: any, imports: any;
-declare var ext: any;
+declare var asusctlGexInstance: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -93,27 +93,27 @@ export class Platform implements IStoppableModule {
 
             this.connected = true;
             
-            if (ext.supported.connector.supportedAttributes.bios_toggleSound) {
+            if (asusctlGexInstance.supported.connector.supportedAttributes.bios_toggleSound) {
                 this.lastStatePostBootSound = this.getPostBootSound();
                 this.asusLinuxProxy.connectSignal(
                     "NotifyPostBootSound",
                     (proxy: any = null, _name: string, data: boolean) => {
                         if(proxy){
                             Log.debug(`PostBootSound changed to ${data}`);
-                            ext.Platform.switchPostBootSound.setToggleState(this.lastStatePostBootSound);
+                            asusctlGexInstance.Platform.switchPostBootSound.setToggleState(this.lastStatePostBootSound);
                         }
                     }
                 );
             }
                 
-            if (ext.supported.connector.supportedAttributes.bios_overdrive) {
+            if (asusctlGexInstance.supported.connector.supportedAttributes.bios_overdrive) {
                 this.lastStateOverdrive = this.getOverdrive();
                 this.asusLinuxProxy.connectSignal(
                     "NotifyPanelOverdrive",
                     (proxy: any = null, _name: string, data: boolean) => {
                         if (proxy) {
                             Log.debug(`Overdrive has changed to ${data}.`);
-                            ext.Platform.overdriveSwitch.setToggleState(this.lastStateOverdrive);
+                            asusctlGexInstance.Platform.overdriveSwitch.setToggleState(this.lastStateOverdrive);
                         }
                     }
                 );

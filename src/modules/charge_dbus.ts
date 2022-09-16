@@ -1,5 +1,5 @@
 declare const global: any, imports: any;
-declare var ext: any;
+declare var asusctlGexInstance: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -54,11 +54,11 @@ export class ChargingLimit implements IStoppableModule {
         if (curState > 0 && this.lastState !== curState) {
             // disable the signal handler so we don't run in an infinite loop
             // of notifying, setting, notifying, setting...
-            ext.chargingLimit.chargingLimitSlider.block_signal_handler(ext.chargingLimit._sliderChangedId);
-            ext.chargingLimit.chargingLimitSlider.value = curState/100;
-            ext.chargingLimit.chargingLimitSlider.unblock_signal_handler(ext.chargingLimit._sliderChangedId);
+            asusctlGexInstance.chargingLimit.chargingLimitSlider.block_signal_handler(asusctlGexInstance.chargingLimit._sliderChangedId);
+            asusctlGexInstance.chargingLimit.chargingLimitSlider.value = curState/100;
+            asusctlGexInstance.chargingLimit.chargingLimitSlider.unblock_signal_handler(asusctlGexInstance.chargingLimit._sliderChangedId);
 
-            ext.chargingLimit.chargeLimitLabel.set_text(`${curState}%`);
+            asusctlGexInstance.chargingLimit.chargeLimitLabel.set_text(`${curState}%`);
 
             // update state
             this.lastState = curState;

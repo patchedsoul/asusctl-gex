@@ -1,5 +1,5 @@
 declare const global: any, imports: any;
-declare var ext: any;
+declare var asusctlGexInstance: any;
 
 // @ts-ignore
 const ExtensionUtils = imports.misc.extensionUtils;
@@ -33,12 +33,16 @@ const asusctlGexPreferencesWindow = GObject.registerClass({
 
         //@ts-ignore
         this._debug_enabled.connect('state-set', (event: any, state: boolean) => !this._preferences.set_boolean('debug-enabled', state));
+
+        //@ts-ignore
+        this._supernotice.connect('state-set', (event: any, state: boolean) => !this._preferences.set_boolean('supernotice', state));
     }
 
     _syncPreferences() {
         this._notifications_enabled.active = this._preferences.get_boolean('notifications-enabled');
 
         this._debug_enabled.active = this._preferences.get_boolean('debug-enabled');
+        this._supernotice.active = this._preferences.get_boolean('supernotice');
     }
 });
 

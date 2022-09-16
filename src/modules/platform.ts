@@ -1,5 +1,5 @@
 declare const global: any, imports: any;
-declare var ext: any;
+declare var asusctlGexInstance: any;
 //@ts-ignore
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
@@ -69,7 +69,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
             biosHeadline
         );
 
-        if (ext.supported.connector.supportedAttributes.bios_overdrive) {
+        if (asusctlGexInstance.supported.connector.supportedAttributes.bios_overdrive) {
             // switch
             this.overdriveSwitch = new popupMenu.PopupSwitchMenuItem(
                 'Panel Overdrive',
@@ -86,7 +86,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
             menu.addMenuItem(this.overdriveSwitch);
         }
         
-        if (ext.supported.connector.supportedAttributes.bios_toggleSound) {
+        if (asusctlGexInstance.supported.connector.supportedAttributes.bios_toggleSound) {
             // switch
             this.switchPostBootSound = new popupMenu.PopupSwitchMenuItem(
                 'Post Boot Sound',
