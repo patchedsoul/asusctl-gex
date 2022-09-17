@@ -86,7 +86,11 @@ export const AsusNb_Indicator = GObject.registerClass(
 
         this.hintSuper = new popupMenu.PopupMenuItem('install supergfxctl-gex', {style_class: 'asusctl-gex-menu-item'});
         this.hintSuper.connect('activate', () => {
-            this.spawnCommandLine('xdg-open https://extensions.gnome.org/extension/5344/supergfxctl-gex/');
+            try {
+                GLib.spawn_command_line_async('xdg-open https://extensions.gnome.org/extension/5344/supergfxctl-gex/');
+            } catch (error) {
+                Log.error('error opening https://extensions.gnome.org/extension/5344/supergfxctl-gex/')
+            }
         });
         this.hintSuperHeaddesc = new popupMenu.PopupMenuItem("This hint does not appear\nif you either install 'Super Graphics Control'\nor disable this hint in the extension settings", {hover: false, can_focus: false, style_class: 'asusctl-gex-menu-item'});
         this.hintSuperHeaddesc.sensitive = false;
