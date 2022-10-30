@@ -16,6 +16,7 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
     connected: boolean = false;
     overdriveSwitch: any;
     switchPostBootSound: any;
+    switchMUX: any;
 
     constructor() {
         // nothing for now
@@ -101,6 +102,23 @@ export class Client implements IStoppableModule, IPopulatePopupModule {
             );
 
             menu.addMenuItem(this.switchPostBootSound);
-        }        
+        }
+        
+        if (asusctlGexInstance.supported.connector.supportedAttributes.bios_toggleMUX) {
+            // switch
+            this.switchMUX = new popupMenu.PopupSwitchMenuItem(
+                'Graphics MUX set to dedicated',
+                this.connector.lastStateMUX
+            );
+            
+            this.switchMUX.connect(
+                'toggled', // signal
+                (item: any) => {
+                    this.connector.setMUX(item.state);
+                }
+            );
+
+            menu.addMenuItem(this.switchMUX);
+        }       
     }
 }

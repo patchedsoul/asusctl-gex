@@ -4,6 +4,7 @@ declare var asusctlGexInstance: any;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 import * as Log from './log';
+import * as Panel from './panel';
 import * as Resources from './resources';
 import { IStoppableModule } from '../interfaces/iStoppableModule';
 
@@ -14,6 +15,7 @@ export class Platform implements IStoppableModule {
     connected: boolean = false;
     lastStatePostBootSound: boolean = false;
     lastStateOverdrive: boolean = false;
+    lastStateMUX: boolean = false;
 
     constructor() {
         // nothing for now
@@ -47,6 +49,33 @@ export class Platform implements IStoppableModule {
         }
     }
 
+    public getMUX() {
+        if (this.isRunning()) {
+            try {
+                let currentState = this.asusLinuxProxy.GpuMuxModeSync();
+                
+                return parseInt(currentState) == 0 ? true : false;
+            } catch (e) {
+                Log.error(`Failed to get MUX state!`, e);
+            }
+        }
+
+        return this.lastStatePostBootSound;
+    }
+
+    public setMUX(state: boolean) {
+        if (this.isRunning()) {
+            try {
+                if (!state !== this.lastStateMUX) {
+                    this.lastStateMUX = !state;
+                }
+                
+                return this.asusLinuxProxy.SetGpuMuxModeSync(!state);
+            } catch (e) {
+                Log.error(`Switching the MUX failed!`, e);
+            }
+        }
+    }
 
     public getOverdrive() {
         if (this.isRunning()) {
@@ -114,6 +143,26 @@ export class Platform implements IStoppableModule {
                         if (proxy) {
                             Log.debug(`Overdrive has changed to ${data}.`);
                             asusctlGexInstance.Platform.overdriveSwitch.setToggleState(this.lastStateOverdrive);
+                        }
+                    }
+                );
+            }
+
+            if (asusctlGexInstance.supported.connector.supportedAttributes.bios_toggleMUX) {
+                this.lastStateMUX = this.getMUX();
+                this.asusLinuxProxy.connectSignal(
+                    "NotifyGpuMuxMode",
+                    (proxy: any = null, _name: string, data: boolean) => {
+                        if (proxy) {
+                            Log.debug(`MUX has changed to ${data}.`);
+                            asusctlGexInstance.Platform.switchMUX.setToggleState(this.lastStateMUX);
+    
+                            Panel.Actions.notify(
+                                'ASUS Notebook Control',
+                                `MUX Mode has chnged. Please reboot to apply the changes.`,
+                                'scalable/reboot.svg',
+                                'reboot'
+                            );
                         }
                     }
                 );

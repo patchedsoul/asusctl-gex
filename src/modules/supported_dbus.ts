@@ -26,6 +26,8 @@ export class Supported implements IStoppableModule {
       led_perKey: false,
       bios_toggleSound: false,
       bios_toggleDGPU: false,
+      bios_toggleEGPU: false,
+      bios_toggleMUX: false,
       bios_overdrive: false
     };
 
@@ -72,8 +74,10 @@ export class Supported implements IStoppableModule {
                         case 4:
                           let biosArray = valueString.split(',');
                           this.supportedAttributes.bios_toggleSound = (biosArray[0] == 'true' ? true : false);
-                          this.supportedAttributes.bios_toggleDGPU = (biosArray[1] == 'true' ? true : false);
+                          this.supportedAttributes.bios_toggleMUX = (biosArray[1] == 'true' ? true : false);
                           this.supportedAttributes.bios_overdrive = (biosArray[2] == 'true' ? true : false);
+                          this.supportedAttributes.bios_toggleDGPU = (biosArray[3] == 'true' ? true : false);
+                          this.supportedAttributes.bios_toggleEGPU = (biosArray[4] == 'true' ? true : false);
                           break;
                       
                         default:

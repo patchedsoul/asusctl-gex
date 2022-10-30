@@ -20,6 +20,13 @@
     padding-right: 1.3em;
 }
 
+.asusctl-gex-menu-item.rog-control-center .popup-menu-icon{
+    padding-right: 0px;
+}
+.asusctl-gex-menu-item.rog-control-center .menu-item-label {
+    padding-left: 1em;
+}
+
 .asusctl-gex-battery-item .popup-menu-icon{
     padding-right: 1em;
 }

@@ -67,15 +67,34 @@ export const AsusNb_Indicator = GObject.registerClass(
 
         this.menu.addMenuItem(rogcontrolcenterItemHeadline);
 
-        const rogcontrolcenterItem = new popupMenu.PopupImageMenuItem(
-            'Open ROG Control Center',
-            Gio.icon_new_for_string(`${Me.path}/icons/scalable/rog-logo.svg`)
+        const rogcontrolcenterItemContainer = new popupMenu.PopupBaseMenuItem(
+            {
+                style_class: 'asusctl-gex-menu-item rog-control-center'
+            }
         );
-        rogcontrolcenterItem.connect('activate', () => {
+
+        let iconRog = new St.Icon(
+            {
+                gicon: Gio.icon_new_for_string(`${Me.path}/icons/scalable/rog-logo.svg`),
+                style_class: 'popup-menu-icon'
+            }
+        );
+        rogcontrolcenterItemContainer.add(iconRog);
+
+        const rogcontrolcenterItem = new St.Label(
+            {
+              text: `Open ROG Control Center`,
+              style_class: 'menu-item-label'
+            }
+          );
+
+        rogcontrolcenterItemContainer.add(rogcontrolcenterItem);
+
+        rogcontrolcenterItemContainer.connect('activate', () => {
             this.spawnCommandRog();
         });
         this.menu.addMenuItem(
-            rogcontrolcenterItem
+            rogcontrolcenterItemContainer
         );
         this.menu.addMenuItem(new popupMenu.PopupSeparatorMenuItem());
 
