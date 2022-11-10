@@ -1,4 +1,14 @@
-# asusctl ([-gex]: Gnome extension)
+# asusctl ([-gex]: Gnome extension) -inactive-
+
+## inactive
+
+This project is currently inactive until a new maintainer wants to put some love into it and make it compatible with the newest asusctl versions.
+
+ROG Control Center will also have it's own appindicator.
+
+This extension is currently marked as inactive also on extensions.gnome.org and for users not visible anymore.
+
+---
 
 Extension for visualizing [asusctl](https://gitlab.com/asus-linux/asusctl)(`asusd`) settings and status.
 
